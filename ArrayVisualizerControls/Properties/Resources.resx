@@ -117,16 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArrayNotValidDimsException" xml:space="preserve">
-    <value>source array cannot be of {0} dimensions.</value>
+  <data name="ArrayNot2DException" xml:space="preserve">
+    <value>source array must be two dimensional.</value>
   </data>
-  <data name="Error" xml:space="preserve">
-    <value>Error</value>
+  <data name="ArrayNot3DException" xml:space="preserve">
+    <value>source array must be three dimensional.</value>
   </data>
-  <data name="InvalidFileContent" xml:space="preserve">
-    <value>Invalid input data!\r\nPlease select a file with a comma delimited list of numbers.</value>
-  </data>
-  <data name="InvalidInputFormat" xml:space="preserve">
-    <value>Invalid input data!\r\nPlease enter a comma delimited list of numbers.</value>
+  <data name="ArrayNot4DException" xml:space="preserve">
+    <value>source array must be four dimensional.</value>
   </data>
 </root>

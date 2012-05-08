@@ -5,18 +5,18 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace ArrayVisualizer
+namespace ArrayVisualizerControls
 {
   public abstract class ArrayXD : PictureBox
   {
-    protected System.Array data;
-    protected Font font;
+    private System.Array data;
+    private Font font;
 
-    protected Size cellSize;
-    protected string formatter;
-    protected int cellPadding;
+    private Size cellSize;
+    private string formatter;
+    private int cellPadding;
 
-    public ArrayXD()
+    protected ArrayXD()
     {
       this.cellSize = new Size(80, 55);
       this.cellPadding = 10;
@@ -40,7 +40,7 @@ namespace ArrayVisualizer
       }
     }
 
-    public Font RederFont
+    public Font RenderFont
     {
       get
       {

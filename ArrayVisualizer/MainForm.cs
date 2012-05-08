@@ -10,6 +10,9 @@ using System.Windows.Forms;
 using LinqLib.Array;
 using LinqLib.Sequence;
 using System.IO;
+using System.Threading;
+using ArrayVisualizer.Properties;
+using ArrayVisualizerControls;
 
 namespace ArrayVisualizer
 {
@@ -24,26 +27,6 @@ namespace ArrayVisualizer
       SetControls();
     }
 
-    //private void button1_Click(object sender, EventArgs e)
-    //{
-    //  Form2D f = new Form2D();
-    //  f.Show();
-    //}
-
-    //private void button2_Click(object sender, EventArgs e)
-    //{
-    //  Form3D f = new Form3D();
-    //  f.Show();
-    //}
-
-    //private void button3_Click(object sender, EventArgs e)
-    //{
-    //  Form4D f = new Form4D();
-    //  f.Show();
-    //}
-
-
-
     private void dimensionSelector_Selected(object sender, TabControlEventArgs e)
     {
       SetControls();
@@ -52,7 +35,7 @@ namespace ArrayVisualizer
     private void rotateButton_Click(object sender, EventArgs e)
     {
       RotateAxis r = RotateAxis.RotateNone;
-      int angle = int.Parse(domainUpDownAngle.Text);
+      int angle = int.Parse(domainUpDownAngle.Text, Thread.CurrentThread.CurrentUICulture.NumberFormat);
 
       switch (domainUpDownAxis.Text)
       {
@@ -104,7 +87,7 @@ namespace ArrayVisualizer
           arrCtl.Data = ((double[, , ,])arrCtl.Data).Resize(a, z, y, x);
           break;
         default:
-          throw new Exception();
+          throw new ArrayTypeMismatchException();
       }
     }
 
@@ -139,7 +122,7 @@ namespace ArrayVisualizer
             arrCtl = new Array4D();
             break;
           default:
-            throw new Exception();
+            throw new ArrayTypeMismatchException(string.Format(Thread.CurrentThread.CurrentUICulture.NumberFormat, Resources.ArrayNotValidDimsException, dims));
         }
         mainPanel.Controls.Add(arrCtl);
 
@@ -154,7 +137,7 @@ namespace ArrayVisualizer
       }
       catch (Exception ex)
       {
-        MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(this, ex.Message, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -187,7 +170,7 @@ namespace ArrayVisualizer
     }
 
 
-    
+
 
     private void SetControls()
     {
@@ -258,14 +241,14 @@ namespace ArrayVisualizer
       }
     }
 
-    private Array GetData(int dims)
+    private Array GetData(int dimensions)
     {
       int x = (int)numericUpDownX.Value;
       int y = (int)numericUpDownY.Value;
       int z = (int)numericUpDownZ.Value;
       int a = (int)numericUpDownA.Value;
 
-      switch (dims)
+      switch (dimensions)
       {
         case 2:
           return Get2DArray(x, y);
@@ -274,7 +257,7 @@ namespace ArrayVisualizer
         case 4:
           return Get4DArray(x, y, z, a);
         default:
-          throw new Exception();
+          throw new ArrayTypeMismatchException(string.Format(Thread.CurrentThread.CurrentUICulture.NumberFormat, Resources.ArrayNotValidDimsException, dimensions));
       }
     }
 
@@ -287,11 +270,11 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X)).ToArray(a, z, y, x);
+          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(a, z, y, x);
         }
         catch
         {
-          throw new Exception("Invalid input data!\r\nPlease enter a comma delimited list of numbers.");
+          throw new FormatException(Resources.InvalidInputFormat);
         }
       }
       else //file
@@ -299,11 +282,11 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X)).ToArray(a, z, y, x);
+          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(a, z, y, x);
         }
         catch (FormatException)
         {
-          throw new Exception("Invalid input data!\r\nPlease select a file with  a comma delimited list of numbers.");
+          throw new FormatException(Resources.InvalidFileContent);
         }
         catch
         {
@@ -321,11 +304,11 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X)).ToArray(z, y, x);
+          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(z, y, x);
         }
-        catch
+        catch (Exception ex)
         {
-          throw new Exception("Invalid input data!\r\nPlease enter a comma delimited list of numbers.");
+          throw new FormatException(Resources.InvalidInputFormat, ex);
         }
       }
       else//file
@@ -333,11 +316,11 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X)).ToArray(z, y, x);
+          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(z, y, x);
         }
-        catch (FormatException)
+        catch (FormatException ex)
         {
-          throw new Exception("Invalid input data!\r\nPlease select a file with  a comma delimited list of numbers.");
+          throw new FormatException(Resources.InvalidFileContent, ex);
         }
         catch
         {
@@ -355,11 +338,11 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X)).ToArray(y, x);
+          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(y, x);
         }
-        catch
+        catch (Exception ex)
         {
-          throw new Exception("Invalid input data!\r\nPlease enter a comma delimited list of numbers.");
+          throw new FormatException(Resources.InvalidInputFormat, ex);
         }
       }
       else //file
@@ -367,15 +350,15 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X)).ToArray(y, x);
+          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(y, x);
         }
-        catch (FormatException)
+        catch (FormatException ex)
         {
-          throw new Exception("Invalid input data!\r\nPlease select a file with  a comma delimited list of numbers.");
+          throw new FormatException(Resources.InvalidFileContent, ex);
         }
-        catch 
+        catch
         {
-          throw ;
+          throw;
         }
       }
     }
@@ -383,8 +366,8 @@ namespace ArrayVisualizer
     private string[] GetFileItems()
     {
       string name = (string)lblFile.Tag;
-        string list = string.Join(",", File.ReadAllLines(name));
-        return GetItems(list);
+      string list = string.Join(",", File.ReadAllLines(name));
+      return GetItems(list);
     }
 
     private string[] GetManualItems()
@@ -392,12 +375,12 @@ namespace ArrayVisualizer
       return GetItems(textBoxData.Text);
     }
 
-    private string[] GetItems(string list)
+    private static string[] GetItems(string list)
     {
       list = list.Replace(" ", "");
       list = list.Replace('\r', ',');
       list = list.Replace('\n', ',');
-      while (list.IndexOf(",,") != -1)
+      while (list.IndexOf(",,", StringComparison.CurrentCulture) != -1)
         list = list.Replace(",,", ",");
 
       return list.Split(new char[] { ',' });
@@ -406,7 +389,7 @@ namespace ArrayVisualizer
     private void SaveToFile(string fileName)
     {
       double[] values = arrCtl.Data.AsEnumerable<double>().ToArray();
-      string list = string.Join(",",values);
+      string list = string.Join(",", values);
 
       File.WriteAllText(fileName, list);
     }

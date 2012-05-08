@@ -1,4 +1,5 @@
-﻿namespace ArrayVisualizer
+﻿using ArrayVisualizerControls;
+namespace ArrayVisualizer
 {
   partial class MainForm
   {
@@ -29,7 +30,7 @@
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
-      this.mainPanel = new System.Windows.Forms.Panel();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.panel1 = new System.Windows.Forms.Panel();
       this.label12 = new System.Windows.Forms.Label();
       this.numericUpDownCellHeight = new System.Windows.Forms.NumericUpDown();
@@ -80,10 +81,10 @@
       this.buttonSelectFile = new System.Windows.Forms.Button();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.buttonSave = new System.Windows.Forms.Button();
-      this.array2D1 = new ArrayVisualizer.Array2D();
-      this.mainPanel.SuspendLayout();
+      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+      this.mainPanel = new System.Windows.Forms.Panel();
+      this.array2D1 = new ArrayVisualizerControls.Array2D();
       this.panel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCellHeight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCellWidth)).BeginInit();
@@ -104,22 +105,9 @@
       this.panel2.SuspendLayout();
       this.panelTextInput.SuspendLayout();
       this.panel4.SuspendLayout();
+      this.mainPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.array2D1)).BeginInit();
       this.SuspendLayout();
-      // 
-      // mainPanel
-      // 
-      this.mainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.mainPanel.AutoScroll = true;
-      this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(201)))), ((int)(((byte)(14)))));
-      this.mainPanel.Controls.Add(this.array2D1);
-      this.mainPanel.Font = new System.Drawing.Font("MS Reference Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.mainPanel.Location = new System.Drawing.Point(196, 12);
-      this.mainPanel.Name = "mainPanel";
-      this.mainPanel.Size = new System.Drawing.Size(1108, 761);
-      this.mainPanel.TabIndex = 5;
       // 
       // panel1
       // 
@@ -128,31 +116,23 @@
       this.panel1.Controls.Add(this.numericUpDownCellHeight);
       this.panel1.Controls.Add(this.label13);
       this.panel1.Controls.Add(this.numericUpDownCellWidth);
-      this.panel1.Location = new System.Drawing.Point(24, 665);
+      resources.ApplyResources(this.panel1, "panel1");
       this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(150, 64);
-      this.panel1.TabIndex = 9;
       // 
       // label12
       // 
-      this.label12.AutoSize = true;
-      this.label12.Location = new System.Drawing.Point(8, 42);
+      resources.ApplyResources(this.label12, "label12");
       this.label12.Name = "label12";
-      this.label12.Size = new System.Drawing.Size(58, 13);
-      this.label12.TabIndex = 2;
-      this.label12.Text = "Cell Height";
       // 
       // numericUpDownCellHeight
       // 
-      this.numericUpDownCellHeight.Location = new System.Drawing.Point(83, 35);
+      resources.ApplyResources(this.numericUpDownCellHeight, "numericUpDownCellHeight");
       this.numericUpDownCellHeight.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
       this.numericUpDownCellHeight.Name = "numericUpDownCellHeight";
-      this.numericUpDownCellHeight.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownCellHeight.TabIndex = 3;
       this.numericUpDownCellHeight.Value = new decimal(new int[] {
             35,
             0,
@@ -161,24 +141,18 @@
       // 
       // label13
       // 
-      this.label13.AutoSize = true;
-      this.label13.Location = new System.Drawing.Point(8, 11);
+      resources.ApplyResources(this.label13, "label13");
       this.label13.Name = "label13";
-      this.label13.Size = new System.Drawing.Size(55, 13);
-      this.label13.TabIndex = 0;
-      this.label13.Text = "Cell Width";
       // 
       // numericUpDownCellWidth
       // 
-      this.numericUpDownCellWidth.Location = new System.Drawing.Point(83, 9);
+      resources.ApplyResources(this.numericUpDownCellWidth, "numericUpDownCellWidth");
       this.numericUpDownCellWidth.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
       this.numericUpDownCellWidth.Name = "numericUpDownCellWidth";
-      this.numericUpDownCellWidth.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownCellWidth.TabIndex = 1;
       this.numericUpDownCellWidth.Value = new decimal(new int[] {
             45,
             0,
@@ -197,24 +171,17 @@
       this.resizePanel.Controls.Add(this.label2X);
       this.resizePanel.Controls.Add(this.numericUpDownX1);
       this.resizePanel.Controls.Add(this.resizeButton);
-      this.resizePanel.Enabled = false;
-      this.resizePanel.Location = new System.Drawing.Point(24, 280);
+      resources.ApplyResources(this.resizePanel, "resizePanel");
       this.resizePanel.Name = "resizePanel";
-      this.resizePanel.Size = new System.Drawing.Size(150, 137);
-      this.resizePanel.TabIndex = 8;
       // 
       // label2A
       // 
-      this.label2A.AutoSize = true;
-      this.label2A.Location = new System.Drawing.Point(3, 83);
+      resources.ApplyResources(this.label2A, "label2A");
       this.label2A.Name = "label2A";
-      this.label2A.Size = new System.Drawing.Size(17, 13);
-      this.label2A.TabIndex = 6;
-      this.label2A.Text = "A:";
       // 
       // numericUpDownA1
       // 
-      this.numericUpDownA1.Location = new System.Drawing.Point(91, 81);
+      resources.ApplyResources(this.numericUpDownA1, "numericUpDownA1");
       this.numericUpDownA1.Maximum = new decimal(new int[] {
             12,
             0,
@@ -226,8 +193,6 @@
             0,
             0});
       this.numericUpDownA1.Name = "numericUpDownA1";
-      this.numericUpDownA1.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownA1.TabIndex = 7;
       this.numericUpDownA1.Value = new decimal(new int[] {
             5,
             0,
@@ -236,16 +201,12 @@
       // 
       // label2Z
       // 
-      this.label2Z.AutoSize = true;
-      this.label2Z.Location = new System.Drawing.Point(3, 57);
+      resources.ApplyResources(this.label2Z, "label2Z");
       this.label2Z.Name = "label2Z";
-      this.label2Z.Size = new System.Drawing.Size(17, 13);
-      this.label2Z.TabIndex = 4;
-      this.label2Z.Text = "Z:";
       // 
       // numericUpDownZ1
       // 
-      this.numericUpDownZ1.Location = new System.Drawing.Point(91, 55);
+      resources.ApplyResources(this.numericUpDownZ1, "numericUpDownZ1");
       this.numericUpDownZ1.Maximum = new decimal(new int[] {
             12,
             0,
@@ -257,8 +218,6 @@
             0,
             0});
       this.numericUpDownZ1.Name = "numericUpDownZ1";
-      this.numericUpDownZ1.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownZ1.TabIndex = 5;
       this.numericUpDownZ1.Value = new decimal(new int[] {
             5,
             0,
@@ -267,16 +226,12 @@
       // 
       // label2Y
       // 
-      this.label2Y.AutoSize = true;
-      this.label2Y.Location = new System.Drawing.Point(3, 31);
+      resources.ApplyResources(this.label2Y, "label2Y");
       this.label2Y.Name = "label2Y";
-      this.label2Y.Size = new System.Drawing.Size(17, 13);
-      this.label2Y.TabIndex = 2;
-      this.label2Y.Text = "Y:";
       // 
       // numericUpDownY1
       // 
-      this.numericUpDownY1.Location = new System.Drawing.Point(91, 29);
+      resources.ApplyResources(this.numericUpDownY1, "numericUpDownY1");
       this.numericUpDownY1.Maximum = new decimal(new int[] {
             12,
             0,
@@ -288,8 +243,6 @@
             0,
             0});
       this.numericUpDownY1.Name = "numericUpDownY1";
-      this.numericUpDownY1.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownY1.TabIndex = 3;
       this.numericUpDownY1.Value = new decimal(new int[] {
             5,
             0,
@@ -298,16 +251,12 @@
       // 
       // label2X
       // 
-      this.label2X.AutoSize = true;
-      this.label2X.Location = new System.Drawing.Point(3, 5);
+      resources.ApplyResources(this.label2X, "label2X");
       this.label2X.Name = "label2X";
-      this.label2X.Size = new System.Drawing.Size(17, 13);
-      this.label2X.TabIndex = 0;
-      this.label2X.Text = "X:";
       // 
       // numericUpDownX1
       // 
-      this.numericUpDownX1.Location = new System.Drawing.Point(91, 3);
+      resources.ApplyResources(this.numericUpDownX1, "numericUpDownX1");
       this.numericUpDownX1.Maximum = new decimal(new int[] {
             12,
             0,
@@ -319,8 +268,6 @@
             0,
             0});
       this.numericUpDownX1.Name = "numericUpDownX1";
-      this.numericUpDownX1.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownX1.TabIndex = 1;
       this.numericUpDownX1.Value = new decimal(new int[] {
             5,
             0,
@@ -329,11 +276,8 @@
       // 
       // resizeButton
       // 
-      this.resizeButton.Location = new System.Drawing.Point(3, 107);
+      resources.ApplyResources(this.resizeButton, "resizeButton");
       this.resizeButton.Name = "resizeButton";
-      this.resizeButton.Size = new System.Drawing.Size(142, 23);
-      this.resizeButton.TabIndex = 8;
-      this.resizeButton.Text = "Resize";
       this.resizeButton.UseVisualStyleBackColor = true;
       this.resizeButton.Click += new System.EventHandler(this.resizeButton_Click);
       // 
@@ -345,64 +289,44 @@
       this.rotatePanel.Controls.Add(this.rotateButton);
       this.rotatePanel.Controls.Add(this.labelAngle);
       this.rotatePanel.Controls.Add(this.labelAxis);
-      this.rotatePanel.Enabled = false;
-      this.rotatePanel.Location = new System.Drawing.Point(24, 189);
+      resources.ApplyResources(this.rotatePanel, "rotatePanel");
       this.rotatePanel.Name = "rotatePanel";
-      this.rotatePanel.Size = new System.Drawing.Size(150, 85);
-      this.rotatePanel.TabIndex = 7;
       // 
       // domainUpDownAngle
       // 
-      this.domainUpDownAngle.Items.Add("90");
-      this.domainUpDownAngle.Items.Add("180");
-      this.domainUpDownAngle.Items.Add("270");
-      this.domainUpDownAngle.Items.Add("360");
-      this.domainUpDownAngle.Items.Add("450");
-      this.domainUpDownAngle.Location = new System.Drawing.Point(91, 3);
+      this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items"));
+      this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items1"));
+      this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items2"));
+      this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items3"));
+      this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items4"));
+      resources.ApplyResources(this.domainUpDownAngle, "domainUpDownAngle");
       this.domainUpDownAngle.Name = "domainUpDownAngle";
-      this.domainUpDownAngle.Size = new System.Drawing.Size(54, 20);
-      this.domainUpDownAngle.TabIndex = 3;
-      this.domainUpDownAngle.Text = "90";
       // 
       // domainUpDownAxis
       // 
-      this.domainUpDownAxis.Items.Add("X");
-      this.domainUpDownAxis.Items.Add("Y");
-      this.domainUpDownAxis.Items.Add("Z");
-      this.domainUpDownAxis.Items.Add("A");
-      this.domainUpDownAxis.Location = new System.Drawing.Point(91, 29);
+      this.domainUpDownAxis.Items.Add(resources.GetString("domainUpDownAxis.Items"));
+      this.domainUpDownAxis.Items.Add(resources.GetString("domainUpDownAxis.Items1"));
+      this.domainUpDownAxis.Items.Add(resources.GetString("domainUpDownAxis.Items2"));
+      this.domainUpDownAxis.Items.Add(resources.GetString("domainUpDownAxis.Items3"));
+      resources.ApplyResources(this.domainUpDownAxis, "domainUpDownAxis");
       this.domainUpDownAxis.Name = "domainUpDownAxis";
-      this.domainUpDownAxis.Size = new System.Drawing.Size(54, 20);
-      this.domainUpDownAxis.TabIndex = 1;
-      this.domainUpDownAxis.Text = "Z";
       // 
       // rotateButton
       // 
-      this.rotateButton.Location = new System.Drawing.Point(3, 55);
+      resources.ApplyResources(this.rotateButton, "rotateButton");
       this.rotateButton.Name = "rotateButton";
-      this.rotateButton.Size = new System.Drawing.Size(142, 23);
-      this.rotateButton.TabIndex = 4;
-      this.rotateButton.Text = "Rotate";
       this.rotateButton.UseVisualStyleBackColor = true;
       this.rotateButton.Click += new System.EventHandler(this.rotateButton_Click);
       // 
       // labelAngle
       // 
-      this.labelAngle.AutoSize = true;
-      this.labelAngle.Location = new System.Drawing.Point(3, 5);
+      resources.ApplyResources(this.labelAngle, "labelAngle");
       this.labelAngle.Name = "labelAngle";
-      this.labelAngle.Size = new System.Drawing.Size(37, 13);
-      this.labelAngle.TabIndex = 2;
-      this.labelAngle.Text = "Angle:";
       // 
       // labelAxis
       // 
-      this.labelAxis.AutoSize = true;
-      this.labelAxis.Location = new System.Drawing.Point(3, 31);
+      resources.ApplyResources(this.labelAxis, "labelAxis");
       this.labelAxis.Name = "labelAxis";
-      this.labelAxis.Size = new System.Drawing.Size(29, 13);
-      this.labelAxis.TabIndex = 0;
-      this.labelAxis.Text = "Axis:";
       // 
       // initialPanel
       // 
@@ -416,23 +340,17 @@
       this.initialPanel.Controls.Add(this.numericUpDownY);
       this.initialPanel.Controls.Add(this.label1X);
       this.initialPanel.Controls.Add(this.numericUpDownX);
-      this.initialPanel.Location = new System.Drawing.Point(24, 46);
+      resources.ApplyResources(this.initialPanel, "initialPanel");
       this.initialPanel.Name = "initialPanel";
-      this.initialPanel.Size = new System.Drawing.Size(150, 137);
-      this.initialPanel.TabIndex = 6;
       // 
       // label1A
       // 
-      this.label1A.AutoSize = true;
-      this.label1A.Location = new System.Drawing.Point(3, 83);
+      resources.ApplyResources(this.label1A, "label1A");
       this.label1A.Name = "label1A";
-      this.label1A.Size = new System.Drawing.Size(17, 13);
-      this.label1A.TabIndex = 6;
-      this.label1A.Text = "A:";
       // 
       // numericUpDownA
       // 
-      this.numericUpDownA.Location = new System.Drawing.Point(91, 81);
+      resources.ApplyResources(this.numericUpDownA, "numericUpDownA");
       this.numericUpDownA.Maximum = new decimal(new int[] {
             12,
             0,
@@ -444,8 +362,6 @@
             0,
             0});
       this.numericUpDownA.Name = "numericUpDownA";
-      this.numericUpDownA.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownA.TabIndex = 7;
       this.numericUpDownA.Value = new decimal(new int[] {
             2,
             0,
@@ -454,26 +370,19 @@
       // 
       // renderButton
       // 
-      this.renderButton.Location = new System.Drawing.Point(3, 107);
+      resources.ApplyResources(this.renderButton, "renderButton");
       this.renderButton.Name = "renderButton";
-      this.renderButton.Size = new System.Drawing.Size(142, 23);
-      this.renderButton.TabIndex = 12;
-      this.renderButton.Text = "Render";
       this.renderButton.UseVisualStyleBackColor = true;
       this.renderButton.Click += new System.EventHandler(this.renderButton_Click);
       // 
       // label1Z
       // 
-      this.label1Z.AutoSize = true;
-      this.label1Z.Location = new System.Drawing.Point(3, 57);
+      resources.ApplyResources(this.label1Z, "label1Z");
       this.label1Z.Name = "label1Z";
-      this.label1Z.Size = new System.Drawing.Size(17, 13);
-      this.label1Z.TabIndex = 4;
-      this.label1Z.Text = "Z:";
       // 
       // numericUpDownZ
       // 
-      this.numericUpDownZ.Location = new System.Drawing.Point(91, 55);
+      resources.ApplyResources(this.numericUpDownZ, "numericUpDownZ");
       this.numericUpDownZ.Maximum = new decimal(new int[] {
             12,
             0,
@@ -485,8 +394,6 @@
             0,
             0});
       this.numericUpDownZ.Name = "numericUpDownZ";
-      this.numericUpDownZ.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownZ.TabIndex = 5;
       this.numericUpDownZ.Value = new decimal(new int[] {
             2,
             0,
@@ -495,16 +402,12 @@
       // 
       // label1Y
       // 
-      this.label1Y.AutoSize = true;
-      this.label1Y.Location = new System.Drawing.Point(3, 31);
+      resources.ApplyResources(this.label1Y, "label1Y");
       this.label1Y.Name = "label1Y";
-      this.label1Y.Size = new System.Drawing.Size(17, 13);
-      this.label1Y.TabIndex = 2;
-      this.label1Y.Text = "Y:";
       // 
       // numericUpDownY
       // 
-      this.numericUpDownY.Location = new System.Drawing.Point(91, 29);
+      resources.ApplyResources(this.numericUpDownY, "numericUpDownY");
       this.numericUpDownY.Maximum = new decimal(new int[] {
             12,
             0,
@@ -516,8 +419,6 @@
             0,
             0});
       this.numericUpDownY.Name = "numericUpDownY";
-      this.numericUpDownY.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownY.TabIndex = 3;
       this.numericUpDownY.Value = new decimal(new int[] {
             3,
             0,
@@ -526,16 +427,12 @@
       // 
       // label1X
       // 
-      this.label1X.AutoSize = true;
-      this.label1X.Location = new System.Drawing.Point(3, 5);
+      resources.ApplyResources(this.label1X, "label1X");
       this.label1X.Name = "label1X";
-      this.label1X.Size = new System.Drawing.Size(17, 13);
-      this.label1X.TabIndex = 0;
-      this.label1X.Text = "X:";
       // 
       // numericUpDownX
       // 
-      this.numericUpDownX.Location = new System.Drawing.Point(91, 3);
+      resources.ApplyResources(this.numericUpDownX, "numericUpDownX");
       this.numericUpDownX.Maximum = new decimal(new int[] {
             12,
             0,
@@ -547,8 +444,6 @@
             0,
             0});
       this.numericUpDownX.Name = "numericUpDownX";
-      this.numericUpDownX.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownX.TabIndex = 1;
       this.numericUpDownX.Value = new decimal(new int[] {
             4,
             0,
@@ -557,12 +452,8 @@
       // 
       // label10
       // 
-      this.label10.AutoSize = true;
-      this.label10.Location = new System.Drawing.Point(3, 43);
+      resources.ApplyResources(this.label10, "label10");
       this.label10.Name = "label10";
-      this.label10.Size = new System.Drawing.Size(32, 13);
-      this.label10.TabIndex = 10;
-      this.label10.Text = "Step:";
       // 
       // numericUpDownInc
       // 
@@ -572,7 +463,7 @@
             0,
             0,
             65536});
-      this.numericUpDownInc.Location = new System.Drawing.Point(91, 41);
+      resources.ApplyResources(this.numericUpDownInc, "numericUpDownInc");
       this.numericUpDownInc.Maximum = new decimal(new int[] {
             10,
             0,
@@ -584,8 +475,6 @@
             0,
             -2147483648});
       this.numericUpDownInc.Name = "numericUpDownInc";
-      this.numericUpDownInc.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownInc.TabIndex = 11;
       this.numericUpDownInc.Value = new decimal(new int[] {
             1,
             0,
@@ -595,12 +484,8 @@
       // 
       // label9
       // 
-      this.label9.AutoSize = true;
-      this.label9.Location = new System.Drawing.Point(3, 17);
+      resources.ApplyResources(this.label9, "label9");
       this.label9.Name = "label9";
-      this.label9.Size = new System.Drawing.Size(62, 13);
-      this.label9.TabIndex = 8;
-      this.label9.Text = "Start Value:";
       // 
       // numericUpDownStart
       // 
@@ -610,15 +495,13 @@
             0,
             0,
             65536});
-      this.numericUpDownStart.Location = new System.Drawing.Point(91, 15);
+      resources.ApplyResources(this.numericUpDownStart, "numericUpDownStart");
       this.numericUpDownStart.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
       this.numericUpDownStart.Name = "numericUpDownStart";
-      this.numericUpDownStart.Size = new System.Drawing.Size(54, 20);
-      this.numericUpDownStart.TabIndex = 9;
       this.numericUpDownStart.Enter += new System.EventHandler(this.numericUpDownStart_Enter);
       // 
       // dimensionSelector
@@ -626,41 +509,27 @@
       this.dimensionSelector.Controls.Add(this.tabPage2D);
       this.dimensionSelector.Controls.Add(this.tabPage3D);
       this.dimensionSelector.Controls.Add(this.tabPage4D);
-      this.dimensionSelector.Location = new System.Drawing.Point(12, 12);
+      resources.ApplyResources(this.dimensionSelector, "dimensionSelector");
       this.dimensionSelector.Name = "dimensionSelector";
       this.dimensionSelector.SelectedIndex = 0;
-      this.dimensionSelector.Size = new System.Drawing.Size(178, 727);
-      this.dimensionSelector.TabIndex = 10;
       this.dimensionSelector.Selected += new System.Windows.Forms.TabControlEventHandler(this.dimensionSelector_Selected);
       // 
       // tabPage2D
       // 
-      this.tabPage2D.Location = new System.Drawing.Point(4, 22);
+      resources.ApplyResources(this.tabPage2D, "tabPage2D");
       this.tabPage2D.Name = "tabPage2D";
-      this.tabPage2D.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2D.Size = new System.Drawing.Size(170, 701);
-      this.tabPage2D.TabIndex = 0;
-      this.tabPage2D.Text = "2D";
       this.tabPage2D.UseVisualStyleBackColor = true;
       // 
       // tabPage3D
       // 
-      this.tabPage3D.Location = new System.Drawing.Point(4, 22);
+      resources.ApplyResources(this.tabPage3D, "tabPage3D");
       this.tabPage3D.Name = "tabPage3D";
-      this.tabPage3D.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage3D.Size = new System.Drawing.Size(170, 701);
-      this.tabPage3D.TabIndex = 1;
-      this.tabPage3D.Text = "3D";
       this.tabPage3D.UseVisualStyleBackColor = true;
       // 
       // tabPage4D
       // 
-      this.tabPage4D.Location = new System.Drawing.Point(4, 22);
+      resources.ApplyResources(this.tabPage4D, "tabPage4D");
       this.tabPage4D.Name = "tabPage4D";
-      this.tabPage4D.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage4D.Size = new System.Drawing.Size(170, 701);
-      this.tabPage4D.TabIndex = 2;
-      this.tabPage4D.Text = "4D";
       this.tabPage4D.UseVisualStyleBackColor = true;
       // 
       // panel2
@@ -670,131 +539,101 @@
       this.panel2.Controls.Add(this.numericUpDownStart);
       this.panel2.Controls.Add(this.numericUpDownInc);
       this.panel2.Controls.Add(this.label10);
-      this.panel2.Location = new System.Drawing.Point(24, 431);
+      resources.ApplyResources(this.panel2, "panel2");
       this.panel2.Name = "panel2";
-      this.panel2.Size = new System.Drawing.Size(150, 69);
-      this.panel2.TabIndex = 9;
       // 
       // panelTextInput
       // 
       this.panelTextInput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panelTextInput.Controls.Add(this.textBoxData);
-      this.panelTextInput.Location = new System.Drawing.Point(24, 514);
+      resources.ApplyResources(this.panelTextInput, "panelTextInput");
       this.panelTextInput.Name = "panelTextInput";
-      this.panelTextInput.Size = new System.Drawing.Size(150, 55);
-      this.panelTextInput.TabIndex = 12;
       // 
       // textBoxData
       // 
-      this.textBoxData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxData.Location = new System.Drawing.Point(3, 14);
-      this.textBoxData.Multiline = true;
+      resources.ApplyResources(this.textBoxData, "textBoxData");
       this.textBoxData.Name = "textBoxData";
-      this.textBoxData.Size = new System.Drawing.Size(142, 36);
-      this.textBoxData.TabIndex = 0;
       this.textBoxData.Enter += new System.EventHandler(this.textBoxData_Enter);
       this.textBoxData.Leave += new System.EventHandler(this.textBoxData_Leave);
       // 
       // radioButtonAutoFill
       // 
-      this.radioButtonAutoFill.AutoSize = true;
+      resources.ApplyResources(this.radioButtonAutoFill, "radioButtonAutoFill");
       this.radioButtonAutoFill.Checked = true;
-      this.radioButtonAutoFill.Location = new System.Drawing.Point(31, 423);
       this.radioButtonAutoFill.Name = "radioButtonAutoFill";
-      this.radioButtonAutoFill.Size = new System.Drawing.Size(62, 17);
-      this.radioButtonAutoFill.TabIndex = 14;
       this.radioButtonAutoFill.TabStop = true;
-      this.radioButtonAutoFill.Text = "Auto Fill";
       // 
       // radioButtonManualFill
       // 
-      this.radioButtonManualFill.AutoSize = true;
-      this.radioButtonManualFill.Location = new System.Drawing.Point(31, 506);
+      resources.ApplyResources(this.radioButtonManualFill, "radioButtonManualFill");
       this.radioButtonManualFill.Name = "radioButtonManualFill";
-      this.radioButtonManualFill.Size = new System.Drawing.Size(87, 17);
-      this.radioButtonManualFill.TabIndex = 15;
-      this.radioButtonManualFill.Text = "Manual Input";
       // 
       // radioButtonFileFill
       // 
-      this.radioButtonFileFill.AutoSize = true;
-      this.radioButtonFileFill.Location = new System.Drawing.Point(31, 575);
+      resources.ApplyResources(this.radioButtonFileFill, "radioButtonFileFill");
       this.radioButtonFileFill.Name = "radioButtonFileFill";
-      this.radioButtonFileFill.Size = new System.Drawing.Size(94, 17);
-      this.radioButtonFileFill.TabIndex = 17;
-      this.radioButtonFileFill.Text = "Load From File";
       // 
       // panel4
       // 
       this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panel4.Controls.Add(this.lblFile);
       this.panel4.Controls.Add(this.buttonSelectFile);
-      this.panel4.Location = new System.Drawing.Point(24, 583);
+      resources.ApplyResources(this.panel4, "panel4");
       this.panel4.Name = "panel4";
-      this.panel4.Size = new System.Drawing.Size(150, 76);
-      this.panel4.TabIndex = 16;
       // 
       // lblFile
       // 
       this.lblFile.AutoEllipsis = true;
-      this.lblFile.Location = new System.Drawing.Point(3, 21);
+      resources.ApplyResources(this.lblFile, "lblFile");
       this.lblFile.Name = "lblFile";
-      this.lblFile.Size = new System.Drawing.Size(142, 24);
-      this.lblFile.TabIndex = 10;
       // 
       // buttonSelectFile
       // 
-      this.buttonSelectFile.Location = new System.Drawing.Point(3, 48);
+      resources.ApplyResources(this.buttonSelectFile, "buttonSelectFile");
       this.buttonSelectFile.Name = "buttonSelectFile";
-      this.buttonSelectFile.Size = new System.Drawing.Size(142, 23);
-      this.buttonSelectFile.TabIndex = 9;
-      this.buttonSelectFile.Text = "Select File";
       this.buttonSelectFile.UseVisualStyleBackColor = true;
       this.buttonSelectFile.Click += new System.EventHandler(this.buttonSelectFile_Click);
       // 
       // openFileDialog
       // 
-      this.openFileDialog.Filter = "Text Files|*.txt|Csv Files|*.csv|All Files|*.*";
-      this.openFileDialog.Title = "Select Input File";
-      // 
-      // saveFileDialog
-      // 
-      this.saveFileDialog.Filter = "Text Files|*.txt|Comma Delimited Files|*.csv|All Files|*.*";
-      this.saveFileDialog.Title = "Save Array File";
+      resources.ApplyResources(this.openFileDialog, "openFileDialog");
       // 
       // buttonSave
       // 
-      this.buttonSave.Enabled = false;
-      this.buttonSave.Location = new System.Drawing.Point(12, 750);
+      resources.ApplyResources(this.buttonSave, "buttonSave");
       this.buttonSave.Name = "buttonSave";
-      this.buttonSave.Size = new System.Drawing.Size(91, 23);
-      this.buttonSave.TabIndex = 18;
-      this.buttonSave.Text = "Save";
       this.buttonSave.UseVisualStyleBackColor = true;
       this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
       // 
+      // saveFileDialog
+      // 
+      resources.ApplyResources(this.saveFileDialog, "saveFileDialog");
+      // 
+      // mainPanel
+      // 
+      this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(201)))), ((int)(((byte)(14)))));
+      this.mainPanel.Controls.Add(this.array2D1);
+      resources.ApplyResources(this.mainPanel, "mainPanel");
+      this.mainPanel.Name = "mainPanel";
+      // 
       // array2D1
       // 
-      this.array2D1.CellHeight = 80;
+      this.array2D1.CellHeight = 55;
       this.array2D1.CellPadding = 10;
-      this.array2D1.CellSize = new System.Drawing.Size(80, 80);
+      this.array2D1.CellSize = new System.Drawing.Size(80, 55);
       this.array2D1.CellWidth = 80;
       this.array2D1.Data = null;
       this.array2D1.Formatter = null;
-      this.array2D1.Location = new System.Drawing.Point(3, 3);
+      resources.ApplyResources(this.array2D1, "array2D1");
       this.array2D1.Name = "array2D1";
-      this.array2D1.RederFont = new System.Drawing.Font("MS Reference Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.array2D1.Size = new System.Drawing.Size(427, 289);
-      this.array2D1.TabIndex = 0;
+      this.array2D1.RenderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.array2D1.TabStop = false;
       // 
       // MainForm
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      resources.ApplyResources(this, "$this");
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1316, 785);
+      this.Controls.Add(this.mainPanel);
       this.Controls.Add(this.buttonSave);
       this.Controls.Add(this.radioButtonManualFill);
       this.Controls.Add(this.panelTextInput);
@@ -807,10 +646,7 @@
       this.Controls.Add(this.resizePanel);
       this.Controls.Add(this.initialPanel);
       this.Controls.Add(this.dimensionSelector);
-      this.Controls.Add(this.mainPanel);
       this.Name = "MainForm";
-      this.Text = "Array Visualizer";
-      this.mainPanel.ResumeLayout(false);
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCellHeight)).EndInit();
@@ -837,6 +673,7 @@
       this.panelTextInput.ResumeLayout(false);
       this.panelTextInput.PerformLayout();
       this.panel4.ResumeLayout(false);
+      this.mainPanel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.array2D1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -845,8 +682,6 @@
 
     #endregion
 
-    private System.Windows.Forms.Panel mainPanel;
-    private Array2D array2D1;
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Label label12;
     private System.Windows.Forms.NumericUpDown numericUpDownCellHeight;
@@ -899,5 +734,7 @@
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.SaveFileDialog saveFileDialog;
     private System.Windows.Forms.Button buttonSave;
+    private System.Windows.Forms.Panel mainPanel;
+    private Array2D array2D1;
   }
 }

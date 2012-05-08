@@ -3,15 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizer", "ArrayVisualizer\ArrayVisualizer.csproj", "{3795E735-B135-407A-A779-52E5231BF040}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizerControls", "ArrayVisualizerControls\ArrayVisualizerControls.csproj", "{E26DC262-233B-4E57-B71B-5F3A50E8129F}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
+		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs21
-		SccProjectUniqueName0 = ArrayVisualizer\\ArrayVisualizer.csproj
-		SccProjectName0 = ArrayVisualizer
-		SccLocalPath0 = ArrayVisualizer
-		SccLocalPath1 = .
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ArrayVisualizer\\ArrayVisualizer.csproj
+		SccProjectName1 = ArrayVisualizer
+		SccLocalPath1 = ArrayVisualizer
+		SccProjectUniqueName2 = ArrayVisualizerControls\\ArrayVisualizerControls.csproj
+		SccProjectName2 = ArrayVisualizerControls
+		SccLocalPath2 = ArrayVisualizerControls
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqLib.vsmdi
@@ -35,6 +40,16 @@ Global
 		{3795E735-B135-407A-A779-52E5231BF040}.Release|Mixed Platforms.Build.0 = Release|x86
 		{3795E735-B135-407A-A779-52E5231BF040}.Release|x86.ActiveCfg = Release|x86
 		{3795E735-B135-407A-A779-52E5231BF040}.Release|x86.Build.0 = Release|x86
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
