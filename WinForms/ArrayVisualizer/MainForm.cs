@@ -11,10 +11,10 @@ using LinqLib.Array;
 using LinqLib.Sequence;
 using System.IO;
 using System.Threading;
-using ArrayVisualizer.Properties;
-using ArrayVisualizerControls;
+using WinFormsArrayVisualizer.Properties;
+using WinFormsArrayVisualizerControls;
 
-namespace ArrayVisualizer
+namespace WinFormsArrayVisualizer
 {
   public partial class MainForm : Form
   {

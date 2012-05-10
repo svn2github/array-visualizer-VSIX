@@ -1,22 +1,40 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizer", "ArrayVisualizer\ArrayVisualizer.csproj", "{3795E735-B135-407A-A779-52E5231BF040}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WinForms", "WinForms", "{A61C476F-0130-40D7-9D34-BD914E2865E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizerControls", "ArrayVisualizerControls\ArrayVisualizerControls.csproj", "{E26DC262-233B-4E57-B71B-5F3A50E8129F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsArrayVisualizer", "WinForms\ArrayVisualizer\WinFormsArrayVisualizer.csproj", "{3795E735-B135-407A-A779-52E5231BF040}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsArrayVisualizerControls", "WinForms\ArrayVisualizerControls\WinFormsArrayVisualizerControls.csproj", "{E26DC262-233B-4E57-B71B-5F3A50E8129F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{DD3750D9-66ED-4C2F-BA66-696910B12268}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizer", "WPF\ArrayVisualizer\ArrayVisualizer.csproj", "{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizerControls", "WPF\ArrayVisualizerControls\ArrayVisualizerControls.csproj", "{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs21
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = ArrayVisualizer\\ArrayVisualizer.csproj
-		SccProjectName1 = ArrayVisualizer
-		SccLocalPath1 = ArrayVisualizer
-		SccProjectUniqueName2 = ArrayVisualizerControls\\ArrayVisualizerControls.csproj
-		SccProjectName2 = ArrayVisualizerControls
-		SccLocalPath2 = ArrayVisualizerControls
+		SccProjectUniqueName1 = WPF\\ArrayVisualizer\\ArrayVisualizer.csproj
+		SccProjectTopLevelParentUniqueName1 = ArrayVisualizer.sln
+		SccProjectName1 = WPF/ArrayVisualizer
+		SccLocalPath1 = WPF\\ArrayVisualizer
+		SccProjectUniqueName2 = WPF\\ArrayVisualizerControls\\ArrayVisualizerControls.csproj
+		SccProjectTopLevelParentUniqueName2 = ArrayVisualizer.sln
+		SccProjectName2 = WPF/ArrayVisualizerControls
+		SccLocalPath2 = WPF\\ArrayVisualizerControls
+		SccProjectUniqueName3 = WinForms\\ArrayVisualizer\\WinFormsArrayVisualizer.csproj
+		SccProjectTopLevelParentUniqueName3 = ArrayVisualizer.sln
+		SccProjectName3 = WinForms/ArrayVisualizer
+		SccLocalPath3 = WinForms\\ArrayVisualizer
+		SccProjectUniqueName4 = WinForms\\ArrayVisualizerControls\\WinFormsArrayVisualizerControls.csproj
+		SccProjectTopLevelParentUniqueName4 = ArrayVisualizer.sln
+		SccProjectName4 = WinForms/ArrayVisualizerControls
+		SccLocalPath4 = WinForms\\ArrayVisualizerControls
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqLib.vsmdi
@@ -50,8 +68,34 @@ Global
 		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E26DC262-233B-4E57-B71B-5F3A50E8129F}.Release|x86.ActiveCfg = Release|Any CPU
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Debug|x86.ActiveCfg = Debug|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Debug|x86.Build.0 = Debug|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Release|Any CPU.ActiveCfg = Release|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Release|Mixed Platforms.Build.0 = Release|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Release|x86.ActiveCfg = Release|x86
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}.Release|x86.Build.0 = Release|x86
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3795E735-B135-407A-A779-52E5231BF040} = {A61C476F-0130-40D7-9D34-BD914E2865E0}
+		{E26DC262-233B-4E57-B71B-5F3A50E8129F} = {A61C476F-0130-40D7-9D34-BD914E2865E0}
+		{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE} = {DD3750D9-66ED-4C2F-BA66-696910B12268}
+		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F} = {DD3750D9-66ED-4C2F-BA66-696910B12268}
 	EndGlobalSection
 EndGlobal

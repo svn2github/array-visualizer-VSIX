@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WinFormsArrayVisualizer.Properties {
+namespace ArrayVisualizer.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace WinFormsArrayVisualizer.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WinFormsArrayVisualizer.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ArrayVisualizer.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,42 +57,6 @@ namespace WinFormsArrayVisualizer.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to source array cannot be of {0} dimensions..
-        /// </summary>
-        internal static string ArrayNotValidDimsException {
-            get {
-                return ResourceManager.GetString("ArrayNotValidDimsException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        internal static string Error {
-            get {
-                return ResourceManager.GetString("Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid input data!\r\nPlease select a file with a comma delimited list of numbers..
-        /// </summary>
-        internal static string InvalidFileContent {
-            get {
-                return ResourceManager.GetString("InvalidFileContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid input data!\r\nPlease enter a comma delimited list of numbers..
-        /// </summary>
-        internal static string InvalidInputFormat {
-            get {
-                return ResourceManager.GetString("InvalidInputFormat", resourceCulture);
             }
         }
     }

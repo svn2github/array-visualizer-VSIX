@@ -1,5 +1,6 @@
-﻿using ArrayVisualizerControls;
-namespace ArrayVisualizer
+﻿using WinFormsArrayVisualizerControls;
+
+namespace WinFormsArrayVisualizer
 {
   partial class MainForm
   {
@@ -84,7 +85,7 @@ namespace ArrayVisualizer
       this.buttonSave = new System.Windows.Forms.Button();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.mainPanel = new System.Windows.Forms.Panel();
-      this.array2D1 = new ArrayVisualizerControls.Array2D();
+      this.array2D1 = new WinFormsArrayVisualizerControls.Array2D();
       this.panel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCellHeight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCellWidth)).BeginInit();

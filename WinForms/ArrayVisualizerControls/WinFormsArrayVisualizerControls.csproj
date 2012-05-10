@@ -8,8 +8,8 @@
     <ProjectGuid>{E26DC262-233B-4E57-B71B-5F3A50E8129F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArrayVisualizerControls</RootNamespace>
-    <AssemblyName>ArrayVisualizerControls</AssemblyName>
+    <RootNamespace>WinFormsArrayVisualizerControls</RootNamespace>
+    <AssemblyName>WinFormsArrayVisualizerControls</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>

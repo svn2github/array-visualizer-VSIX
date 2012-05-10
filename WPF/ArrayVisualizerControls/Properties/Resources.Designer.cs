@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WinFormsArrayVisualizer.Properties {
+namespace ArrayVisualizerControls.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace WinFormsArrayVisualizer.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WinFormsArrayVisualizer.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ArrayVisualizerControls.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,38 +61,29 @@ namespace WinFormsArrayVisualizer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to source array cannot be of {0} dimensions..
+        ///   Looks up a localized string similar to source array must be two dimensional..
         /// </summary>
-        internal static string ArrayNotValidDimsException {
+        internal static string ArrayNot2DException {
             get {
-                return ResourceManager.GetString("ArrayNotValidDimsException", resourceCulture);
+                return ResourceManager.GetString("ArrayNot2DException", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
+        ///   Looks up a localized string similar to source array must be three dimensional..
         /// </summary>
-        internal static string Error {
+        internal static string ArrayNot3DException {
             get {
-                return ResourceManager.GetString("Error", resourceCulture);
+                return ResourceManager.GetString("ArrayNot3DException", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid input data!\r\nPlease select a file with a comma delimited list of numbers..
+        ///   Looks up a localized string similar to source array must be four dimensional..
         /// </summary>
-        internal static string InvalidFileContent {
+        internal static string ArrayNot4DException {
             get {
-                return ResourceManager.GetString("InvalidFileContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid input data!\r\nPlease enter a comma delimited list of numbers..
-        /// </summary>
-        internal static string InvalidInputFormat {
-            get {
-                return ResourceManager.GetString("InvalidInputFormat", resourceCulture);
+                return ResourceManager.GetString("ArrayNot4DException", resourceCulture);
             }
         }
     }

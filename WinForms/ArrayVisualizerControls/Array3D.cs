@@ -7,9 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Threading;
-using ArrayVisualizerControls.Properties;
+using WinFormsArrayVisualizerControls.Properties;
 
-namespace ArrayVisualizerControls
+namespace WinFormsArrayVisualizerControls
 {
 #if DEBUG
   public partial class Array3D : ArrayProxy
