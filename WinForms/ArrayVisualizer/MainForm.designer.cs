@@ -112,18 +112,20 @@ namespace WinFormsArrayVisualizer
       // 
       // panel1
       // 
+      resources.ApplyResources(this.panel1, "panel1");
       this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panel1.Controls.Add(this.label12);
       this.panel1.Controls.Add(this.numericUpDownCellHeight);
       this.panel1.Controls.Add(this.label13);
       this.panel1.Controls.Add(this.numericUpDownCellWidth);
-      resources.ApplyResources(this.panel1, "panel1");
       this.panel1.Name = "panel1";
+      this.toolTip.SetToolTip(this.panel1, resources.GetString("panel1.ToolTip"));
       // 
       // label12
       // 
       resources.ApplyResources(this.label12, "label12");
       this.label12.Name = "label12";
+      this.toolTip.SetToolTip(this.label12, resources.GetString("label12.ToolTip"));
       // 
       // numericUpDownCellHeight
       // 
@@ -134,6 +136,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownCellHeight.Name = "numericUpDownCellHeight";
+      this.toolTip.SetToolTip(this.numericUpDownCellHeight, resources.GetString("numericUpDownCellHeight.ToolTip"));
       this.numericUpDownCellHeight.Value = new decimal(new int[] {
             35,
             0,
@@ -144,6 +147,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label13, "label13");
       this.label13.Name = "label13";
+      this.toolTip.SetToolTip(this.label13, resources.GetString("label13.ToolTip"));
       // 
       // numericUpDownCellWidth
       // 
@@ -154,6 +158,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownCellWidth.Name = "numericUpDownCellWidth";
+      this.toolTip.SetToolTip(this.numericUpDownCellWidth, resources.GetString("numericUpDownCellWidth.ToolTip"));
       this.numericUpDownCellWidth.Value = new decimal(new int[] {
             45,
             0,
@@ -162,6 +167,7 @@ namespace WinFormsArrayVisualizer
       // 
       // resizePanel
       // 
+      resources.ApplyResources(this.resizePanel, "resizePanel");
       this.resizePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.resizePanel.Controls.Add(this.label2A);
       this.resizePanel.Controls.Add(this.numericUpDownA1);
@@ -172,13 +178,14 @@ namespace WinFormsArrayVisualizer
       this.resizePanel.Controls.Add(this.label2X);
       this.resizePanel.Controls.Add(this.numericUpDownX1);
       this.resizePanel.Controls.Add(this.resizeButton);
-      resources.ApplyResources(this.resizePanel, "resizePanel");
       this.resizePanel.Name = "resizePanel";
+      this.toolTip.SetToolTip(this.resizePanel, resources.GetString("resizePanel.ToolTip"));
       // 
       // label2A
       // 
       resources.ApplyResources(this.label2A, "label2A");
       this.label2A.Name = "label2A";
+      this.toolTip.SetToolTip(this.label2A, resources.GetString("label2A.ToolTip"));
       // 
       // numericUpDownA1
       // 
@@ -194,6 +201,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownA1.Name = "numericUpDownA1";
+      this.toolTip.SetToolTip(this.numericUpDownA1, resources.GetString("numericUpDownA1.ToolTip"));
       this.numericUpDownA1.Value = new decimal(new int[] {
             5,
             0,
@@ -204,6 +212,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label2Z, "label2Z");
       this.label2Z.Name = "label2Z";
+      this.toolTip.SetToolTip(this.label2Z, resources.GetString("label2Z.ToolTip"));
       // 
       // numericUpDownZ1
       // 
@@ -219,6 +228,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownZ1.Name = "numericUpDownZ1";
+      this.toolTip.SetToolTip(this.numericUpDownZ1, resources.GetString("numericUpDownZ1.ToolTip"));
       this.numericUpDownZ1.Value = new decimal(new int[] {
             5,
             0,
@@ -229,6 +239,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label2Y, "label2Y");
       this.label2Y.Name = "label2Y";
+      this.toolTip.SetToolTip(this.label2Y, resources.GetString("label2Y.ToolTip"));
       // 
       // numericUpDownY1
       // 
@@ -244,6 +255,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownY1.Name = "numericUpDownY1";
+      this.toolTip.SetToolTip(this.numericUpDownY1, resources.GetString("numericUpDownY1.ToolTip"));
       this.numericUpDownY1.Value = new decimal(new int[] {
             5,
             0,
@@ -254,6 +266,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label2X, "label2X");
       this.label2X.Name = "label2X";
+      this.toolTip.SetToolTip(this.label2X, resources.GetString("label2X.ToolTip"));
       // 
       // numericUpDownX1
       // 
@@ -269,6 +282,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownX1.Name = "numericUpDownX1";
+      this.toolTip.SetToolTip(this.numericUpDownX1, resources.GetString("numericUpDownX1.ToolTip"));
       this.numericUpDownX1.Value = new decimal(new int[] {
             5,
             0,
@@ -279,43 +293,48 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.resizeButton, "resizeButton");
       this.resizeButton.Name = "resizeButton";
+      this.toolTip.SetToolTip(this.resizeButton, resources.GetString("resizeButton.ToolTip"));
       this.resizeButton.UseVisualStyleBackColor = true;
       this.resizeButton.Click += new System.EventHandler(this.resizeButton_Click);
       // 
       // rotatePanel
       // 
+      resources.ApplyResources(this.rotatePanel, "rotatePanel");
       this.rotatePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.rotatePanel.Controls.Add(this.domainUpDownAngle);
       this.rotatePanel.Controls.Add(this.domainUpDownAxis);
       this.rotatePanel.Controls.Add(this.rotateButton);
       this.rotatePanel.Controls.Add(this.labelAngle);
       this.rotatePanel.Controls.Add(this.labelAxis);
-      resources.ApplyResources(this.rotatePanel, "rotatePanel");
       this.rotatePanel.Name = "rotatePanel";
+      this.toolTip.SetToolTip(this.rotatePanel, resources.GetString("rotatePanel.ToolTip"));
       // 
       // domainUpDownAngle
       // 
+      resources.ApplyResources(this.domainUpDownAngle, "domainUpDownAngle");
       this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items"));
       this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items1"));
       this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items2"));
       this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items3"));
       this.domainUpDownAngle.Items.Add(resources.GetString("domainUpDownAngle.Items4"));
-      resources.ApplyResources(this.domainUpDownAngle, "domainUpDownAngle");
       this.domainUpDownAngle.Name = "domainUpDownAngle";
+      this.toolTip.SetToolTip(this.domainUpDownAngle, resources.GetString("domainUpDownAngle.ToolTip"));
       // 
       // domainUpDownAxis
       // 
+      resources.ApplyResources(this.domainUpDownAxis, "domainUpDownAxis");
       this.domainUpDownAxis.Items.Add(resources.GetString("domainUpDownAxis.Items"));
       this.domainUpDownAxis.Items.Add(resources.GetString("domainUpDownAxis.Items1"));
       this.domainUpDownAxis.Items.Add(resources.GetString("domainUpDownAxis.Items2"));
       this.domainUpDownAxis.Items.Add(resources.GetString("domainUpDownAxis.Items3"));
-      resources.ApplyResources(this.domainUpDownAxis, "domainUpDownAxis");
       this.domainUpDownAxis.Name = "domainUpDownAxis";
+      this.toolTip.SetToolTip(this.domainUpDownAxis, resources.GetString("domainUpDownAxis.ToolTip"));
       // 
       // rotateButton
       // 
       resources.ApplyResources(this.rotateButton, "rotateButton");
       this.rotateButton.Name = "rotateButton";
+      this.toolTip.SetToolTip(this.rotateButton, resources.GetString("rotateButton.ToolTip"));
       this.rotateButton.UseVisualStyleBackColor = true;
       this.rotateButton.Click += new System.EventHandler(this.rotateButton_Click);
       // 
@@ -323,14 +342,17 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.labelAngle, "labelAngle");
       this.labelAngle.Name = "labelAngle";
+      this.toolTip.SetToolTip(this.labelAngle, resources.GetString("labelAngle.ToolTip"));
       // 
       // labelAxis
       // 
       resources.ApplyResources(this.labelAxis, "labelAxis");
       this.labelAxis.Name = "labelAxis";
+      this.toolTip.SetToolTip(this.labelAxis, resources.GetString("labelAxis.ToolTip"));
       // 
       // initialPanel
       // 
+      resources.ApplyResources(this.initialPanel, "initialPanel");
       this.initialPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.initialPanel.Controls.Add(this.label1A);
       this.initialPanel.Controls.Add(this.numericUpDownA);
@@ -341,13 +363,14 @@ namespace WinFormsArrayVisualizer
       this.initialPanel.Controls.Add(this.numericUpDownY);
       this.initialPanel.Controls.Add(this.label1X);
       this.initialPanel.Controls.Add(this.numericUpDownX);
-      resources.ApplyResources(this.initialPanel, "initialPanel");
       this.initialPanel.Name = "initialPanel";
+      this.toolTip.SetToolTip(this.initialPanel, resources.GetString("initialPanel.ToolTip"));
       // 
       // label1A
       // 
       resources.ApplyResources(this.label1A, "label1A");
       this.label1A.Name = "label1A";
+      this.toolTip.SetToolTip(this.label1A, resources.GetString("label1A.ToolTip"));
       // 
       // numericUpDownA
       // 
@@ -363,6 +386,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownA.Name = "numericUpDownA";
+      this.toolTip.SetToolTip(this.numericUpDownA, resources.GetString("numericUpDownA.ToolTip"));
       this.numericUpDownA.Value = new decimal(new int[] {
             2,
             0,
@@ -373,6 +397,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.renderButton, "renderButton");
       this.renderButton.Name = "renderButton";
+      this.toolTip.SetToolTip(this.renderButton, resources.GetString("renderButton.ToolTip"));
       this.renderButton.UseVisualStyleBackColor = true;
       this.renderButton.Click += new System.EventHandler(this.renderButton_Click);
       // 
@@ -380,6 +405,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label1Z, "label1Z");
       this.label1Z.Name = "label1Z";
+      this.toolTip.SetToolTip(this.label1Z, resources.GetString("label1Z.ToolTip"));
       // 
       // numericUpDownZ
       // 
@@ -395,6 +421,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownZ.Name = "numericUpDownZ";
+      this.toolTip.SetToolTip(this.numericUpDownZ, resources.GetString("numericUpDownZ.ToolTip"));
       this.numericUpDownZ.Value = new decimal(new int[] {
             2,
             0,
@@ -405,6 +432,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label1Y, "label1Y");
       this.label1Y.Name = "label1Y";
+      this.toolTip.SetToolTip(this.label1Y, resources.GetString("label1Y.ToolTip"));
       // 
       // numericUpDownY
       // 
@@ -420,6 +448,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownY.Name = "numericUpDownY";
+      this.toolTip.SetToolTip(this.numericUpDownY, resources.GetString("numericUpDownY.ToolTip"));
       this.numericUpDownY.Value = new decimal(new int[] {
             3,
             0,
@@ -430,6 +459,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label1X, "label1X");
       this.label1X.Name = "label1X";
+      this.toolTip.SetToolTip(this.label1X, resources.GetString("label1X.ToolTip"));
       // 
       // numericUpDownX
       // 
@@ -445,6 +475,7 @@ namespace WinFormsArrayVisualizer
             0,
             0});
       this.numericUpDownX.Name = "numericUpDownX";
+      this.toolTip.SetToolTip(this.numericUpDownX, resources.GetString("numericUpDownX.ToolTip"));
       this.numericUpDownX.Value = new decimal(new int[] {
             4,
             0,
@@ -455,16 +486,17 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label10, "label10");
       this.label10.Name = "label10";
+      this.toolTip.SetToolTip(this.label10, resources.GetString("label10.ToolTip"));
       // 
       // numericUpDownInc
       // 
+      resources.ApplyResources(this.numericUpDownInc, "numericUpDownInc");
       this.numericUpDownInc.DecimalPlaces = 1;
       this.numericUpDownInc.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-      resources.ApplyResources(this.numericUpDownInc, "numericUpDownInc");
       this.numericUpDownInc.Maximum = new decimal(new int[] {
             10,
             0,
@@ -476,6 +508,7 @@ namespace WinFormsArrayVisualizer
             0,
             -2147483648});
       this.numericUpDownInc.Name = "numericUpDownInc";
+      this.toolTip.SetToolTip(this.numericUpDownInc, resources.GetString("numericUpDownInc.ToolTip"));
       this.numericUpDownInc.Value = new decimal(new int[] {
             1,
             0,
@@ -487,73 +520,82 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.label9, "label9");
       this.label9.Name = "label9";
+      this.toolTip.SetToolTip(this.label9, resources.GetString("label9.ToolTip"));
       // 
       // numericUpDownStart
       // 
+      resources.ApplyResources(this.numericUpDownStart, "numericUpDownStart");
       this.numericUpDownStart.DecimalPlaces = 1;
       this.numericUpDownStart.Increment = new decimal(new int[] {
             5,
             0,
             0,
             65536});
-      resources.ApplyResources(this.numericUpDownStart, "numericUpDownStart");
       this.numericUpDownStart.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
       this.numericUpDownStart.Name = "numericUpDownStart";
+      this.toolTip.SetToolTip(this.numericUpDownStart, resources.GetString("numericUpDownStart.ToolTip"));
       this.numericUpDownStart.Enter += new System.EventHandler(this.numericUpDownStart_Enter);
       // 
       // dimensionSelector
       // 
+      resources.ApplyResources(this.dimensionSelector, "dimensionSelector");
       this.dimensionSelector.Controls.Add(this.tabPage2D);
       this.dimensionSelector.Controls.Add(this.tabPage3D);
       this.dimensionSelector.Controls.Add(this.tabPage4D);
-      resources.ApplyResources(this.dimensionSelector, "dimensionSelector");
       this.dimensionSelector.Name = "dimensionSelector";
       this.dimensionSelector.SelectedIndex = 0;
+      this.toolTip.SetToolTip(this.dimensionSelector, resources.GetString("dimensionSelector.ToolTip"));
       this.dimensionSelector.Selected += new System.Windows.Forms.TabControlEventHandler(this.dimensionSelector_Selected);
       // 
       // tabPage2D
       // 
       resources.ApplyResources(this.tabPage2D, "tabPage2D");
       this.tabPage2D.Name = "tabPage2D";
+      this.toolTip.SetToolTip(this.tabPage2D, resources.GetString("tabPage2D.ToolTip"));
       this.tabPage2D.UseVisualStyleBackColor = true;
       // 
       // tabPage3D
       // 
       resources.ApplyResources(this.tabPage3D, "tabPage3D");
       this.tabPage3D.Name = "tabPage3D";
+      this.toolTip.SetToolTip(this.tabPage3D, resources.GetString("tabPage3D.ToolTip"));
       this.tabPage3D.UseVisualStyleBackColor = true;
       // 
       // tabPage4D
       // 
       resources.ApplyResources(this.tabPage4D, "tabPage4D");
       this.tabPage4D.Name = "tabPage4D";
+      this.toolTip.SetToolTip(this.tabPage4D, resources.GetString("tabPage4D.ToolTip"));
       this.tabPage4D.UseVisualStyleBackColor = true;
       // 
       // panel2
       // 
+      resources.ApplyResources(this.panel2, "panel2");
       this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panel2.Controls.Add(this.label9);
       this.panel2.Controls.Add(this.numericUpDownStart);
       this.panel2.Controls.Add(this.numericUpDownInc);
       this.panel2.Controls.Add(this.label10);
-      resources.ApplyResources(this.panel2, "panel2");
       this.panel2.Name = "panel2";
+      this.toolTip.SetToolTip(this.panel2, resources.GetString("panel2.ToolTip"));
       // 
       // panelTextInput
       // 
+      resources.ApplyResources(this.panelTextInput, "panelTextInput");
       this.panelTextInput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panelTextInput.Controls.Add(this.textBoxData);
-      resources.ApplyResources(this.panelTextInput, "panelTextInput");
       this.panelTextInput.Name = "panelTextInput";
+      this.toolTip.SetToolTip(this.panelTextInput, resources.GetString("panelTextInput.ToolTip"));
       // 
       // textBoxData
       // 
       resources.ApplyResources(this.textBoxData, "textBoxData");
       this.textBoxData.Name = "textBoxData";
+      this.toolTip.SetToolTip(this.textBoxData, resources.GetString("textBoxData.ToolTip"));
       this.textBoxData.Enter += new System.EventHandler(this.textBoxData_Enter);
       this.textBoxData.Leave += new System.EventHandler(this.textBoxData_Leave);
       // 
@@ -563,35 +605,41 @@ namespace WinFormsArrayVisualizer
       this.radioButtonAutoFill.Checked = true;
       this.radioButtonAutoFill.Name = "radioButtonAutoFill";
       this.radioButtonAutoFill.TabStop = true;
+      this.toolTip.SetToolTip(this.radioButtonAutoFill, resources.GetString("radioButtonAutoFill.ToolTip"));
       // 
       // radioButtonManualFill
       // 
       resources.ApplyResources(this.radioButtonManualFill, "radioButtonManualFill");
       this.radioButtonManualFill.Name = "radioButtonManualFill";
+      this.toolTip.SetToolTip(this.radioButtonManualFill, resources.GetString("radioButtonManualFill.ToolTip"));
       // 
       // radioButtonFileFill
       // 
       resources.ApplyResources(this.radioButtonFileFill, "radioButtonFileFill");
       this.radioButtonFileFill.Name = "radioButtonFileFill";
+      this.toolTip.SetToolTip(this.radioButtonFileFill, resources.GetString("radioButtonFileFill.ToolTip"));
       // 
       // panel4
       // 
+      resources.ApplyResources(this.panel4, "panel4");
       this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panel4.Controls.Add(this.lblFile);
       this.panel4.Controls.Add(this.buttonSelectFile);
-      resources.ApplyResources(this.panel4, "panel4");
       this.panel4.Name = "panel4";
+      this.toolTip.SetToolTip(this.panel4, resources.GetString("panel4.ToolTip"));
       // 
       // lblFile
       // 
-      this.lblFile.AutoEllipsis = true;
       resources.ApplyResources(this.lblFile, "lblFile");
+      this.lblFile.AutoEllipsis = true;
       this.lblFile.Name = "lblFile";
+      this.toolTip.SetToolTip(this.lblFile, resources.GetString("lblFile.ToolTip"));
       // 
       // buttonSelectFile
       // 
       resources.ApplyResources(this.buttonSelectFile, "buttonSelectFile");
       this.buttonSelectFile.Name = "buttonSelectFile";
+      this.toolTip.SetToolTip(this.buttonSelectFile, resources.GetString("buttonSelectFile.ToolTip"));
       this.buttonSelectFile.UseVisualStyleBackColor = true;
       this.buttonSelectFile.Click += new System.EventHandler(this.buttonSelectFile_Click);
       // 
@@ -603,6 +651,7 @@ namespace WinFormsArrayVisualizer
       // 
       resources.ApplyResources(this.buttonSave, "buttonSave");
       this.buttonSave.Name = "buttonSave";
+      this.toolTip.SetToolTip(this.buttonSave, resources.GetString("buttonSave.ToolTip"));
       this.buttonSave.UseVisualStyleBackColor = true;
       this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
       // 
@@ -612,23 +661,25 @@ namespace WinFormsArrayVisualizer
       // 
       // mainPanel
       // 
+      resources.ApplyResources(this.mainPanel, "mainPanel");
       this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(201)))), ((int)(((byte)(14)))));
       this.mainPanel.Controls.Add(this.array2D1);
-      resources.ApplyResources(this.mainPanel, "mainPanel");
       this.mainPanel.Name = "mainPanel";
+      this.toolTip.SetToolTip(this.mainPanel, resources.GetString("mainPanel.ToolTip"));
       // 
       // array2D1
       // 
+      resources.ApplyResources(this.array2D1, "array2D1");
       this.array2D1.CellHeight = 55;
       this.array2D1.CellPadding = 10;
       this.array2D1.CellSize = new System.Drawing.Size(80, 55);
       this.array2D1.CellWidth = 80;
       this.array2D1.Data = null;
       this.array2D1.Formatter = null;
-      resources.ApplyResources(this.array2D1, "array2D1");
       this.array2D1.Name = "array2D1";
       this.array2D1.RenderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.array2D1.TabStop = false;
+      this.toolTip.SetToolTip(this.array2D1, resources.GetString("array2D1.ToolTip"));
       // 
       // MainForm
       // 
@@ -648,6 +699,7 @@ namespace WinFormsArrayVisualizer
       this.Controls.Add(this.initialPanel);
       this.Controls.Add(this.dimensionSelector);
       this.Name = "MainForm";
+      this.toolTip.SetToolTip(this, resources.GetString("$this.ToolTip"));
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCellHeight)).EndInit();

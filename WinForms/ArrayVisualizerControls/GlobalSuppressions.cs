@@ -8,7 +8,4 @@
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
 
-
-
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "member", Target = "WinFormsArrayVisualizer.MainForm.#renderButton_Click(System.Object,System.EventArgs)")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Scope = "member", Target = "WinFormsArrayVisualizer.MainForm.#renderButton_Click(System.Object,System.EventArgs)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Scope = "member", Target = "WinFormsArrayVisualizerControls.ArrayXD.#Data")]

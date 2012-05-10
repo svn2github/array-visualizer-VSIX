@@ -4,7 +4,7 @@ using AvProp = ArrayVisualizerControls.Properties;
 
 namespace ArrayVisualizerControls
 {
-  
+
   public partial class Array2D : ArrayControl
   {
     private int arraySizeX;
@@ -25,10 +25,13 @@ namespace ArrayVisualizerControls
 
     protected override void DrawContent()
     {
+      double num;
       for (int y = 0; y < arraySizeY; y++)
         for (int x = 0; x < arraySizeX; x++)
         {
-          string text = ((double)this.Data.GetValue(y, x)).ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+          string text = this.Data.GetValue(y, x).ToString();          
+          if (double.TryParse(text, out num))
+            text = num.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height;
           AddLabel(text, labelX, labelY);
@@ -42,6 +45,6 @@ namespace ArrayVisualizerControls
 
       this.arraySizeY = this.Data.GetLength(0);
       this.arraySizeX = this.Data.GetLength(1);
-    }   
+    }
   }
 }

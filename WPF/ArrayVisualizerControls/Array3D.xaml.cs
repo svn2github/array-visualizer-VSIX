@@ -66,10 +66,14 @@ namespace ArrayVisualizerControls
       double xySectionWidth = CellSize.Width * this.arraySizeX;
 
       //Main grid (front)
+      double num;
       for (int y = 0; y < this.arraySizeY; y++)
         for (int x = 0; x < this.arraySizeX; x++)
         {
-          string text = ((double)this.Data.GetValue(0, y, x)).ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+          string text = this.Data.GetValue(0, y, x).ToString();          
+          if (double.TryParse(text, out num))
+            text = num.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height + zSectionHeight;
           AddLabel(text, labelX, labelY);
@@ -79,7 +83,10 @@ namespace ArrayVisualizerControls
       for (int z = 0; z < this.arraySizeZ; z++)
         for (int x = 0; x < this.arraySizeX; x++)
         {
-          string text = ((double)this.Data.GetValue(z, 0, x)).ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+          string text = this.Data.GetValue(z, 0, x).ToString();
+          if (double.TryParse(text, out num))
+            text = num.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+
           double labelX = z * zCellWidth + zCellWidth + x * CellSize.Width;
           double labelY = zSectionHeight - (z * zCellHeight + (CellSize.Height) / 2);
           AddLabel(text, labelX, labelY);
@@ -89,7 +96,10 @@ namespace ArrayVisualizerControls
       for (int z = 0; z < this.arraySizeZ; z++)
         for (int y = 0; y < this.arraySizeY; y++)
         {
-          string text = ((double)this.Data.GetValue(z, y, this.arraySizeX - 1)).ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+          string text = this.Data.GetValue(z, y, this.arraySizeX - 1).ToString();
+          if (double.TryParse(text, out num))
+            text = num.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+          
           double labelX = xySectionWidth + z * zCellWidth + zCellWidth / 2;
           double labelY = zSectionHeight + y * CellSize.Height - zCellHeight * z;
           AddLabel(text, labelX, labelY);

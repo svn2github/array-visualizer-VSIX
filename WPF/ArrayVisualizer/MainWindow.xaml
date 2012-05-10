@@ -1,15 +1,14 @@
 ﻿<Window x:Class="ArrayVisualizer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="659" Width="958" 
+        Title="MainWindow" Height="840" Width="1200" 
         xmlns:av="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls">
     <Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="189,12,12,12">
-            <StackPanel Name="mainPanel" Background="SkyBlue" />
+            <StackPanel Name="mainPanel" Background="SkyBlue"></StackPanel>
         </ScrollViewer>
-        <TabControl Height="596" HorizontalAlignment="Left" Margin="12,12,0,0" Name="dimenstionsTab" VerticalAlignment="Top" Width="171" SelectionChanged="dimenstionsTab_SelectionChanged" Background="#FF35496A">
-            <TabItem Header="2D" Name="tabItem2D" Tag="2">
-            </TabItem>
+        <TabControl Height="777" HorizontalAlignment="Left" Margin="12,12,0,0" Name="dimenstionsTab" VerticalAlignment="Top" Width="171" SelectionChanged="dimenstionsTab_SelectionChanged" Background="#FF35496A">
+            <TabItem Header="2D" Name="tabItem2D" Tag="2"></TabItem>
             <TabItem Header="3D" Name="tabItem3D" Tag="3"></TabItem>
             <TabItem Header="4D" Name="tabItem4D" Tag="4"></TabItem>
         </TabControl>
@@ -58,5 +57,35 @@
             <Label Content="A:" Height="28" HorizontalAlignment="Left" Margin="6,93,0,0" Name="a2Label" VerticalAlignment="Top" Width="55"/>
             <Button Content="Resize" Height="23" Margin="6,128,5,0" Name="resizeButton" VerticalAlignment="Top" Click="resizeButton_Click" />
         </Grid>
+        <TabControl Name="fillOptionsTabControl" Margin="19,466,0,0" HorizontalAlignment="Left" Width="158" Height="150" VerticalAlignment="Top" TabStripPlacement="Bottom">
+            <TabItem Header="Auto Fill" Name="autoFillTab">
+                <Grid>
+                    <Label Content="Step:" Height="28" HorizontalAlignment="Left" Margin="1,36,0,0" Name="label2" VerticalAlignment="Top" Width="75" />
+                    <Label Content="Start Value:" Height="28" HorizontalAlignment="Left" Margin="1,7,0,0" Name="label1" VerticalAlignment="Top" Width="75" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="71,9,0,0" Name="startValueTextBox" VerticalAlignment="Top" Width="71" Text="1.0" HorizontalContentAlignment="Right" PreviewTextInput="TextBox_PreviewTextInput" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="71,38,0,0" Name="stepTextBox" VerticalAlignment="Top" Width="71" Text="1.0" HorizontalContentAlignment="Right" PreviewTextInput="TextBox_PreviewTextInput" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Manual" Name="manualTab" ToolTip="Enter values manually">
+                <Grid>
+                    <TextBox Margin="6" Name="manualItemsTextBox" TextWrapping="WrapWithOverflow" AcceptsReturn="True" LostFocus="manualItemsTextBox_LostFocus" GotFocus="manualItemsTextBox_GotFocus" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="File" Name="fileTab" ToolTip="Load from File">
+                <Grid>
+                    <Button Content="Select File..." Height="23" HorizontalAlignment="Left" Margin="6,89,0,0" Name="openFileButton" VerticalAlignment="Top" Width="136" Click="openFileButton_Click" />
+                    <Label Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="fileLabel" VerticalAlignment="Top" Width="136" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Grid Margin="19,626,0,0" HorizontalAlignment="Left" Width="158" Height="100" VerticalAlignment="Top" Background="White" >
+            <Label Content="Cell Height:" Height="28" HorizontalAlignment="Left" Margin="1,36,0,0" Name="cellHeightLabel" VerticalAlignment="Top" Width="75" />
+            <Label Content="Cell Width:" Height="28" HorizontalAlignment="Left" Margin="1,7,0,0" Name="cellWidthLabel" VerticalAlignment="Top" Width="75" />
+            <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,9,0,0" Name="cellWidthTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="60" VerticalAlignment="Top" Width="38" />
+            <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,38,0,0" Name="cellHeightTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="40" VerticalAlignment="Top" Width="38" />
+            <TextBox Height="23" HorizontalAlignment="Left" Margin="86,67,0,0" Name="formatterTextBox" VerticalAlignment="Top" Width="65" Text="0.##" HorizontalContentAlignment="Right"/>
+            <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="5,65,0,0" Name="formatterLabel" VerticalAlignment="Top" Width="75" />
+        </Grid>
+        <Button Content="Save" Height="23" Name="saveButton" Margin="19,0,0,19" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="80" IsEnabled="False" Click="saveButton_Click" />
     </Grid>
 </Window>

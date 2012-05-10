@@ -1,14 +1,13 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System;
+﻿using System;
+using System.Reflection;
 using System.Resources;
+using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ArrayVisualizer")]
-[assembly: AssemblyDescription("Array Visualizer")]
+[assembly: AssemblyDescription("Array Visualizer - WinWorms version")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Amir Liberman")]
 [assembly: AssemblyProduct("ArrayVisualizer")]
@@ -36,6 +35,6 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.1")]
-[assembly: AssemblyFileVersion("1.0.0.1")]
+[assembly: AssemblyVersion("1.0.0.2")]
+[assembly: AssemblyFileVersion("1.0.0.2")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
