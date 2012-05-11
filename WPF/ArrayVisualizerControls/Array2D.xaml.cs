@@ -25,13 +25,13 @@ namespace ArrayVisualizerControls
 
     protected override void DrawContent()
     {
-      double num;
+      double number;
       for (int y = 0; y < arraySizeY; y++)
         for (int x = 0; x < arraySizeX; x++)
         {
-          string text = this.Data.GetValue(y, x).ToString();          
-          if (double.TryParse(text, out num))
-            text = num.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+          string text = (this.Data.GetValue(y, x) ?? "").ToString();          
+          if (double.TryParse(text, out number))
+            text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height;
           AddLabel(text, labelX, labelY);

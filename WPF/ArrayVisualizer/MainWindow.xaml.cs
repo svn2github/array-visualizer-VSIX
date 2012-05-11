@@ -164,10 +164,9 @@ namespace ArrayVisualizer
       if (textBox != null)
       {
         string text = textBox.Text + e.Text;
-        double temp;
-        //bool ok = double.TryParse(text, System.Globalization.NumberStyles.Number, out temp);
+        double temp;        
         bool ok = double.TryParse(text, out temp);
-        e.Handled = ok;
+        e.Handled = !ok;        
       }
       else
         throw new NotImplementedException("TextBox_PreviewTextInput Can only Handle TextBoxes");
@@ -281,7 +280,7 @@ namespace ArrayVisualizer
           throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
         }
       }
-      else//file
+      else //file
       {
         try
         {

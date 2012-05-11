@@ -83,11 +83,16 @@ namespace WinFormsArrayVisualizerControls
         Brush brush = Brushes.Black;
 
         //Main grid (front)
+        double number;
         for (int y = 0; y < ySize; y++)
           for (int x = 0; x < xSize; x++)
           {
-            string textToRender = ((double)this.Data.GetValue(0, y, x)).ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            SizeF textSize = gr.MeasureString(textToRender, this.RenderFont);
+            string text = (this.Data.GetValue(0, y, x) ?? "").ToString();
+
+            if (double.TryParse(text, out number))
+              text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+                        
+            SizeF textSize = gr.MeasureString(text, this.RenderFont);
 
             if (textSize.Width + this.CellPadding > CellSize.Width)
               textSize.Width = CellSize.Width - this.CellPadding;
@@ -98,15 +103,18 @@ namespace WinFormsArrayVisualizerControls
             float drawY = y * CellSize.Height + (CellSize.Height - textSize.Height) / 2 + zSectionHeight;
 
             PointF textPos = new PointF(drawX, drawY);
-            gr.DrawString(textToRender, this.RenderFont, brush, new RectangleF(textPos, textSize));
+            gr.DrawString(text, this.RenderFont, brush, new RectangleF(textPos, textSize));
           }
 
         //Top section
         for (int z = 0; z < zSize; z++)
           for (int x = 0; x < xSize; x++)
           {
-            string textToRender = ((double)this.Data.GetValue(z, 0, x)).ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            SizeF textSize = gr.MeasureString(textToRender, this.RenderFont);
+            string text = (this.Data.GetValue(z, 0, x) ?? "").ToString();
+            if (double.TryParse(text, out number))
+              text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+
+            SizeF textSize = gr.MeasureString(text, this.RenderFont);
 
             if (textSize.Width + this.CellPadding > zCellWidth)
               textSize.Width = zCellWidth - this.CellPadding;
@@ -118,7 +126,7 @@ namespace WinFormsArrayVisualizerControls
 
             PointF textPos = new PointF(drawX, drawY);
 
-            gr.DrawString(textToRender, this.RenderFont, brush, new RectangleF(textPos, textSize));
+            gr.DrawString(text, this.RenderFont, brush, new RectangleF(textPos, textSize));
           }
 
         //Right section
@@ -126,8 +134,11 @@ namespace WinFormsArrayVisualizerControls
         for (int z = 0; z < zSize; z++)
           for (int y = 0; y < ySize; y++)
           {
-            string textToRender = ((double)this.Data.GetValue(z, y, xSize - 1)).ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            SizeF textSize = gr.MeasureString(textToRender, this.RenderFont);
+            string text = (this.Data.GetValue(z, y, this.xSize - 1) ?? "").ToString();
+            if (double.TryParse(text, out number))
+              text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+
+            SizeF textSize = gr.MeasureString(text, this.RenderFont);
 
             if (textSize.Width + this.CellPadding > zCellWidth)
               textSize.Width = zCellWidth - this.CellPadding;
@@ -143,7 +154,7 @@ namespace WinFormsArrayVisualizerControls
             gr.TranslateTransform(textPos.X, textPos.Y);
             gr.RotateTransform(-30);
 
-            gr.DrawString(textToRender, this.RenderFont, brush, new RectangleF(point00, textSize));
+            gr.DrawString(text, this.RenderFont, brush, new RectangleF(point00, textSize));
           }
       }
     }

@@ -38,11 +38,15 @@ namespace WinFormsArrayVisualizerControls
       {
         gr.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
         Brush brush = Brushes.Black;
+        double number;
         for (int y = 0; y < ySize; y++)
           for (int x = 0; x < xSize; x++)
           {
-            string textToRender = ((double)this.Data.GetValue(y, x)).ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            SizeF textSize = gr.MeasureString(textToRender, this.RenderFont);
+            string text = (this.Data.GetValue(y, x) ?? "").ToString();
+            if (double.TryParse(text, out number))
+              text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+
+            SizeF textSize = gr.MeasureString(text, this.RenderFont);
 
             if (textSize.Width + this.CellPadding > CellSize.Width)
               textSize.Width = CellSize.Width - this.CellPadding;
@@ -54,7 +58,7 @@ namespace WinFormsArrayVisualizerControls
 
             PointF textPos = new PointF(drawX, drawY);
 
-            gr.DrawString(textToRender, this.RenderFont, brush, new RectangleF(textPos, textSize));
+            gr.DrawString(text, this.RenderFont, brush, new RectangleF(textPos, textSize));
           }
       }
     }

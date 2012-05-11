@@ -10,10 +10,11 @@
     <!--Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"-->
     <Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="176,12,12,12">
-            <StackPanel Name="mainPanel" Background="SkyBlue" Orientation="Horizontal"></StackPanel>
+            <Grid Name="mainPanel" Background="#FFFFFFE1"></Grid>
         </ScrollViewer>
-        <ListBox Height="165" HorizontalAlignment="Left" Margin="12,12,0,0" Name="arraysListBox" VerticalAlignment="Top" Width="158" SelectionChanged="arraysListBox_SelectionChanged" />
-        <Grid Background="White" Height="96" HorizontalAlignment="Left" IsEnabled="False" Margin="12,183,0,0" Name="rotateGrid" VerticalAlignment="Top" Width="158">
+        <ListBox Height="165" HorizontalAlignment="Left" Margin="12,36,0,0" Name="arraysListBox" VerticalAlignment="Top" Width="158" SelectionChanged="arraysListBox_SelectionChanged" BorderBrush="#FF45597C" />
+        <Grid Background="White" Height="96" HorizontalAlignment="Left" IsEnabled="False" Margin="12,207,0,0" Name="rotateGrid" VerticalAlignment="Top" Width="158">
+            <Border BorderThickness="1" BorderBrush="#FF45597C"></Border>
             <ComboBox Height="23" HorizontalAlignment="Left" Margin="67,6,0,0" Name="angelComboBox" SelectedIndex="3" VerticalAlignment="Top" Width="84">
                 <ComboBoxItem Content="90" />
                 <ComboBoxItem Content="180" />
@@ -26,6 +27,16 @@
             <Label Content="Axis:" Height="28" HorizontalAlignment="Left" Margin="6,35,0,0" Name="axisLabel" VerticalAlignment="Top" Width="55" />
             <Button Click="rotateButton_Click" Content="Rotate" Height="23" Margin="6,64,5,0" Name="rotateButton" VerticalAlignment="Top" />
         </Grid>
-        <Button Content="Refresh" Height="23" Margin="12,285,0,0" Name="refreshButton" VerticalAlignment="Top" Click="refreshButton_Click" HorizontalAlignment="Left" Width="147" />
+        <Grid Background="White" Height="100" HorizontalAlignment="Left" Margin="12,309,0,0" VerticalAlignment="Top" Width="158">
+            <Border BorderThickness="1" BorderBrush="#FF45597C"></Border>
+            <Label Content="Cell Height:" Height="28" HorizontalAlignment="Left" Margin="1,36,0,0" Name="cellHeightLabel" VerticalAlignment="Top" Width="75" />
+            <Label Content="Cell Width:" Height="28" HorizontalAlignment="Left" Margin="1,7,0,0" Name="cellWidthLabel" VerticalAlignment="Top" Width="75" />
+            <TextBox HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,9,0,68" Name="cellWidthTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="60" Width="38" />
+            <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,0,0,39" Name="cellHeightTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="40" VerticalAlignment="Bottom" Width="38" />
+            <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="86,67,0,0" Name="formatterTextBox" Text="0.##" VerticalAlignment="Top" Width="65" />
+            <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="5,65,0,0" Name="formatterLabel" VerticalAlignment="Top" Width="75" />
+        </Grid>
+        <Label Content="Arrays:" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="label1" VerticalAlignment="Top" Width="75" />
+        <!--<Button Content="Refresh" Height="23" Margin="18,285,0,0" Name="refreshButton" VerticalAlignment="Top" Click="refreshButton_Click" HorizontalAlignment="Left" Width="147" />-->
     </Grid>
 </UserControl>

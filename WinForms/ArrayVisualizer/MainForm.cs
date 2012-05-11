@@ -122,6 +122,7 @@ namespace WinFormsArrayVisualizer
 
         arrCtl.CellWidth = (int)numericUpDownCellWidth.Value;
         arrCtl.CellHeight = (int)numericUpDownCellHeight.Value;
+        arrCtl.Formatter= "0.##";
 
         arrCtl.Data = GetData(dims);
 
@@ -305,7 +306,7 @@ namespace WinFormsArrayVisualizer
           throw new FormatException(Resources.InvalidInputFormat, ex);
         }
       }
-      else//file
+      else //file
       {
         try
         {
