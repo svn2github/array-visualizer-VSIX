@@ -29,12 +29,12 @@ namespace ArrayVisualizerControls
       for (int y = 0; y < arraySizeY; y++)
         for (int x = 0; x < arraySizeX; x++)
         {
-          string text = (this.Data.GetValue(y, x) ?? "").ToString();          
+          string text = (this.Data.GetValue(y, x) ?? "").ToString();
           if (double.TryParse(text, out number))
             text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height;
-          AddLabel(text, labelX, labelY);
+          AddLabel(ArrayRenderSection.Front, text, labelX, labelY);
         }
     }
 

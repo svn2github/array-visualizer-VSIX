@@ -77,8 +77,8 @@ namespace ArrayVisualizerControls
       double zSectionWidth = zCellWidth * this.arraySizeZ;
 
       double xySectionWidth = CellSize.Width * this.arraySizeX;
-      
-      double number;      
+
+      double number;
       for (int a = 0; a < this.arraySizeA; a++)
       {
         double aOffset = a * (xySectionWidth + SPACE_4D + zSectionWidth);
@@ -90,10 +90,10 @@ namespace ArrayVisualizerControls
             string text = (this.Data.GetValue(a, 0, y, x) ?? "").ToString();
             if (double.TryParse(text, out number))
               text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-                       
-            double labelX = aOffset + x * CellSize.Width;
-            double labelY = y * CellSize.Height +  zSectionHeight;
-            AddLabel(text, labelX, labelY);
+
+            double labelX = aOffset +x * CellSize.Width;
+            double labelY = y * CellSize.Height + zSectionHeight;
+            AddLabel(ArrayRenderSection.Front, text, labelX, labelY);
           }
 
         //Top section                    
@@ -103,9 +103,10 @@ namespace ArrayVisualizerControls
             string text = (this.Data.GetValue(a, z, 0, x) ?? "").ToString();
             if (double.TryParse(text, out number))
               text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            double labelX = aOffset + z * zCellWidth + zCellWidth + x * CellSize.Width;
-            double labelY = zSectionHeight - (z * zCellHeight + (CellSize.Height) / 2);
-            AddLabel(text, labelX, labelY);
+
+            double labelX = aOffset + (z + 1) * zCellWidth + x * CellSize.Width;
+            double labelY = zSectionHeight - (z + 1) * zCellHeight;
+            AddLabel(ArrayRenderSection.Top, text, labelX, labelY);
           }
 
         //Right section
@@ -115,9 +116,10 @@ namespace ArrayVisualizerControls
             string text = (this.Data.GetValue(a, z, y, this.arraySizeX - 1) ?? "").ToString();
             if (double.TryParse(text, out number))
               text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            double labelX = aOffset+ xySectionWidth + z * zCellWidth + zCellWidth / 2;
+
+            double labelX =aOffset+ xySectionWidth + z * zCellWidth;
             double labelY = zSectionHeight + y * CellSize.Height - zCellHeight * z;
-            AddLabel(text, labelX, labelY);
+            AddLabel(ArrayRenderSection.Side, text, labelX, labelY);
           }
       }
     }

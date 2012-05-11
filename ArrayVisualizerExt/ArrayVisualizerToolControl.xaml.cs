@@ -19,14 +19,9 @@ using Microsoft.VisualStudio.Shell;
 using LinqLib.Array;
 using ArrayVisualizerControls;
 
-/*  
- * 
+/*   
  * Refactor code
- * Draw labels in correct angle
- * Tooltips on lables
- * Shorten text if label is too small
- * refresh drawing
- * Icon, Bitmaps, metadata
+ * License, icon, metadata
  */
 
 namespace Microsoft.ArrayVisualizerExt
@@ -50,7 +45,7 @@ namespace Microsoft.ArrayVisualizerExt
     public ArrayVisualizerToolControl()
     {
       InitializeComponent();
-    
+
       dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
       SetDebugEvents();
     }
@@ -66,7 +61,7 @@ namespace Microsoft.ArrayVisualizerExt
       debugerEvents.OnEnterDesignMode += new _dispDebuggerEvents_OnEnterDesignModeEventHandler(debugerEvents_OnEnterDesignMode);
       debugerEvents.OnEnterRunMode += new _dispDebuggerEvents_OnEnterRunModeEventHandler(debugerEvents_OnEnterRunMode);
     }
-  
+
     private void debugerEvents_OnEnterRunMode(dbgEventReason Reason)
     {
       ClearVisualizer();
@@ -99,7 +94,7 @@ namespace Microsoft.ArrayVisualizerExt
       else
         throw new NotImplementedException("TextBox_PreviewTextInput Can only Handle TextBoxes");
     }
-    
+
     private void rotateButton_Click(object sender, RoutedEventArgs e)
     {
       RotateAxis r = RotateAxis.RotateNone;
@@ -138,71 +133,13 @@ namespace Microsoft.ArrayVisualizerExt
     private void arraysListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       if (e.AddedItems.Count == 1)
-      {
-        mainPanel.Children.Clear();
-        string item = (string)e.AddedItems[0];
-        EnvDTE.Expression expression = expressions[item];
-        if (expression.Value != "null")
-        {
-          //string type = expression.Type;
-          //type = type.Substring(0, type.IndexOf("["));
-          string dims = expression.Value;
-          dims = dims.Substring(dims.IndexOf("[") + 1);
-          dims = dims.Substring(0, dims.IndexOf("]"));
+        LoadArrayControl((string)e.AddedItems[0]);
+    }
 
-          //Type arrType = Type.GetType(type, false, true);
-          int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
-          Array arr;
-          int members = expression.DataMembers.Count;
-          List<string> values = new List<string>(members);
-          for (int i = 1; i <= members; i++)
-            values.Add(expression.DataMembers.Item(i).Value);
-
-          angelComboBox.Items.Clear();
-          angelComboBox.Items.Add(90);
-          angelComboBox.Items.Add(180);
-          angelComboBox.Items.Add(270);
-
-          axisComboBox.Items.Clear();
-          axisComboBox.Items.Add("X");
-          axisComboBox.Items.Add("Y");
-          axisComboBox.Items.Add("Z");
-          switch (dimenstions.Length)
-          {
-            case 2:
-              arr = values.ToArray(dimenstions[0], dimenstions[1]);
-              arrCtl = new Array2D();
-              axisComboBox.Visibility = System.Windows.Visibility.Hidden;
-              break;
-            case 3:
-              arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2]);
-              arrCtl = new Array3D();
-              axisComboBox.Visibility = System.Windows.Visibility.Visible;
-              break;
-            case 4:
-              arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2], dimenstions[3]);
-              arrCtl = new Array4D();
-              angelComboBox.Items.Add(360);
-              angelComboBox.Items.Add(450);
-              axisComboBox.Visibility = System.Windows.Visibility.Visible;
-              axisComboBox.Items.Add("A");
-              break;
-            default:
-              return;
-          }
-
-          arrCtl.Formatter = formatterTextBox.Text;
-          arrCtl.CellHeight = double.Parse(cellHeightTextBox.Text);
-          arrCtl.CellWidth = double.Parse(cellWidthTextBox.Text);
-          angelComboBox.SelectedItem = 90;
-          axisComboBox.SelectedItem = "Z";
-          rotateGrid.IsEnabled = true;
-
-          arrCtl.Data = arr;
-
-          mainPanel.Children.Add(arrCtl);
-        }
-      }
+    private void refreshButton_Click(object sender, RoutedEventArgs e)
+    {
+      if (arraysListBox.SelectedItems.Count == 1)
+        LoadArrayControl((string)arraysListBox.SelectedItem);
     }
 
     #endregion
@@ -229,7 +166,7 @@ namespace Microsoft.ArrayVisualizerExt
     private void LoadArraysInScope(string prefix, EnvDTE.Expression expression)
     {
       string expType = expression.Type.Replace("}", "");
-      if (expType.EndsWith("]") || expType.EndsWith("[,]") || expType.EndsWith("[,,]") || expType.EndsWith("[,,,]"))
+      if (expType.EndsWith("]") && (expType.EndsWith("[,]") || expType.EndsWith("[,,]") || expType.EndsWith("[,,,]")))
       {
         string item = prefix + expression.Name + " - " + expression.Value;
         arraysListBox.Items.Add(item);
@@ -242,7 +179,95 @@ namespace Microsoft.ArrayVisualizerExt
       }
     }
 
-    #endregion
+    private void LoadArrayControl(string arrayName)
+    {
+      mainPanel.Children.Clear();
+      EnvDTE.Expression expression = expressions[arrayName];
+      if (expression.Value != "null")
+      {
+        Array arr;
+        int[] dimenstions = GetDimensions(expression);
+        int members = expression.DataMembers.Count;
+        List<string> values = new List<string>(members);
+        for (int i = 1; i <= members; i++)
+          values.Add(expression.DataMembers.Item(i).Value);
 
+        SetRotationOptions(dimenstions.Length);
+
+        switch (dimenstions.Length)
+        {
+          case 2:
+            arr = values.ToArray(dimenstions[0], dimenstions[1]);
+            arrCtl = new Array2D();
+            break;
+          case 3:
+            arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2]);
+            arrCtl = new Array3D();
+            break;
+          case 4:
+            arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2], dimenstions[3]);
+            arrCtl = new Array4D();
+            break;
+          default:
+            return;
+        }
+
+        arrCtl.Formatter = formatterTextBox.Text;
+        arrCtl.CellHeight = double.Parse(cellHeightTextBox.Text);
+        arrCtl.CellWidth = double.Parse(cellWidthTextBox.Text);
+
+        arrCtl.Data = arr;
+
+        mainPanel.Children.Add(arrCtl);
+      }
+    }
+
+    private void SetRotationOptions(int dimensions)
+    {
+      angelComboBox.Items.Clear();
+      angelComboBox.Items.Add(90);
+      angelComboBox.Items.Add(180);
+      angelComboBox.Items.Add(270);
+
+      axisComboBox.Items.Clear();
+      axisComboBox.Items.Add("X");
+      axisComboBox.Items.Add("Y");
+      axisComboBox.Items.Add("Z");
+
+      switch (dimensions)
+      {
+        case 2:
+          axisComboBox.Visibility = System.Windows.Visibility.Hidden;
+          break;
+        case 3:
+          axisComboBox.Visibility = System.Windows.Visibility.Visible;
+          break;
+        case 4:
+          angelComboBox.Items.Add(360);
+          angelComboBox.Items.Add(450);
+          axisComboBox.Items.Add("A");
+          axisComboBox.Visibility = System.Windows.Visibility.Visible;
+          break;
+        default:
+          return;
+      }
+
+      angelComboBox.SelectedItem = 90;
+      axisComboBox.SelectedItem = "Z";
+
+      rotateGrid.IsEnabled = true;
+    }
+
+    private static int[] GetDimensions(EnvDTE.Expression expression)
+    {
+      string dims = expression.Value;
+      dims = dims.Substring(dims.IndexOf("[") + 1);
+      dims = dims.Substring(0, dims.IndexOf("]"));
+
+      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
+      return dimenstions;
+    }
+
+    #endregion
   }
 }

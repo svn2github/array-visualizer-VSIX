@@ -85,6 +85,7 @@
     <Compile Include="Array4D.xaml.cs">
       <DependentUpon>Array4D.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ArrayRenderSection.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

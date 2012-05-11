@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using System.Windows.Media;
+using System;
 
 namespace ArrayVisualizerControls
 {
@@ -16,7 +18,7 @@ namespace ArrayVisualizerControls
     #endregion
 
     protected ArrayControl()
-    {      
+    {
       arrayGrid = new Grid();
       base.AddChild(arrayGrid);
       this.cellSize = new Size(80, 55);
@@ -86,12 +88,68 @@ namespace ArrayVisualizerControls
       arrayGrid.Children.Add(line);
     }
 
-    protected void AddLabel(string text, double x, double y)
+    static System.DateTime lastStop = System.DateTime.Now;
+    protected void AddLabel(ArrayRenderSection section, string text, double x, double y)
     {
+      //if (lastStop.AddSeconds(1) < System.DateTime.Now)
+      //{
+      // // System.Diagnostics.Debugger.Break();
+      //}
+      lastStop = System.DateTime.Now;
       Label label = new Label();
+
+
+      switch (section)
+      {
+        case ArrayRenderSection.Front:
+          label.Margin = new Thickness(x, y, 0, 0);
+          break;
+        case ArrayRenderSection.Top:
+          label.Margin = new Thickness(x + 1, y - 1, 0, 0);
+          label.RenderTransform = GetTopTransformation();
+          label.FontWeight = FontWeight.FromOpenTypeWeight(700);
+          break;
+        case ArrayRenderSection.Side:
+          label.Margin = new Thickness(x, y, 0, 0);
+          label.RenderTransform = GetSideTransformation();
+          break;
+        default:
+          break;
+      }
+
       label.Content = label.ToolTip = text;
-      label.Margin = new Thickness(x, y, 0, 0);
+
+      label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+      label.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+      label.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+      label.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+      label.Width = this.cellSize.Width;
+      label.Height = this.cellSize.Height;
+
       arrayGrid.Children.Add(label);
+    }
+
+    private Transform GetSideTransformation()
+    {
+      double angle = Math.Atan((this.CellHeight / this.CellWidth) * .75) * 180 / Math.PI;
+      SkewTransform skt = new SkewTransform(0, -angle);
+      ScaleTransform sct = new ScaleTransform(.75, 1, 0, 0);
+      TransformGroup tg = new TransformGroup();
+      tg.Children.Add(skt);
+      tg.Children.Add(sct);
+      return tg;
+    }
+
+
+    private Transform GetTopTransformation()
+    {
+      double angle = Math.Atan((this.CellWidth / this.CellHeight) * .75) * 180 / Math.PI;
+      SkewTransform skt = new SkewTransform(-angle, 0);
+      ScaleTransform sct = new ScaleTransform(1, .75, 0, 0);
+      TransformGroup tg = new TransformGroup();
+      tg.Children.Add(skt);
+      tg.Children.Add(sct);
+      return tg;
     }
 
     protected abstract void RenderBlankGrid();
