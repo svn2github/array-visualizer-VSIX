@@ -91,8 +91,12 @@ namespace Microsoft.ArrayVisualizerExt
         bool ok = double.TryParse(text, out temp);
         e.Handled = !ok;
       }
-      else
-        throw new NotImplementedException("TextBox_PreviewTextInput Can only Handle TextBoxes");
+    }
+
+    private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Space)
+        e.Handled = true;
     }
 
     private void rotateButton_Click(object sender, RoutedEventArgs e)
@@ -182,43 +186,51 @@ namespace Microsoft.ArrayVisualizerExt
     private void LoadArrayControl(string arrayName)
     {
       mainPanel.Children.Clear();
-      EnvDTE.Expression expression = expressions[arrayName];
-      if (expression.Value != "null")
+      try
       {
-        Array arr;
-        int[] dimenstions = GetDimensions(expression);
-        int members = expression.DataMembers.Count;
-        List<string> values = new List<string>(members);
-        for (int i = 1; i <= members; i++)
-          values.Add(expression.DataMembers.Item(i).Value);
-
-        SetRotationOptions(dimenstions.Length);
-
-        switch (dimenstions.Length)
+        EnvDTE.Expression expression = expressions[arrayName];
+        if (expression.Value != "null")
         {
-          case 2:
-            arr = values.ToArray(dimenstions[0], dimenstions[1]);
-            arrCtl = new Array2D();
-            break;
-          case 3:
-            arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2]);
-            arrCtl = new Array3D();
-            break;
-          case 4:
-            arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2], dimenstions[3]);
-            arrCtl = new Array4D();
-            break;
-          default:
-            return;
+          Array arr;
+          int[] dimenstions = GetDimensions(expression);
+          int members = expression.DataMembers.Count;
+          List<string> values = new List<string>(members);
+          for (int i = 1; i <= members; i++)
+            values.Add(expression.DataMembers.Item(i).Value);
+
+          SetRotationOptions(dimenstions.Length);
+
+          switch (dimenstions.Length)
+          {
+            case 2:
+              arr = values.ToArray(dimenstions[0], dimenstions[1]);
+              arrCtl = new Array2D();
+              break;
+            case 3:
+              arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2]);
+              arrCtl = new Array3D();
+              break;
+            case 4:
+              arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2], dimenstions[3]);
+              arrCtl = new Array4D();
+              break;
+            default:
+              return;
+          }
+          arrCtl.Formatter = formatterTextBox.Text;
+          arrCtl.CellHeight = double.Parse(cellHeightTextBox.Text);
+          arrCtl.CellWidth = double.Parse(cellWidthTextBox.Text);
+
+          arrCtl.Data = arr;
+
+          mainPanel.Children.Add(arrCtl);
         }
-
-        arrCtl.Formatter = formatterTextBox.Text;
-        arrCtl.CellHeight = double.Parse(cellHeightTextBox.Text);
-        arrCtl.CellWidth = double.Parse(cellWidthTextBox.Text);
-
-        arrCtl.Data = arr;
-
-        mainPanel.Children.Add(arrCtl);
+      }
+      catch (Exception ex)
+      {
+        Label errorLabel = new Label();
+        errorLabel.Content = string.Format("Error rendering array '{0}'\r\n\r\n'{1}'", arrayName, ex.Message);
+        mainPanel.Children.Add(errorLabel);
       }
     }
 

@@ -168,8 +168,12 @@ namespace ArrayVisualizer
         bool ok = double.TryParse(text, out temp);
         e.Handled = !ok;        
       }
-      else
-        throw new NotImplementedException("TextBox_PreviewTextInput Can only Handle TextBoxes");
+    }
+
+    private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Space)
+        e.Handled = true;
     }
 
     private void manualItemsTextBox_LostFocus(object sender, RoutedEventArgs e)

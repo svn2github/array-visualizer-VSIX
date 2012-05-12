@@ -13,8 +13,8 @@ namespace ArrayVisualizerControls
 
     protected override void RenderBlankGrid()
     {
-      double zCellHeight = CellSize.Height * .75;
-      double zCellWidth = CellSize.Width * .75;
+      double zCellHeight = CellSize.Height * SIZE_FACTOR_3D;
+      double zCellWidth = CellSize.Width * SIZE_FACTOR_3D;
 
       double zSectionHeight = zCellHeight * this.arraySizeZ;
       double zSectionWidth = zCellWidth * this.arraySizeZ;
@@ -58,12 +58,13 @@ namespace ArrayVisualizerControls
 
     protected override void DrawContent()
     {
-      double zCellHeight = CellSize.Height * .75;
-      double zCellWidth = CellSize.Width * .75;
+      double zCellHeight = CellSize.Height * SIZE_FACTOR_3D;
+      double zCellWidth = CellSize.Width * SIZE_FACTOR_3D;
 
       double zSectionHeight = zCellHeight * this.arraySizeZ;
-
       double xySectionWidth = CellSize.Width * this.arraySizeX;
+
+      base.SetTransformers();
 
       //Main grid (front)
       double number;

@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="840" Width="1200" 
-        xmlns:av="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls">
+        xmlns:av="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls" PreviewKeyDown="TextBox_PreviewKeyDown">
     <Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="189,12,12,12">
             <StackPanel Name="mainPanel" Background="SkyBlue"></StackPanel>
@@ -81,8 +81,8 @@
         <Grid Margin="19,626,0,0" HorizontalAlignment="Left" Width="158" Height="100" VerticalAlignment="Top" Background="White" >
             <Label Content="Cell Height:" Height="28" HorizontalAlignment="Left" Margin="1,36,0,0" Name="cellHeightLabel" VerticalAlignment="Top" Width="75" />
             <Label Content="Cell Width:" Height="28" HorizontalAlignment="Left" Margin="1,7,0,0" Name="cellWidthLabel" VerticalAlignment="Top" Width="75" />
-            <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,9,0,0" Name="cellWidthTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="60" VerticalAlignment="Top" Width="38" />
-            <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,38,0,0" Name="cellHeightTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="40" VerticalAlignment="Top" Width="38" />
+            <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,9,0,0" Name="cellWidthTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="60" VerticalAlignment="Top" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,38,0,0" Name="cellHeightTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="40" VerticalAlignment="Top" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" />
             <TextBox Height="23" HorizontalAlignment="Left" Margin="86,67,0,0" Name="formatterTextBox" VerticalAlignment="Top" Width="65" Text="0.##" HorizontalContentAlignment="Right"/>
             <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="5,65,0,0" Name="formatterLabel" VerticalAlignment="Top" Width="75" />
         </Grid>
