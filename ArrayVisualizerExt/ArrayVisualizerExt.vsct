@@ -23,7 +23,8 @@
   <!--Definition of some VSCT specific constants. In this sample we use it for the IDs inside the guidOfficeIcon group. -->
   <Extern href="msobtnid.h"/>
 
-
+  <Extern href="VSDbgCmd.h"/>
+  <Extern href="VsDebugGuids.h"/>   
 
 
   <!--The Commands section is where we the commands, menus and menu groups are defined.
@@ -60,17 +61,25 @@
           If you do not want an image next to your command, remove the Icon node or set it to <Icon guid="guidOfficeIcon" id="msotcidNoIcon" /> -->
 
 
-      <Button guid="guidArrayVisualizerExtCmdSet" id="arrayVisualizerTool" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+      <Button guid="guidArrayVisualizerExtCmdSet" id="arrayVisualizerTool" priority="0x1100" type="Button">
+        <!--<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>-->
+        <Parent guid="guidVSDebugGroup" id="IDG_DEBUG_WINDOWS_INSPECT"/>
         <Icon guid="guidImages" id="bmpPic2" />
-        <Strings>
+        <CommandFlag>DynamicVisibility</CommandFlag>        
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>          
           <CommandName>arrayVisualizerTool</CommandName>
           <ButtonText>Array Visualizer</ButtonText>
         </Strings>
       </Button>
 
+      <!--<Menu guid="guidVSDebugGroup" id="IDM_DEBUG_WINDOWS" priority="0x0100" type="Menu">
+         <Parent guid="guidVSDebugGroup" id="IDM_DEBUG_MENU"/>
+         <Parent guid="guidVSDebugGroup" id="IDG_WINDOWS"/>
+        guidSHLMainMenu
+        -->
 
-    </Buttons>
+      </Buttons>
    
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>

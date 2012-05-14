@@ -2,7 +2,7 @@
 // MUST match PkgCmdID.h
 using System;
 
-namespace Microsoft.ArrayVisualizerExt
+namespace ArrayVisualizerExt
 {
     static class PkgCmdIDList
     {

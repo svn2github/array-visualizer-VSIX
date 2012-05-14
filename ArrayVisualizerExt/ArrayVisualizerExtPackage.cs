@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 
-namespace Microsoft.ArrayVisualizerExt
+namespace ArrayVisualizerExt
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -87,6 +87,7 @@ namespace Microsoft.ArrayVisualizerExt
                 CommandID toolwndCommandID = new CommandID(GuidList.guidArrayVisualizerExtCmdSet, (int)PkgCmdIDList.arrayVisualizerTool);
                 MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
                 mcs.AddCommand( menuToolWin );
+                GlobalVars.menuToolWin = menuToolWin;
             }
         }
         #endregion

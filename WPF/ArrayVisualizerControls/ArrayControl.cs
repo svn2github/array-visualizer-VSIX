@@ -89,8 +89,8 @@ namespace ArrayVisualizerControls
     {
       //Cursor cur = this.Cursor;
       try
-      {        
-        if (this.data.Length > 2500)
+      {
+        if (this.data.Length > 500)
           Mouse.OverrideCursor = Cursors.Wait;
         arrayGrid.Children.Clear();
         RenderBlankGrid();
@@ -122,7 +122,7 @@ namespace ArrayVisualizerControls
     private Transform topTransformer;
     private Transform sideTransformer;
 
-    protected void AddLabel(ArrayRenderSection section, string text, string toolTip,double x, double y)
+    protected void AddLabel(ArrayRenderSection section, string text, string toolTip, double x, double y)
     {
       Label label = new Label();
       switch (section)
@@ -151,7 +151,7 @@ namespace ArrayVisualizerControls
       label.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
       label.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
 
-      label.Content =  text;
+      label.Content = text;
       label.ToolTip = toolTip;
 
       arrayGrid.Children.Add(label);
@@ -196,17 +196,22 @@ namespace ArrayVisualizerControls
           this.DimA = this.Data.GetLength(ranks - 4);
       }
 
-      this.Truncated = false;
+      this.Truncated = this.Data.Length > MAX_ELEMENTS;
 
-      if (this.Data.Length > MAX_ELEMENTS)
+      if (this.Truncated)
       {
         double r = Math.Pow((double)this.Data.Length / MAX_ELEMENTS, 1.0 / ranks);
-        this.DimA = (int)(this.DimA / r);
-        this.DimZ = (int)(this.DimZ / r);
-        this.DimY = (int)(this.DimY / r);
-        this.DimX = (int)(this.DimX / r);
-        this.Truncated = true;
+        this.DimA = AdjustDimensionSize(this.DimA, r);
+        this.DimZ = AdjustDimensionSize(this.DimZ, r);
+        this.DimY = AdjustDimensionSize(this.DimY, r);
+        this.DimX = AdjustDimensionSize(this.DimX, r);        
       }
+    }
+
+    private static int AdjustDimensionSize(int originalSize, double ratio)
+    {
+      int size = (int)(originalSize / ratio + .5);
+      return Math.Max(1, size);
     }
 
     internal void SetTransformers()

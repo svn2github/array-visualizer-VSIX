@@ -19,13 +19,14 @@ using Microsoft.VisualStudio.Shell;
 using LinqLib.Array;
 using ArrayVisualizerControls;
 
-/*     
- * Prevent large arrays > 25000
- * Hour Glass  > 5000
- */
-
-namespace Microsoft.ArrayVisualizerExt
+namespace ArrayVisualizerExt
 {
+
+  internal static class GlobalVars
+  {
+    internal static System.ComponentModel.Design.MenuCommand menuToolWin;
+  }
+
   /// <summary>
   /// Interaction logic for ArrayVisualizerToolControl.xaml
   /// </summary>
@@ -37,6 +38,9 @@ namespace Microsoft.ArrayVisualizerExt
     private Dictionary<string, EnvDTE.Expression> expressions;
     private EnvDTE.DebuggerEvents debugerEvents;
     private ArrayControl arrCtl;
+
+    private Action<string, EnvDTE.Expression> ArraysInScopeLoader;
+    private Func<EnvDTE.Expression, int[]> DimensionsLoader;
 
     #endregion
 
@@ -65,16 +69,36 @@ namespace Microsoft.ArrayVisualizerExt
     private void debugerEvents_OnEnterRunMode(dbgEventReason Reason)
     {
       ClearVisualizer();
+      GlobalVars.menuToolWin.Visible = false;
     }
 
     private void debugerEvents_OnEnterDesignMode(dbgEventReason Reason)
     {
       ClearVisualizer();
+      GlobalVars.menuToolWin.Visible = false;
     }
 
     private void DebuggerEvents_OnEnterBreakMode(dbgEventReason Reason, ref dbgExecutionAction ExecutionAction)
     {
+      string language = dte.Debugger.CurrentStackFrame.Language;
+      switch (language)
+      {
+        case "Basic":
+          ArraysInScopeLoader = LoadBasicArraysInScope;
+          DimensionsLoader = GetBasicDimensions;
+          break;
+        case "C#":
+          ArraysInScopeLoader = LoadCsArraysInScope;
+          DimensionsLoader = GetCsDimensions;
+          break;
+        default:
+          ArraysInScopeLoader = LoadCsArraysInScope;
+          DimensionsLoader = GetCsDimensions;          
+          break;
+      }
+
       LoadScopeArrays();
+      GlobalVars.menuToolWin.Visible = true;
     }
 
     #endregion
@@ -164,23 +188,58 @@ namespace Microsoft.ArrayVisualizerExt
 
       if (dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
         foreach (EnvDTE.Expression expression in dte.Debugger.CurrentStackFrame.Locals)
-          LoadArraysInScope("", expression);
+          ArraysInScopeLoader("", expression);
     }
 
-    private void LoadArraysInScope(string prefix, EnvDTE.Expression expression)
+    private void LoadCsArraysInScope(string prefix, EnvDTE.Expression expression)
     {
-      string expType = expression.Type.Replace("}", "");
+      string expType = RemoveBrackets(expression.Type);
       if (expType.EndsWith("]") && (expType.EndsWith("[,]") || expType.EndsWith("[,,]") || expType.EndsWith("[,,,]")))
       {
         string item = prefix + expression.Name + " - " + expression.Value;
         arraysListBox.Items.Add(item);
         expressions.Add(item, expression);
       }
-      else if (prefix == "")
+      else if (string.IsNullOrEmpty(prefix))
       {
         foreach (EnvDTE.Expression subExpression in expression.DataMembers)
-          LoadArraysInScope(prefix + expression.Name + ".", subExpression);
+          LoadCsArraysInScope(expression.Name + ".", subExpression);
       }
+    }
+
+    private void LoadBasicArraysInScope(string prefix, EnvDTE.Expression expression)
+    {
+      string name = expression.Name;
+      string expType;
+      if (expression.Type == "System.Array")
+      {
+        expType = expression.Value;
+        expression = expression.DataMembers.Item(1);
+      }
+      else
+        expType = expression.Type;
+
+      expType = RemoveBrackets(expType);
+
+      if (expression.DataMembers.Count > 0)
+        if (expType.EndsWith(")") && (expType.EndsWith("(,)") || expType.EndsWith("(,,)") || expType.EndsWith("(,,,)")))
+        {
+          expType = expType.Substring(0, expType.IndexOf("("));
+          expType = expType + "(" + string.Join(",", GetBasicDimensions(expression)) + ")";
+          string item = prefix + name + " - " + expType;
+          arraysListBox.Items.Add(item);
+          expressions.Add(item, expression);
+        }
+        else if (string.IsNullOrEmpty(prefix))
+        {
+          foreach (EnvDTE.Expression subExpression in expression.DataMembers)
+            LoadBasicArraysInScope(expression.Name + ".", subExpression);
+        }
+    }
+
+    private string RemoveBrackets(string expType)
+    {
+      return expType.Replace("}", "").Replace("{", "");
     }
 
     private void LoadArrayControl(string arrayName)
@@ -192,11 +251,26 @@ namespace Microsoft.ArrayVisualizerExt
         if (expression.Value != "null")
         {
           Array arr;
-          int[] dimenstions = GetDimensions(expression);
+          int[] dimenstions = DimensionsLoader(expression);
           int members = expression.DataMembers.Count;
-          List<string> values = new List<string>(members);
-          for (int i = 1; i <= members; i++)
-            values.Add(expression.DataMembers.Item(i).Value);
+          //List<string> values = new List<string>(members);
+          bool truncate = members > 1500;
+          if (truncate)
+          {
+            int dims = dimenstions.Length;
+            double r = Math.Pow((double)members / 1500, 1.0 / dims);
+            int members2 = 1;
+            for (int i = 0; i < dims; i++)
+            {
+              dimenstions[i] = (int)(dimenstions[i] / r + .5);
+              members2 = members2 * dimenstions[i];
+            }
+            members = members2;
+          }
+          string[] values = new string[members];
+
+          for (int i = 0; i < members; i++)
+            values[i] = expression.DataMembers.Item(i + 1).Value;
 
           SetRotationOptions(dimenstions.Length);
 
@@ -223,6 +297,12 @@ namespace Microsoft.ArrayVisualizerExt
 
           arrCtl.Data = arr;
 
+          if (truncate)
+          {
+            Label msg = new Label();
+            msg.Content = string.Format("Array is too large, displaying first {0} items only.", members);
+            mainPanel.Children.Add(msg);
+          }
           mainPanel.Children.Add(arrCtl);
         }
       }
@@ -270,7 +350,18 @@ namespace Microsoft.ArrayVisualizerExt
       rotateGrid.IsEnabled = true;
     }
 
-    private static int[] GetDimensions(EnvDTE.Expression expression)
+    private static int[] GetBasicDimensions(EnvDTE.Expression expression)
+    {
+      int last = expression.DataMembers.Count;
+      string dims = expression.DataMembers.Item(last).Name;
+      dims = dims.Substring(dims.IndexOf("(") + 1);
+      dims = dims.Substring(0, dims.IndexOf(")"));
+
+      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)+1).ToArray();
+      return dimenstions;
+    }
+
+    private static int[] GetCsDimensions(EnvDTE.Expression expression)
     {
       string dims = expression.Value;
       dims = dims.Substring(dims.IndexOf("[") + 1);

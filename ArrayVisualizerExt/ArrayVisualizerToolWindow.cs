@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 
-namespace Microsoft.ArrayVisualizerExt
+namespace ArrayVisualizerExt
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.

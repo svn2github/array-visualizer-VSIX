@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Microsoft.ArrayVisualizerExt.ArrayVisualizerToolControl"
+﻿<UserControl x:Class="ArrayVisualizerExt.ArrayVisualizerToolControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,8 +8,8 @@
              d:DesignHeight="512" d:DesignWidth="808"
              Name="ArrayVisualizerToolWindow" xmlns:my="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls">
     <!--Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"-->
-    <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="176,12,12,12">
+    <Grid>        
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="176,12,12,12">            
             <Grid Name="mainPanel" Background="#FFFFFFE1">
                 <Border BorderThickness="1" BorderBrush="#FF45597C" Padding="5"></Border>
             </Grid>

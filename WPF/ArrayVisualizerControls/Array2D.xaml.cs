@@ -7,9 +7,6 @@ namespace ArrayVisualizerControls
 
   public partial class Array2D : ArrayControl
   {
-    //private int arraySizeX;
-    //private int arraySizeY;
-
     protected override void RenderBlankGrid()
     {
       if (this.Data.Rank != 2)
