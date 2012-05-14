@@ -19,9 +19,9 @@ using Microsoft.VisualStudio.Shell;
 using LinqLib.Array;
 using ArrayVisualizerControls;
 
-/*   
- * Refactor code
- * License, icon, metadata
+/*     
+ * Prevent large arrays > 25000
+ * Hour Glass  > 5000
  */
 
 namespace Microsoft.ArrayVisualizerExt

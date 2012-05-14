@@ -22,7 +22,7 @@ namespace ArrayVisualizer
     {
       InitializeComponent();
 
-      for (int i = 1; i <= 12; i++)
+      for (int i = 1; i <= 100; i++)
       {
         xDimComboBox.Items.Add(i);
         yDimComboBox.Items.Add(i);

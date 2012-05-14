@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System;
+using System.Windows.Input;
 
 namespace ArrayVisualizerControls
 {
@@ -11,6 +12,7 @@ namespace ArrayVisualizerControls
     #region Local Fields
 
     public const double SIZE_FACTOR_3D = .75;
+    public const double MAX_ELEMENTS = 10000;
 
     private Grid arrayGrid;
     private System.Array data;
@@ -18,6 +20,7 @@ namespace ArrayVisualizerControls
     private string formatter;
 
     #endregion
+    private bool truncated;
 
     protected ArrayControl()
     {
@@ -69,13 +72,38 @@ namespace ArrayVisualizerControls
       set { this.formatter = value; }
     }
 
+    public bool Truncated
+    {
+      get { return this.truncated; }
+      protected set { this.truncated = value; }
+    }
+
+    protected int DimX { get; set; }
+    protected int DimY { get; set; }
+    protected int DimZ { get; set; }
+    protected int DimA { get; set; }
+
     #endregion
 
     public void Render()
     {
-      arrayGrid.Children.Clear();
-      RenderBlankGrid();
-      DrawContent();
+      //Cursor cur = this.Cursor;
+      try
+      {        
+        if (this.data.Length > 2500)
+          Mouse.OverrideCursor = Cursors.Wait;
+        arrayGrid.Children.Clear();
+        RenderBlankGrid();
+        DrawContent();
+      }
+      catch (Exception)
+      {
+        throw;
+      }
+      finally
+      {
+        Mouse.OverrideCursor = null;
+      }
     }
 
     protected void AddLine(double x1, double y1, double x2, double y2)
@@ -94,13 +122,8 @@ namespace ArrayVisualizerControls
     private Transform topTransformer;
     private Transform sideTransformer;
 
-    protected void AddLabel(ArrayRenderSection section, string text, double x, double y)
+    protected void AddLabel(ArrayRenderSection section, string text, string toolTip,double x, double y)
     {
-      //if (lastStop.AddSeconds(1) < System.DateTime.Now)
-      //{
-      // // System.Diagnostics.Debugger.Break();
-      //}
-      //lastStop = System.DateTime.Now;
       Label label = new Label();
       switch (section)
       {
@@ -109,7 +132,7 @@ namespace ArrayVisualizerControls
           break;
         case ArrayRenderSection.Top:
           label.Margin = new Thickness(x + 1, y - 1, 0, 0);
-          label.RenderTransform = topTransformer ;
+          label.RenderTransform = topTransformer;
           label.FontWeight = FontWeight.FromOpenTypeWeight(700);
           break;
         case ArrayRenderSection.Side:
@@ -128,7 +151,8 @@ namespace ArrayVisualizerControls
       label.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
       label.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
 
-      label.Content = label.ToolTip = text;
+      label.Content =  text;
+      label.ToolTip = toolTip;
 
       arrayGrid.Children.Add(label);
     }
@@ -157,7 +181,33 @@ namespace ArrayVisualizerControls
 
     protected abstract void RenderBlankGrid();
     protected abstract void DrawContent();
-    protected abstract void SetAxisSize();
+
+    private void SetAxisSize()
+    {
+      int ranks = data.Rank;
+
+      this.DimX = this.Data.GetLength(ranks - 1);
+      this.DimY = this.Data.GetLength(ranks - 2);
+
+      if (ranks > 2)
+      {
+        this.DimZ = this.Data.GetLength(ranks - 3);
+        if (ranks > 3)
+          this.DimA = this.Data.GetLength(ranks - 4);
+      }
+
+      this.Truncated = false;
+
+      if (this.Data.Length > MAX_ELEMENTS)
+      {
+        double r = Math.Pow((double)this.Data.Length / MAX_ELEMENTS, 1.0 / ranks);
+        this.DimA = (int)(this.DimA / r);
+        this.DimZ = (int)(this.DimZ / r);
+        this.DimY = (int)(this.DimY / r);
+        this.DimX = (int)(this.DimX / r);
+        this.Truncated = true;
+      }
+    }
 
     internal void SetTransformers()
     {

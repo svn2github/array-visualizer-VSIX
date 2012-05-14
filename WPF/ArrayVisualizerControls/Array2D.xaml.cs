@@ -7,13 +7,16 @@ namespace ArrayVisualizerControls
 
   public partial class Array2D : ArrayControl
   {
-    private int arraySizeX;
-    private int arraySizeY;
+    //private int arraySizeX;
+    //private int arraySizeY;
 
     protected override void RenderBlankGrid()
     {
-      this.Width = CellSize.Width * this.arraySizeX + 1;
-      this.Height = CellSize.Height * this.arraySizeY + 1;
+      if (this.Data.Rank != 2)
+        throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot2DException);
+
+      this.Width = CellSize.Width * base.DimX + 1;
+      this.Height = CellSize.Height * base.DimY + 1;
       this.InvalidateVisual();
 
       for (double y = 0; y <= this.Height; y = y + CellSize.Height)
@@ -25,26 +28,23 @@ namespace ArrayVisualizerControls
 
     protected override void DrawContent()
     {
+      if (this.Data.Rank != 2)
+        throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot2DException);
+
       double number;
-      for (int y = 0; y < arraySizeY; y++)
-        for (int x = 0; x < arraySizeX; x++)
+      string toolTipFmt = "[{0},{1}] : {2}";
+      for (int y = 0; y < base.DimY; y++)
+        for (int x = 0; x < base.DimX; x++)
         {
           string text = (this.Data.GetValue(y, x) ?? "").ToString();
           if (double.TryParse(text, out number))
             text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+          string toolTip = string.Format(toolTipFmt, y, x, text);
+
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height;
-          AddLabel(ArrayRenderSection.Front, text, labelX, labelY);
+          AddLabel(ArrayRenderSection.Front, text, toolTip, labelX, labelY);
         }
-    }
-
-    protected override void SetAxisSize()
-    {
-      if (this.Data.Rank != 2)
-        throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot2DException);
-
-      this.arraySizeY = this.Data.GetLength(0);
-      this.arraySizeX = this.Data.GetLength(1);
     }
   }
 }

@@ -9,31 +9,28 @@ namespace ArrayVisualizerControls
   {
     private const int SPACE_4D = 15;
 
-    private int arraySizeX;
-    private int arraySizeY;
-    private int arraySizeZ;
-    private int arraySizeA;
-
     protected override void RenderBlankGrid()
     {
+      if (this.Data.Rank != 4)
+        throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot4DException);
+
       double zCellHeight = CellSize.Height * SIZE_FACTOR_3D;
       double zCellWidth = CellSize.Width * SIZE_FACTOR_3D;
 
-      double zSectionHeight = zCellHeight * this.arraySizeZ;
-      double zSectionWidth = zCellWidth * this.arraySizeZ;
+      double zSectionHeight = zCellHeight * base.DimZ;
+      double zSectionWidth = zCellWidth * base.DimZ;
 
-      double xySectionWidth = CellSize.Width * this.arraySizeX;
-      double xySectionHeight = CellSize.Height * this.arraySizeY;
+      double xySectionWidth = CellSize.Width * base.DimX;
+      double xySectionHeight = CellSize.Height * base.DimY;
 
       this.Width = xySectionWidth + zSectionWidth + 1;
       this.Height = xySectionHeight + zSectionHeight + 1;
 
       double sectionWidth = (xySectionWidth + zSectionWidth + 1);
-      this.Width = sectionWidth * this.arraySizeA + SPACE_4D * (this.arraySizeA - 1);
+      this.Width = sectionWidth * base.DimA + SPACE_4D * (base.DimA - 1);
       this.Height = xySectionHeight + zSectionHeight + 1;
 
-
-      for (int a = 0; a < this.arraySizeA; a++)
+      for (int a = 0; a < base.DimA; a++)
       {
         double aOffset = a * (sectionWidth + SPACE_4D);
 
@@ -70,71 +67,67 @@ namespace ArrayVisualizerControls
 
     protected override void DrawContent()
     {
+      if (this.Data.Rank != 4)
+        throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot4DException);
+
       double zCellHeight = CellSize.Height * SIZE_FACTOR_3D;
       double zCellWidth = CellSize.Width * SIZE_FACTOR_3D;
 
-      double zSectionHeight = zCellHeight * this.arraySizeZ;
-      double zSectionWidth = zCellWidth * this.arraySizeZ;
+      double zSectionHeight = zCellHeight * base.DimZ;
+      double zSectionWidth = zCellWidth * base.DimZ;
 
-      double xySectionWidth = CellSize.Width * this.arraySizeX;
+      double xySectionWidth = CellSize.Width * base.DimX;
 
       base.SetTransformers();
       double number;
-
-      for (int a = 0; a < this.arraySizeA; a++)
+      string toolTipFmt = "[{0},{1},{2},{3}] : {4}";
+      for (int a = 0; a < base.DimA; a++)
       {
         double aOffset = a * (xySectionWidth + SPACE_4D + zSectionWidth);
 
         //Main grid (front)
-        for (int y = 0; y < this.arraySizeY; y++)
-          for (int x = 0; x < this.arraySizeX; x++)
+        for (int y = 0; y < base.DimY; y++)
+          for (int x = 0; x < base.DimX; x++)
           {
-            string text = (this.Data.GetValue(a, 0, y, x) ?? "").ToString();
+            string text = (this.Data.GetValue(a, 0, y, x) ?? "").ToString();            
             if (double.TryParse(text, out number))
               text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+            string toolTip = string.Format(toolTipFmt, a, 0, y, x, text);
 
-            double labelX = aOffset +x * CellSize.Width;
+            double labelX = aOffset + x * CellSize.Width;
             double labelY = y * CellSize.Height + zSectionHeight;
-            AddLabel(ArrayRenderSection.Front, text, labelX, labelY);
+            AddLabel(ArrayRenderSection.Front, text, toolTip, labelX, labelY);
           }
 
         //Top section                    
-        for (int z = 0; z < this.arraySizeZ; z++)
-          for (int x = 0; x < this.arraySizeX; x++)
+        for (int z = 0; z < base.DimZ; z++)
+          for (int x = 0; x < base.DimX; x++)
           {
-            string text = (this.Data.GetValue(a, z, 0, x) ?? "").ToString();
+            string text = (this.Data.GetValue(a, z, 0, x) ?? "").ToString();            
             if (double.TryParse(text, out number))
               text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+            string toolTip = string.Format(toolTipFmt, a, z, 0, x, text);
 
             double labelX = aOffset + (z + 1) * zCellWidth + x * CellSize.Width;
             double labelY = zSectionHeight - (z + 1) * zCellHeight;
-            AddLabel(ArrayRenderSection.Top, text, labelX, labelY);
+            AddLabel(ArrayRenderSection.Top, text, toolTip, labelX, labelY);
           }
 
         //Right section
-        for (int z = 0; z < this.arraySizeZ; z++)
-          for (int y = 0; y < this.arraySizeY; y++)
+        for (int z = 0; z < base.DimZ; z++)
+          for (int y = 0; y < base.DimY; y++)
           {
-            string text = (this.Data.GetValue(a, z, y, this.arraySizeX - 1) ?? "").ToString();
+            int x = base.DimX - 1;
+            string text = (this.Data.GetValue(a, z, y, x) ?? "").ToString();            
             if (double.TryParse(text, out number))
               text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+            string toolTip = string.Format(toolTipFmt, a, z, y, x, text);
 
-            double labelX =aOffset+ xySectionWidth + z * zCellWidth;
+            double labelX = aOffset + xySectionWidth + z * zCellWidth;
             double labelY = zSectionHeight + y * CellSize.Height - zCellHeight * z;
-            AddLabel(ArrayRenderSection.Side, text, labelX, labelY);
+            AddLabel(ArrayRenderSection.Side, text, toolTip, labelX, labelY);
           }
       }
-    }
-
-    protected override void SetAxisSize()
-    {
-      if (this.Data.Rank != 4)
-        throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot4DException);
-
-      this.arraySizeA = this.Data.GetLength(0);
-      this.arraySizeZ = this.Data.GetLength(1);
-      this.arraySizeY = this.Data.GetLength(2);
-      this.arraySizeX = this.Data.GetLength(3);
     }
   }
 }
