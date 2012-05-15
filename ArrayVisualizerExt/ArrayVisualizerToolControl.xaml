@@ -7,8 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="512" d:DesignWidth="808"
              Name="ArrayVisualizerToolWindow" xmlns:my="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls">
-    <!--Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"-->
-    <Grid>        
+    <Grid>
+        <Label Content="Support" Height="28" HorizontalAlignment="Left" Margin="12,0,0,12" Name="supportlabel" VerticalAlignment="Bottom" Foreground="#8A0000FF" Cursor="Hand" MouseUp="supportlabel_MouseUp" />
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="176,12,12,12">            
             <Grid Name="mainPanel" Background="#FFFFFFE1">
                 <Border BorderThickness="1" BorderBrush="#FF45597C" Padding="5"></Border>
@@ -36,30 +36,13 @@
             <TextBox HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,9,0,68" Name="cellWidthTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="60" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" />
             <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="113,0,0,39" Name="cellHeightTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="40" VerticalAlignment="Bottom" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" />
             <TextBox Height="23" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="86,67,0,0" Name="formatterTextBox" Text="0.##" VerticalAlignment="Top" Width="65" />
-            <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="5,65,0,0" Name="formatterLabel" VerticalAlignment="Top" Width="75" />
+            <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="1,65,0,0" Name="formatterLabel" VerticalAlignment="Top" Width="75" />
         </Grid>
         <Label Content="Arrays:" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="arraysTitleLabel" VerticalAlignment="Top" Width="75" />
 
         <Button  Height="28" Margin="146,10,0,0" Name="refreshButton" VerticalAlignment="Top" Click="refreshButton_Click" HorizontalAlignment="Left" Width="24" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Cursor="Hand">
             <Image Stretch="None" Source="/ArrayVisualizerExt;component/Images/RefreshArrow.png" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Reset the rendered array to its original state (removes rotation effects)."></Image>
         </Button>
-        
     </Grid>
-    <!--<UserControl.Resources>
-        <Style x:Key="Flat">
-            <Setter Property="Control.Background" Value="{x:Null}" />
-            <Setter Property="Control.BorderBrush" Value="{x:Null}" />
-            <Style.Triggers>
-                <Trigger Property="Control.IsMouseOver" Value="True">
-                    <Setter Property="Control.Background" Value="{x:Null}" />
-                    <Setter Property="Control.BorderBrush" Value="{x:Null}" />
-                    <Setter Property="Control.FontWeight" Value="Bold" />
-                </Trigger>
-                <Trigger Property="Control.IsFocused" Value="True">
-                    <Setter Property="Control.FontWeight" Value="Bold" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>-->
 
 </UserControl>

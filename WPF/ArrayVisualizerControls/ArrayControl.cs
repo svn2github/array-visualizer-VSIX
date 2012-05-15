@@ -18,9 +18,12 @@ namespace ArrayVisualizerControls
     private System.Array data;
     private Size cellSize;
     private string formatter;
+    private bool truncated;
+
+    private Transform topTransformer;
+    private Transform sideTransformer;
 
     #endregion
-    private bool truncated;
 
     protected ArrayControl()
     {
@@ -85,6 +88,9 @@ namespace ArrayVisualizerControls
 
     #endregion
 
+    protected abstract void RenderBlankGrid();
+    protected abstract void DrawContent();
+
     public void Render()
     {
       try
@@ -116,9 +122,6 @@ namespace ArrayVisualizerControls
       line.Y2 = y2;
       arrayGrid.Children.Add(line);
     }
-
-    private Transform topTransformer;
-    private Transform sideTransformer;
 
     protected void AddLabel(ArrayRenderSection section, string text, string toolTip, double x, double y)
     {
@@ -177,9 +180,6 @@ namespace ArrayVisualizerControls
       return tg;
     }
 
-    protected abstract void RenderBlankGrid();
-    protected abstract void DrawContent();
-
     private void SetAxisSize()
     {
       int ranks = data.Rank;
@@ -202,7 +202,7 @@ namespace ArrayVisualizerControls
         this.DimA = AdjustDimensionSize(this.DimA, r);
         this.DimZ = AdjustDimensionSize(this.DimZ, r);
         this.DimY = AdjustDimensionSize(this.DimY, r);
-        this.DimX = AdjustDimensionSize(this.DimX, r);        
+        this.DimX = AdjustDimensionSize(this.DimX, r);
       }
     }
 

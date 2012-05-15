@@ -147,6 +147,12 @@ namespace ArrayVisualizerExt
         LoadArrayControl((string)arraysListBox.SelectedItem);
     }
 
+
+    private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
+    {
+      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.4");
+    }
+
     #endregion
 
     #region Methods
