@@ -21,9 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsTester", "VisualizerTeste
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VbTester", "VisualizerTesters\VbTester\VbTester.vbproj", "{BCD64B50-6DF1-4084-9590-92D1DF7596D5}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsTester", "VisualizerTesters\FsTester\FsTester.fsproj", "{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 8
+		SccNumberOfProjects = 9
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs21
 		SccLocalPath0 = .
@@ -54,6 +56,10 @@ Global
 		SccProjectTopLevelParentUniqueName7 = ArrayVisualizer.sln
 		SccProjectName7 = VisualizerTesters/VbTester
 		SccLocalPath7 = VisualizerTesters\\VbTester
+		SccProjectUniqueName8 = VisualizerTesters\\FsTester\\FsTester.fsproj
+		SccProjectTopLevelParentUniqueName8 = ArrayVisualizer.sln
+		SccProjectName8 = VisualizerTesters/FsTester
+		SccLocalPath8 = VisualizerTesters\\FsTester
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqLib.vsmdi
@@ -137,6 +143,16 @@ Global
 		{BCD64B50-6DF1-4084-9590-92D1DF7596D5}.Release|Mixed Platforms.Build.0 = Release|x86
 		{BCD64B50-6DF1-4084-9590-92D1DF7596D5}.Release|x86.ActiveCfg = Release|x86
 		{BCD64B50-6DF1-4084-9590-92D1DF7596D5}.Release|x86.Build.0 = Release|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Debug|x86.ActiveCfg = Debug|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Debug|x86.Build.0 = Debug|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Release|Any CPU.ActiveCfg = Release|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Release|x86.ActiveCfg = Release|x86
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,5 +164,6 @@ Global
 		{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F} = {DD3750D9-66ED-4C2F-BA66-696910B12268}
 		{D23115C0-DA59-45B7-9826-D03A7764F3AF} = {F9C1251A-5C6A-4A3B-ACD1-9DBC1A03FDD9}
 		{BCD64B50-6DF1-4084-9590-92D1DF7596D5} = {F9C1251A-5C6A-4A3B-ACD1-9DBC1A03FDD9}
+		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A} = {F9C1251A-5C6A-4A3B-ACD1-9DBC1A03FDD9}
 	EndGlobalSection
 EndGlobal

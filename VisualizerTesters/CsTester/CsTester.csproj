@@ -38,7 +38,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LinqLib">
+    <Reference Include="LinqLib, Version=1.0.2.8, Culture=neutral, PublicKeyToken=100a413726ba3d7c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LinqExtLibrary.1.0.2.8\lib\LinqLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />

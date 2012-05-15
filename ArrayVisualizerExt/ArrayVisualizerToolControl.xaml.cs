@@ -355,13 +355,14 @@ namespace ArrayVisualizerExt
         string language = dte.Debugger.CurrentStackFrame.Language;
         switch (language)
         {
+          case "C#":
+          case "F#":
+            ArraysInScopeLoader = LoadCsArraysInScope;
+            DimensionsLoader = GetCsDimensions;
+            break;
           case "Basic":
             ArraysInScopeLoader = LoadBasicArraysInScope;
             DimensionsLoader = GetBasicDimensions;
-            break;
-          case "C#":
-            ArraysInScopeLoader = LoadCsArraysInScope;
-            DimensionsLoader = GetCsDimensions;
             break;
           default:
             ClearVisualizer();
