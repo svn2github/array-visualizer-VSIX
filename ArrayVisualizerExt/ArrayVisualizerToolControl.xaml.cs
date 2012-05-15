@@ -21,12 +21,6 @@ using ArrayVisualizerControls;
 
 namespace ArrayVisualizerExt
 {
-
-  internal static class GlobalVars
-  {
-    internal static System.ComponentModel.Design.MenuCommand menuToolWin;
-  }
-
   /// <summary>
   /// Interaction logic for ArrayVisualizerToolControl.xaml
   /// </summary>
@@ -52,6 +46,7 @@ namespace ArrayVisualizerExt
 
       dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
       SetDebugEvents();
+      ShowArrays();
     }
 
     #endregion
@@ -69,36 +64,18 @@ namespace ArrayVisualizerExt
     private void debugerEvents_OnEnterRunMode(dbgEventReason Reason)
     {
       ClearVisualizer();
-      GlobalVars.menuToolWin.Visible = false;
+      //GlobalVars.menuToolWin.Visible = false;
     }
 
     private void debugerEvents_OnEnterDesignMode(dbgEventReason Reason)
     {
       ClearVisualizer();
-      GlobalVars.menuToolWin.Visible = false;
+      //GlobalVars.menuToolWin.Visible = false;
     }
 
     private void DebuggerEvents_OnEnterBreakMode(dbgEventReason Reason, ref dbgExecutionAction ExecutionAction)
     {
-      string language = dte.Debugger.CurrentStackFrame.Language;
-      switch (language)
-      {
-        case "Basic":
-          ArraysInScopeLoader = LoadBasicArraysInScope;
-          DimensionsLoader = GetBasicDimensions;
-          break;
-        case "C#":
-          ArraysInScopeLoader = LoadCsArraysInScope;
-          DimensionsLoader = GetCsDimensions;
-          break;
-        default:
-          ArraysInScopeLoader = LoadCsArraysInScope;
-          DimensionsLoader = GetCsDimensions;          
-          break;
-      }
-
-      LoadScopeArrays();
-      GlobalVars.menuToolWin.Visible = true;
+      ShowArrays();
     }
 
     #endregion
@@ -357,7 +334,7 @@ namespace ArrayVisualizerExt
       dims = dims.Substring(dims.IndexOf("(") + 1);
       dims = dims.Substring(0, dims.IndexOf(")"));
 
-      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)+1).ToArray();
+      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X) + 1).ToArray();
       return dimenstions;
     }
 
@@ -369,6 +346,33 @@ namespace ArrayVisualizerExt
 
       int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
       return dimenstions;
+    }
+
+    private void ShowArrays()
+    {
+      if (dte.Mode == vsIDEMode.vsIDEModeDebug && dte.Debugger.CurrentStackFrame != null)
+      {
+        string language = dte.Debugger.CurrentStackFrame.Language;
+        switch (language)
+        {
+          case "Basic":
+            ArraysInScopeLoader = LoadBasicArraysInScope;
+            DimensionsLoader = GetBasicDimensions;
+            break;
+          case "C#":
+            ArraysInScopeLoader = LoadCsArraysInScope;
+            DimensionsLoader = GetCsDimensions;
+            break;
+          default:
+            ClearVisualizer();
+            Label msg = new Label();
+            msg.Content = string.Format("Sorry, currently {0} is not supported.", language);
+            mainPanel.Children.Add(msg);
+            return;
+        }
+        LoadScopeArrays();
+        //GlobalVars.menuToolWin.Visible = true;
+      }
     }
 
     #endregion

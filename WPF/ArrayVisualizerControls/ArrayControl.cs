@@ -87,7 +87,6 @@ namespace ArrayVisualizerControls
 
     public void Render()
     {
-      //Cursor cur = this.Cursor;
       try
       {
         if (this.data.Length > 500)
@@ -118,7 +117,6 @@ namespace ArrayVisualizerControls
       arrayGrid.Children.Add(line);
     }
 
-    //static System.DateTime lastStop = System.DateTime.Now;
     private Transform topTransformer;
     private Transform sideTransformer;
 

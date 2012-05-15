@@ -87,7 +87,7 @@ namespace ArrayVisualizerExt
                 CommandID toolwndCommandID = new CommandID(GuidList.guidArrayVisualizerExtCmdSet, (int)PkgCmdIDList.arrayVisualizerTool);
                 MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
                 mcs.AddCommand( menuToolWin );
-                GlobalVars.menuToolWin = menuToolWin;
+                //GlobalVars.menuToolWin = menuToolWin;
             }
         }
         #endregion

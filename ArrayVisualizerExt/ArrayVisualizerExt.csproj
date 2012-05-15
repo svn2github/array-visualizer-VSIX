@@ -199,10 +199,6 @@
       <Project>{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}</Project>
       <Name>ArrayVisualizerControls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WPF\ArrayVisualizer\ArrayVisualizer.csproj">
-      <Project>{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}</Project>
-      <Name>ArrayVisualizer</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
