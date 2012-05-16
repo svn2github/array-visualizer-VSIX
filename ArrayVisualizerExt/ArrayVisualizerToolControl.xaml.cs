@@ -1,23 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ArrayVisualizerControls;
+using ArrayVisualizerExt.ArrayLoaders;
 using EnvDTE;
 using EnvDTE80;
-using EnvDTE90;
-using EnvDTE100;
-using Microsoft.VisualStudio.Shell;
 using LinqLib.Array;
-using ArrayVisualizerControls;
+using Microsoft.VisualStudio.Shell;
 
 namespace ArrayVisualizerExt
 {
@@ -33,8 +24,7 @@ namespace ArrayVisualizerExt
     private EnvDTE.DebuggerEvents debugerEvents;
     private ArrayControl arrCtl;
 
-    private Action<string, EnvDTE.Expression> ArraysInScopeLoader;
-    private Func<EnvDTE.Expression, int[]> DimensionsLoader;
+    IArrayLoader ArrayLoader;
 
     #endregion
 
@@ -64,13 +54,11 @@ namespace ArrayVisualizerExt
     private void debugerEvents_OnEnterRunMode(dbgEventReason Reason)
     {
       ClearVisualizer();
-      //GlobalVars.menuToolWin.Visible = false;
     }
 
     private void debugerEvents_OnEnterDesignMode(dbgEventReason Reason)
     {
       ClearVisualizer();
-      //GlobalVars.menuToolWin.Visible = false;
     }
 
     private void DebuggerEvents_OnEnterBreakMode(dbgEventReason Reason, ref dbgExecutionAction ExecutionAction)
@@ -150,7 +138,7 @@ namespace ArrayVisualizerExt
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.4");
+      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.5");
     }
 
     #endregion
@@ -171,58 +159,10 @@ namespace ArrayVisualizerExt
 
       if (dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
         foreach (EnvDTE.Expression expression in dte.Debugger.CurrentStackFrame.Locals)
-          ArraysInScopeLoader("", expression);
-    }
+          ArrayLoader.ArraysLoader(expressions, "", expression);
 
-    private void LoadCsArraysInScope(string prefix, EnvDTE.Expression expression)
-    {
-      string expType = RemoveBrackets(expression.Type);
-      if (expType.EndsWith("]") && (expType.EndsWith("[,]") || expType.EndsWith("[,,]") || expType.EndsWith("[,,,]")))
-      {
-        string item = prefix + expression.Name + " - " + expression.Value;
+      foreach (string item in expressions.Keys)
         arraysListBox.Items.Add(item);
-        expressions.Add(item, expression);
-      }
-      else if (string.IsNullOrEmpty(prefix))
-      {
-        foreach (EnvDTE.Expression subExpression in expression.DataMembers)
-          LoadCsArraysInScope(expression.Name + ".", subExpression);
-      }
-    }
-
-    private void LoadBasicArraysInScope(string prefix, EnvDTE.Expression expression)
-    {
-      string name = expression.Name;
-      string expType;
-      if (expression.Type == "System.Array")
-      {
-        expType = expression.Value;
-        expression = expression.DataMembers.Item(1);
-      }
-      else
-        expType = expression.Type;
-
-      expType = RemoveBrackets(expType);
-
-      if (expression.DataMembers.Count > 0)
-        if (expType.EndsWith(")") && (expType.EndsWith("(,)") || expType.EndsWith("(,,)") || expType.EndsWith("(,,,)")))
-        {
-          expType = expType.Substring(0, expType.IndexOf("("));
-          expType = expType + "(" + string.Join(",", GetBasicDimensions(expression)) + ")";
-          string item = prefix + name + " - " + expType;
-          arraysListBox.Items.Add(item);
-          expressions.Add(item, expression);
-        }
-        else if (string.IsNullOrEmpty(prefix))
-        {
-          foreach (EnvDTE.Expression subExpression in expression.DataMembers)
-            LoadBasicArraysInScope(expression.Name + ".", subExpression);
-        }
-    }
-
-    private string RemoveBrackets(string expType)
-    {
-      return expType.Replace("}", "").Replace("{", "");
     }
 
     private void LoadArrayControl(string arrayName)
@@ -234,9 +174,8 @@ namespace ArrayVisualizerExt
         if (expression.Value != "null")
         {
           Array arr;
-          int[] dimenstions = DimensionsLoader(expression);
+          int[] dimenstions = ArrayLoader.DimensionsLoader(expression);
           int members = expression.DataMembers.Count;
-          //List<string> values = new List<string>(members);
           bool truncate = members > 1500;
           if (truncate)
           {
@@ -333,27 +272,6 @@ namespace ArrayVisualizerExt
       rotateGrid.IsEnabled = true;
     }
 
-    private static int[] GetBasicDimensions(EnvDTE.Expression expression)
-    {
-      int last = expression.DataMembers.Count;
-      string dims = expression.DataMembers.Item(last).Name;
-      dims = dims.Substring(dims.IndexOf("(") + 1);
-      dims = dims.Substring(0, dims.IndexOf(")"));
-
-      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X) + 1).ToArray();
-      return dimenstions;
-    }
-
-    private static int[] GetCsDimensions(EnvDTE.Expression expression)
-    {
-      string dims = expression.Value;
-      dims = dims.Substring(dims.IndexOf("[") + 1);
-      dims = dims.Substring(0, dims.IndexOf("]"));
-
-      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
-      return dimenstions;
-    }
-
     private void ShowArrays()
     {
       if (dte.Mode == vsIDEMode.vsIDEModeDebug && dte.Debugger.CurrentStackFrame != null)
@@ -362,13 +280,13 @@ namespace ArrayVisualizerExt
         switch (language)
         {
           case "C#":
+            ArrayLoader = new CsArrayLoader();
+            break;
           case "F#":
-            ArraysInScopeLoader = LoadCsArraysInScope;
-            DimensionsLoader = GetCsDimensions;
+            ArrayLoader = new FsArrayLoader();
             break;
           case "Basic":
-            ArraysInScopeLoader = LoadBasicArraysInScope;
-            DimensionsLoader = GetBasicDimensions;
+            ArrayLoader = new VbArrayLoader();
             break;
           default:
             ClearVisualizer();
@@ -378,10 +296,9 @@ namespace ArrayVisualizerExt
             return;
         }
         LoadScopeArrays();
-        //GlobalVars.menuToolWin.Visible = true;
       }
     }
 
     #endregion
-  }
+  }    
 }

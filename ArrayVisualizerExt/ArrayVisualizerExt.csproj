@@ -123,6 +123,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayLoaders\CsArrayLoader.cs" />
+    <Compile Include="ArrayLoaders\FsArrayLoader.cs" />
+    <Compile Include="ArrayLoaders\IArrayLoader.cs" />
+    <Compile Include="ArrayLoaders\VbArrayLoader.cs" />
     <Compile Include="ArrayVisualizerToolControl.xaml.cs">
       <DependentUpon>ArrayVisualizerToolControl.xaml</DependentUpon>
     </Compile>
