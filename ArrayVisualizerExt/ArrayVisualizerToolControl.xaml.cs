@@ -121,6 +121,10 @@ namespace ArrayVisualizerExt
           arrCtl.Data = ((string[, , ,])arrCtl.Data).Rotate(r, angle);
           break;
       }
+
+      arrCtl.Padding = new Thickness(8);
+      arrCtl.Width += 16;
+      arrCtl.Height += 16;
     }
 
     private void arraysListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -138,7 +142,7 @@ namespace ArrayVisualizerExt
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.5");
+      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.6");
     }
 
     #endregion
@@ -225,6 +229,9 @@ namespace ArrayVisualizerExt
             msg.Content = string.Format("Array is too large, displaying first {0} items only.", members);
             mainPanel.Children.Add(msg);
           }
+          arrCtl.Padding = new Thickness(8);
+          arrCtl.Width += 16;
+          arrCtl.Height += 16;
           mainPanel.Children.Add(arrCtl);
         }
       }
@@ -300,5 +307,5 @@ namespace ArrayVisualizerExt
     }
 
     #endregion
-  }    
+  }
 }
