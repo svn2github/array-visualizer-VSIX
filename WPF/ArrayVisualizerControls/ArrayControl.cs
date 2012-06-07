@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using LinqLib.Array;
 
 namespace ArrayVisualizerControls
 {
@@ -15,13 +18,27 @@ namespace ArrayVisualizerControls
     public const double MAX_ELEMENTS = 10000;
 
     private Grid arrayGrid;
-    private System.Array data;
+    private System.Array controlData;
     private Size cellSize;
     private string formatter;
     private bool truncated;
 
     private Transform topTransformer;
     private Transform sideTransformer;
+
+    Popup popup;
+    ScrollViewer arrayContainer;
+
+    public ArrayControl ChildArray
+    {
+      get
+      {
+        if (arrayContainer != null)
+          return (ArrayControl)arrayContainer.Content;
+        else
+          return null;
+      }
+    }
 
     #endregion
 
@@ -33,14 +50,39 @@ namespace ArrayVisualizerControls
       this.formatter = "";
     }
 
+    private void InitPopup()
+    {
+      popup = new Popup();
+      popup.Placement = PlacementMode.MousePoint;
+      popup.StaysOpen = false;
+      Grid popupGrid = new Grid();
+
+      popupGrid.Background = new SolidColorBrush(Colors.SkyBlue);
+      popup.Child = popupGrid;
+      popupGrid.Children.Add(new Border() { BorderBrush = new SolidColorBrush(Colors.Black), BorderThickness = new Thickness(.25) });
+
+
+      arrayContainer = new ScrollViewer { HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+      popupGrid.Children.Add(arrayContainer);
+
+      popup.MaxWidth = SystemParameters.PrimaryScreenWidth * .85;
+      popup.MaxHeight = SystemParameters.PrimaryScreenHeight * .85;
+
+      // popup.MouseLeave += new MouseEventHandler(popup_MouseLeave);
+
+      //popup.AllowsTransparency = true;
+      //popup.
+
+    }
+
     #region Properties
 
     public System.Array Data
     {
-      get { return data; }
+      get { return controlData; }
       set
       {
-        this.data = value;
+        this.controlData = value;
         if (value == null)
           arrayGrid.Children.Clear();
         else
@@ -86,6 +128,8 @@ namespace ArrayVisualizerControls
     protected int DimZ { get; set; }
     protected int DimA { get; set; }
 
+    public int ElementsCount { get { return DimX * DimY * DimZ * DimA; } }
+
     #endregion
 
     protected abstract void RenderBlankGrid();
@@ -95,7 +139,7 @@ namespace ArrayVisualizerControls
     {
       try
       {
-        if (this.data.Length > 500)
+        if (this.controlData.Length > 500)
           Mouse.OverrideCursor = Cursors.Wait;
         arrayGrid.Children.Clear();
         RenderBlankGrid();
@@ -123,7 +167,35 @@ namespace ArrayVisualizerControls
       arrayGrid.Children.Add(line);
     }
 
-    protected void AddLabel(ArrayRenderSection section, string text, string toolTip, double x, double y)
+    protected string GetText(object data)
+    {
+      double number;
+      string text = (data ?? "").ToString();
+      if (double.TryParse(text, out number))
+        text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
+
+      return text;
+    }
+
+    protected void AddLabel(ArrayRenderSection section, string toolTipCoords, double x, double y, Array data)
+    {
+      int[] dims = data.GetDimensions();
+      string dimsText = string.Join(", ", dims);
+      string text = string.Format("{{{0}}}", data.GetType().Name);
+      int pos1 = text.IndexOf("[");
+      int pos2 = text.IndexOf("]");
+      text = text.Substring(0, pos1) + "[" + dimsText + "]" + text.Substring(pos2 + 1);
+
+      Label label = AddLabel(section, "", x, y, text);
+
+      label.ToolTip = string.Format("{0} : {1}\r\nClick to zoom in.", toolTipCoords, text);
+
+      label.Tag = data;
+      label.Cursor = Cursors.Hand;
+      label.MouseUp += new MouseButtonEventHandler(label_MouseUp);
+    }
+
+    protected Label AddLabel(ArrayRenderSection section, string toolTipCoords, double x, double y, string text)
     {
       Label label = new Label();
       switch (section)
@@ -153,9 +225,11 @@ namespace ArrayVisualizerControls
       label.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
 
       label.Content = text;
-      label.ToolTip = toolTip;
+      label.ToolTip = string.Format("{0} : {1}", toolTipCoords, text);
 
       arrayGrid.Children.Add(label);
+
+      return label;
     }
 
     protected Transform GetSideTransformation()
@@ -180,18 +254,28 @@ namespace ArrayVisualizerControls
       return tg;
     }
 
+    internal void SetTransformers()
+    {
+      topTransformer = GetTopTransformation();
+      sideTransformer = GetSideTransformation();
+    }
+
     private void SetAxisSize()
     {
-      int ranks = data.Rank;
+      int ranks = controlData.Rank;
+
+      this.DimX = this.DimY = this.DimZ = this.DimA = 1;
 
       this.DimX = this.Data.GetLength(ranks - 1);
-      this.DimY = this.Data.GetLength(ranks - 2);
-
-      if (ranks > 2)
+      if (ranks > 1)
       {
-        this.DimZ = this.Data.GetLength(ranks - 3);
-        if (ranks > 3)
-          this.DimA = this.Data.GetLength(ranks - 4);
+        this.DimY = this.Data.GetLength(ranks - 2);
+        if (ranks > 2)
+        {
+          this.DimZ = this.Data.GetLength(ranks - 3);
+          if (ranks > 3)
+            this.DimA = this.Data.GetLength(ranks - 4);
+        }
       }
 
       this.Truncated = this.Data.Length > MAX_ELEMENTS;
@@ -212,10 +296,57 @@ namespace ArrayVisualizerControls
       return Math.Max(1, size);
     }
 
-    internal void SetTransformers()
+    private void label_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      topTransformer = GetTopTransformation();
-      sideTransformer = GetSideTransformation();
+      if (popup == null)
+        InitPopup();
+
+      HideSelfAndChildren();
+
+      Array data = (Array)((FrameworkElement)sender).Tag;
+
+      ArrayControl arrCtl;
+      switch (data.Rank)
+      {
+        case 1:
+          arrCtl = new Array1D();
+          break;
+        case 2:
+          arrCtl = new Array2D();
+          break;
+        case 3:
+          arrCtl = new Array3D();
+          break;
+        case 4:
+          arrCtl = new Array4D();
+          break;
+        default:
+          return;
+      }
+      arrCtl.Formatter = this.formatter;
+      arrCtl.CellHeight = this.CellHeight;
+      arrCtl.CellWidth = this.CellWidth;
+      arrCtl.Data = data;
+
+      arrCtl.Padding = new Thickness(8);
+      arrCtl.Width += 16;
+      arrCtl.Height += 16;
+
+      arrayContainer.Content = arrCtl;
+      popup.PlacementTarget = (UIElement)sender;
+      popup.IsOpen = true;
+    }
+
+    private void HideSelfAndChildren()
+    {
+      if (popup != null)
+      {
+        popup.IsOpen = false;
+        ArrayControl child = ChildArray;
+        if (child != null)
+          child.HideSelfAndChildren();
+      }
     }
   }
 }
+

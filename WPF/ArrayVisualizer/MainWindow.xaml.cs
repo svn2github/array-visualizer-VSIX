@@ -46,12 +46,15 @@ namespace ArrayVisualizer
       aResizeComboBox.SelectedItem = 5;
 
       fillOptionsTabControlWidth = fillOptionsTabControl.Width;
+
+      dimenstionsTab.SelectedIndex = 2;
     }
 
     #region Local Fields
 
     private ArrayControl arrayCtl;
     private int dims;
+    private bool jagged;
     private double fillOptionsTabControlWidth;
 
     #endregion
@@ -69,6 +72,14 @@ namespace ArrayVisualizer
 
         switch (dims)
         {
+          case -1: //Jagged
+            PrepairGrid(new Array1D());
+            arrayCtl.Data = GetJaggedArray();
+            break;
+          case 1:
+            PrepairGrid(new Array1D());
+            arrayCtl.Data = Get1DArray(x);
+            break;
           case 2:
             PrepairGrid(new Array2D());
             arrayCtl.Data = Get2DArray(x, y);
@@ -83,13 +94,13 @@ namespace ArrayVisualizer
             break;
         }
 
-        rotateGrid.IsEnabled = true;
+        rotateGrid.IsEnabled = dims > 1;
         resizeGrid.IsEnabled = true;
         saveButton.IsEnabled = true;
       }
       catch (Exception ex)
       {
-        MessageBox.Show(this, ex.Message, AvProp. Resources.Error, MessageBoxButton.OK,MessageBoxImage.Error);
+        MessageBox.Show(this, ex.Message, AvProp.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
       }
 
     }
@@ -136,26 +147,35 @@ namespace ArrayVisualizer
 
     private void resizeButton_Click(object sender, RoutedEventArgs e)
     {
-      int x = (int)xResizeComboBox.SelectedItem;
-      int y = (int)yResizeComboBox.SelectedItem;
-      int z = (int)zResizeComboBox.SelectedItem;
-      int a = (int)aResizeComboBox.SelectedItem;
-
-      switch (dims)
+      try
       {
-        case 2:
-          arrayCtl.Data = ((double[,])arrayCtl.Data).Resize(y, x);
-          break;
-        case 3:
-          arrayCtl.Data = ((double[, ,])arrayCtl.Data).Resize(z, y, x);
-          break;
-        case 4:
-          arrayCtl.Data = ((double[, , ,])arrayCtl.Data).Resize(a, z, y, x);
-          break;
-        default:
-          throw new ArrayTypeMismatchException();
-      }
+        int x = (int)xResizeComboBox.SelectedItem;
+        int y = (int)yResizeComboBox.SelectedItem;
+        int z = (int)zResizeComboBox.SelectedItem;
+        int a = (int)aResizeComboBox.SelectedItem;
 
+        switch (dims)
+        {
+          case 1:
+            arrayCtl.Data = ((double[])arrayCtl.Data).Resize(x);
+            break;
+          case 2:
+            arrayCtl.Data = ((double[,])arrayCtl.Data).Resize(y, x);
+            break;
+          case 3:
+            arrayCtl.Data = ((double[, ,])arrayCtl.Data).Resize(z, y, x);
+            break;
+          case 4:
+            arrayCtl.Data = ((double[, , ,])arrayCtl.Data).Resize(a, z, y, x);
+            break;
+          default:
+            throw new ArrayTypeMismatchException();
+        }
+      }
+      catch 
+      {
+        MessageBox.Show(this, "Unable to resize this array.", "ResizeE Error", MessageBoxButton.OK, MessageBoxImage.Error);
+      }
     }
 
     private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -164,9 +184,9 @@ namespace ArrayVisualizer
       if (textBox != null)
       {
         string text = textBox.Text + e.Text;
-        double temp;        
+        double temp;
         bool ok = double.TryParse(text, out temp);
-        e.Handled = !ok;        
+        e.Handled = !ok;
       }
     }
 
@@ -232,6 +252,40 @@ namespace ArrayVisualizer
       arrayCtl.Height = 251;
       arrayCtl.VerticalAlignment = System.Windows.VerticalAlignment.Top;
       mainPanel.Children.Add(arrayCtl);
+    }
+
+    private Array Get1DArray(int x)
+    {
+      if (autoFillTab.IsSelected)
+        return Enumerator.Generate(double.Parse(startValueTextBox.Text), double.Parse(stepTextBox.Text), x).Select(V => (double)V).ToArray();
+      else if (manualTab.IsSelected)
+      {
+        try
+        {
+          string[] items = GetManualItems();
+          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray();
+        }
+        catch (Exception ex)
+        {
+          throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
+        }
+      }
+      else //file
+      {
+        try
+        {
+          string[] items = GetFileItems();
+          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray();
+        }
+        catch (FormatException ex)
+        {
+          throw new FormatException(AvProp.Resources.InvalidFileContent, ex);
+        }
+        catch
+        {
+          throw;
+        }
+      }
     }
 
     private Array Get2DArray(int x, int y)
@@ -336,9 +390,48 @@ namespace ArrayVisualizer
       }
     }
 
+    private Array GetJaggedArray()
+    {
+      int[][][][] arr = new int[5][][][];
+      for (int i = 0; i < 5; i++)      
+        arr[i] = GetJaggedArray2();
+      
+      return arr;
+    }
+
+    private int [][][] GetJaggedArray2()
+    {
+      int[][][] arr = new int[][][] { 
+        new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5 }, new int[] { 1 }, new int[] { 1, 2, 3 }, new int[] { 1, 2 } },
+        new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5 }, new int[] { 1 }, new int[] { 1, 2, 3 }},
+        new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5 }, new int[] { 1 }},
+        new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3 }, new int[] { 1 }, new int[] { 1, 2, 3 }, new int[] { 1, 2 } }
+      };
+
+      return arr;
+    }
+
     private void ArrangeFrames()
     {
       int temp = int.Parse((string)((TabItem)dimenstionsTab.SelectedItem).Tag);
+      jagged = temp == -1;
+      if (jagged)
+      {
+        fillOptionsTabControl.Visibility = System.Windows.Visibility.Hidden;
+        resizeGrid.Visibility = System.Windows.Visibility.Hidden;
+        rotateGrid.Visibility = System.Windows.Visibility.Hidden;
+        xDimComboBox.Visibility = System.Windows.Visibility.Hidden;
+        x1Label.Visibility = System.Windows.Visibility.Hidden;
+      }
+      else
+      {
+        fillOptionsTabControl.Visibility = System.Windows.Visibility.Visible;
+        resizeGrid.Visibility = System.Windows.Visibility.Visible;
+        rotateGrid.Visibility = System.Windows.Visibility.Visible;
+        xDimComboBox.Visibility = System.Windows.Visibility.Visible;
+        x1Label.Visibility = System.Windows.Visibility.Visible;
+      }
+
       if (temp != dims)
       {
         dims = temp;
@@ -354,6 +447,22 @@ namespace ArrayVisualizer
         this.axisComboBox.Items.Add("Y");
         this.axisComboBox.Items.Add("Z");
 
+        if (dims >= 2)
+        {
+          yDimComboBox.Visibility = System.Windows.Visibility.Visible;
+          y1Label.Visibility = System.Windows.Visibility.Visible;
+
+          yResizeComboBox.Visibility = System.Windows.Visibility.Visible;
+          y2Label.Visibility = System.Windows.Visibility.Visible;
+        }
+        else //1
+        {
+          yDimComboBox.Visibility = System.Windows.Visibility.Hidden;
+          y1Label.Visibility = System.Windows.Visibility.Hidden;
+
+          yResizeComboBox.Visibility = System.Windows.Visibility.Hidden;
+          y2Label.Visibility = System.Windows.Visibility.Hidden;
+        }
 
         if (dims >= 3)
         {
@@ -366,7 +475,7 @@ namespace ArrayVisualizer
           zResizeComboBox.Visibility = System.Windows.Visibility.Visible;
           z2Label.Visibility = System.Windows.Visibility.Visible;
         }
-        else //2
+        else //2 or 1
         {
           zDimComboBox.Visibility = System.Windows.Visibility.Hidden;
           z1Label.Visibility = System.Windows.Visibility.Hidden;
@@ -391,7 +500,7 @@ namespace ArrayVisualizer
           aResizeComboBox.Visibility = System.Windows.Visibility.Visible;
           a2Label.Visibility = System.Windows.Visibility.Visible;
         }
-        else //3 or 2
+        else //3 2 or 1
         {
           aDimComboBox.Visibility = System.Windows.Visibility.Hidden;
           a1Label.Visibility = System.Windows.Visibility.Hidden;

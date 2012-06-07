@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Threading;
 using AvProp = ArrayVisualizerControls.Properties;
 
 namespace ArrayVisualizerControls
 {
-
   public partial class Array2D : ArrayControl
   {
     protected override void RenderBlankGrid()
@@ -28,19 +26,22 @@ namespace ArrayVisualizerControls
       if (this.Data.Rank != 2)
         throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot2DException);
 
-      double number;
-      string toolTipFmt = "[{0},{1}] : {2}";
+      string toolTipFmt = "[{0},{1}]";
       for (int y = 0; y < base.DimY; y++)
         for (int x = 0; x < base.DimX; x++)
         {
-          string text = (this.Data.GetValue(y, x) ?? "").ToString();
-          if (double.TryParse(text, out number))
-            text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-          string toolTip = string.Format(toolTipFmt, y, x, text);
-
+          string toolTipCoords = string.Format(toolTipFmt, y, x);
+          object data = this.Data.GetValue(y, x);
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height;
-          AddLabel(ArrayRenderSection.Front, text, toolTip, labelX, labelY);
+
+          if ((data.GetType().IsArray))
+            AddLabel(ArrayRenderSection.Front, toolTipCoords,labelX, labelY, (Array)data);
+          else
+          {
+            string text = GetText(data);
+            AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, text);
+          }
         }
     }
   }

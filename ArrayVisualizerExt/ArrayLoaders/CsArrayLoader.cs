@@ -3,19 +3,17 @@ using System.Linq;
 
 namespace ArrayVisualizerExt.ArrayLoaders
 {
-  public class CsArrayLoader : IArrayLoader
+  internal class CsArrayLoader : IArrayLoader
   {
-    #region ICodeInspector Members
+    #region IArrayLoader Members
 
     public void ArraysLoader(Dictionary<string, EnvDTE.Expression> arrayExpressions, string prefix, EnvDTE.Expression expression)
     {
       if (expression.DataMembers.Count == 0)
         return;
 
-      //System.Diagnostics.Debug.WriteLine(expression.Name);
-
       string expType = RemoveBrackets(expression.Type);
-      if (expType.EndsWith("]") && (expType.EndsWith("[,]") || expType.EndsWith("[,,]") || expType.EndsWith("[,,,]")))
+      if (expType.EndsWith("]") && (expType.EndsWith("[]") || expType.EndsWith("[,]") || expType.EndsWith("[,,]") || expType.EndsWith("[,,,]")))
       {
         string item = prefix + expression.Name + " - " + expression.Value;
         arrayExpressions.Add(item, expression);
@@ -38,7 +36,7 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     #endregion
 
-    private string RemoveBrackets(string expType)
+    private static string RemoveBrackets(string expType)
     {
       return expType.Replace("}", "").Replace("{", "");
     }

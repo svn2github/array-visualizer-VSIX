@@ -21,6 +21,7 @@ namespace WinFormsArrayVisualizer
       SetControls();
     }
 
+    
     private void dimensionSelector_Selected(object sender, TabControlEventArgs e)
     {
       SetControls();
@@ -163,9 +164,7 @@ namespace WinFormsArrayVisualizer
       if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         SaveToFile(saveFileDialog.FileName);
     }
-
-
-
+    
 
     private void SetControls()
     {

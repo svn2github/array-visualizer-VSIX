@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace ArrayVisualizerExt.ArrayLoaders
 {
-  public class VbArrayLoader : IArrayLoader
+  internal class VbArrayLoader : IArrayLoader
   {
-    #region ICodeInspector Members
+    #region IArrayLoader Members
 
     public void ArraysLoader(Dictionary<string, EnvDTE.Expression> arrayExpressions, string prefix, EnvDTE.Expression expression)
     {
@@ -27,7 +27,7 @@ namespace ArrayVisualizerExt.ArrayLoaders
       expType = RemoveBrackets(expType);
 
       if (expression.DataMembers.Count > 0)
-        if (expType.EndsWith(")") && (expType.EndsWith("(,)") || expType.EndsWith("(,,)") || expType.EndsWith("(,,,)")))
+        if (expType.EndsWith(")") && (expType.EndsWith("()") || expType.EndsWith("(,)") || expType.EndsWith("(,,)") || expType.EndsWith("(,,,)")))
         {
           expType = expType.Substring(0, expType.IndexOf("("));
           expType = expType + "(" + string.Join(",", DimensionsLoader(expression)) + ")";
@@ -52,7 +52,7 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     #endregion
 
-    private string RemoveBrackets(string expType)
+    private static string RemoveBrackets(string expType)
     {
       return expType.Replace("}", "").Replace("{", "");
     }

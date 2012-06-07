@@ -202,6 +202,10 @@ namespace ArrayVisualizerExt
 
           switch (dimenstions.Length)
           {
+            case 1:
+              arr = values.ToArray(dimenstions[0]);
+              arrCtl = new Array1D();
+              break;
             case 2:
               arr = values.ToArray(dimenstions[0], dimenstions[1]);
               arrCtl = new Array2D();
@@ -257,6 +261,9 @@ namespace ArrayVisualizerExt
 
       switch (dimensions)
       {
+        case 1:
+          axisComboBox.Visibility = System.Windows.Visibility.Hidden;
+          break;
         case 2:
           axisComboBox.Visibility = System.Windows.Visibility.Hidden;
           break;

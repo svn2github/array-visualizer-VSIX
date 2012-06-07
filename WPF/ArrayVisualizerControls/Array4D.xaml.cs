@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Threading;
 using AvProp = ArrayVisualizerControls.Properties;
 
 namespace ArrayVisualizerControls
 {
-
   public partial class Array4D : ArrayControl
   {
     private const int SPACE_4D = 15;
@@ -79,8 +77,8 @@ namespace ArrayVisualizerControls
       double xySectionWidth = CellSize.Width * base.DimX;
 
       base.SetTransformers();
-      double number;
-      string toolTipFmt = "[{0},{1},{2},{3}] : {4}";
+
+      string toolTipFmt = "[{0},{1},{2},{3}]";
       for (int a = 0; a < base.DimA; a++)
       {
         double aOffset = a * (xySectionWidth + SPACE_4D + zSectionWidth);
@@ -89,28 +87,38 @@ namespace ArrayVisualizerControls
         for (int y = 0; y < base.DimY; y++)
           for (int x = 0; x < base.DimX; x++)
           {
-            string text = (this.Data.GetValue(a, 0, y, x) ?? "").ToString();            
-            if (double.TryParse(text, out number))
-              text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            string toolTip = string.Format(toolTipFmt, a, 0, y, x, text);
-
+            object data = this.Data.GetValue(a, 0, y, x);
             double labelX = aOffset + x * CellSize.Width;
             double labelY = y * CellSize.Height + zSectionHeight;
-            AddLabel(ArrayRenderSection.Front, text, toolTip, labelX, labelY);
+
+            string toolTipCoords = string.Format(toolTipFmt, a, 0, y, x);
+
+            if ((data.GetType().IsArray))
+              AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
+            else
+            {
+              string text = GetText(data);
+              AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, text);
+            }
           }
 
         //Top section                    
         for (int z = 0; z < base.DimZ; z++)
           for (int x = 0; x < base.DimX; x++)
           {
-            string text = (this.Data.GetValue(a, z, 0, x) ?? "").ToString();            
-            if (double.TryParse(text, out number))
-              text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            string toolTip = string.Format(toolTipFmt, a, z, 0, x, text);
-
+            object data = this.Data.GetValue(a, z, 0, x);
             double labelX = aOffset + (z + 1) * zCellWidth + x * CellSize.Width;
             double labelY = zSectionHeight - (z + 1) * zCellHeight;
-            AddLabel(ArrayRenderSection.Top, text, toolTip, labelX, labelY);
+
+            string toolTipCoords = string.Format(toolTipFmt, a, z, 0, x);
+
+            if ((data.GetType().IsArray))
+              AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
+            else
+            {
+              string text = GetText(data);
+              AddLabel(ArrayRenderSection.Top, toolTipCoords, labelX, labelY, text);
+            }
           }
 
         //Right section
@@ -118,14 +126,19 @@ namespace ArrayVisualizerControls
           for (int y = 0; y < base.DimY; y++)
           {
             int x = base.DimX - 1;
-            string text = (this.Data.GetValue(a, z, y, x) ?? "").ToString();            
-            if (double.TryParse(text, out number))
-              text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-            string toolTip = string.Format(toolTipFmt, a, z, y, x, text);
-
+            object data = this.Data.GetValue(a, z, y, x);
             double labelX = aOffset + xySectionWidth + z * zCellWidth;
             double labelY = zSectionHeight + y * CellSize.Height - zCellHeight * z;
-            AddLabel(ArrayRenderSection.Side, text, toolTip, labelX, labelY);
+
+            string toolTipCoords = string.Format(toolTipFmt, a, z, y, x);
+
+            if ((data.GetType().IsArray))
+              AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
+            else
+            {
+              string text = GetText(data);
+              AddLabel(ArrayRenderSection.Side, toolTipCoords, labelX, labelY, text);
+            }
           }
       }
     }

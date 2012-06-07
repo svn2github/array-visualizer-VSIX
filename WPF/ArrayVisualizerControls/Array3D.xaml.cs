@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Threading;
 using AvProp = ArrayVisualizerControls.Properties;
 
 namespace ArrayVisualizerControls
 {
-
   public partial class Array3D : ArrayControl
   {
     protected override void RenderBlankGrid()
@@ -67,33 +65,44 @@ namespace ArrayVisualizerControls
       base.SetTransformers();
 
       //Main grid (front)
-      double number;
-      string toolTipFmt = "[{0},{1},{2}] : {3}";
+
+      string toolTipFmt = "[{0},{1},{2}]";
       for (int y = 0; y < base.DimY; y++)
         for (int x = 0; x < base.DimX; x++)
         {
-          string text = (this.Data.GetValue(0, y, x) ?? "").ToString();          
-          if (double.TryParse(text, out number))
-            text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-          string toolTip = string.Format(toolTipFmt, 0, y, x, text);
-
+          object data = this.Data.GetValue(0, y, x);
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height + zSectionHeight;
-          AddLabel(ArrayRenderSection.Front, text, toolTip, labelX, labelY);
+
+          string toolTipCoords = string.Format(toolTipFmt, 0, y, x);
+
+          if ((data.GetType().IsArray))
+            AddLabel(ArrayRenderSection.Front,toolTipCoords, labelX, labelY, (Array)data);
+          else
+          {
+            string text = GetText(data);
+            AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, text);
+          }
         }
 
       //Top section
       for (int z = 0; z < base.DimZ; z++)
         for (int x = 0; x < base.DimX; x++)
         {
-          string text = (this.Data.GetValue(z, 0, x) ?? "").ToString();          
-          if (double.TryParse(text, out number))
-            text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-          string toolTip = string.Format(toolTipFmt, z, 0, x, text);
-
+          object data = this.Data.GetValue(z, 0, x);
           double labelX = (z + 1) * zCellWidth + x * CellSize.Width;
           double labelY = zSectionHeight - (z + 1) * zCellHeight;
-          AddLabel(ArrayRenderSection.Top, text, toolTip, labelX, labelY);
+          
+          string toolTipCoords = string.Format(toolTipFmt, z, 0, x);
+
+          if ((data.GetType().IsArray))
+            AddLabel(ArrayRenderSection.Front, toolTipCoords,labelX, labelY, (Array)data);
+          else
+          {
+            string text = GetText(data);
+
+            AddLabel(ArrayRenderSection.Top, toolTipCoords, labelX, labelY, text);
+          }
         }
 
       //Right section
@@ -101,14 +110,19 @@ namespace ArrayVisualizerControls
         for (int y = 0; y < base.DimY; y++)
         {
           int x = base.DimX - 1;
-          string text = (this.Data.GetValue(z, y, x) ?? "").ToString();          
-          if (double.TryParse(text, out number))
-            text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-          string toolTip = string.Format(toolTipFmt, z, y, x, text);
-
+          object data = this.Data.GetValue(z, y, x);
           double labelX = xySectionWidth + z * zCellWidth;
           double labelY = zSectionHeight + y * CellSize.Height - zCellHeight * z;
-          AddLabel(ArrayRenderSection.Side, text, toolTip,labelX, labelY);
+
+          string toolTipCoords = string.Format(toolTipFmt, z, y, x);
+
+          if ((data.GetType().IsArray))
+            AddLabel(ArrayRenderSection.Front, toolTipCoords,labelX, labelY, (Array)data);
+          else
+          {
+            string text = GetText(data);
+            AddLabel(ArrayRenderSection.Side, toolTipCoords, labelX, labelY, text);
+          }
         }
     }
   }
