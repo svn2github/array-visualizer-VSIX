@@ -12,8 +12,6 @@ namespace ArrayVisualizerExt.ArrayLoaders
       if (expression.DataMembers.Count == 0)
         return;
 
-      //System.Diagnostics.Debug.WriteLine(expression.Name);
-
       string name = expression.Name;
       string expType;
       if (expression.Type == "System.Array")
@@ -24,10 +22,10 @@ namespace ArrayVisualizerExt.ArrayLoaders
       else
         expType = expression.Type;
 
-      expType = RemoveBrackets(expType);
+      expType = Helper.RemoveBrackets(expType);
 
       if (expression.DataMembers.Count > 0)
-        if (expType.EndsWith(")") && (expType.EndsWith("()") || expType.EndsWith("(,)") || expType.EndsWith("(,,)") || expType.EndsWith("(,,,)")))
+        if (Helper.IsExpressionVbArrayType(expType))
         {
           expType = expType.Substring(0, expType.IndexOf("("));
           expType = expType + "(" + string.Join(",", DimensionsLoader(expression)) + ")";
@@ -50,11 +48,11 @@ namespace ArrayVisualizerExt.ArrayLoaders
       return dimenstions;
     }
 
-    #endregion
-
-    private static string RemoveBrackets(string expType)
+    public bool IsExpressionArrayType(string typeExpression)
     {
-      return expType.Replace("}", "").Replace("{", "");
+      return Helper.IsExpressionVbArrayType(Helper.RemoveBrackets(typeExpression));
     }
+
+    #endregion
   }
 }

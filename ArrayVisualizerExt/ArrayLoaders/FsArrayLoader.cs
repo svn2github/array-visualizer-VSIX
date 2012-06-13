@@ -12,10 +12,8 @@ namespace ArrayVisualizerExt.ArrayLoaders
       if (expression.DataMembers.Count == 0)
         return;
 
-      //System.Diagnostics.Debug.WriteLine(expression.Name);
-
-      string expType = RemoveBrackets(expression.Type);
-      if (expType.EndsWith("]") && (expType.EndsWith("[]") || expType.EndsWith("[,]") || expType.EndsWith("[,,]") || expType.EndsWith("[,,,]")))
+      string expType = Helper.RemoveBrackets(expression.Type);
+      if (Helper.IsExpressionFsArrayType(expType))
       {
         string item = prefix + expression.Name + " - " + expression.Value;
         arrayExpressions.Add(item, expression);
@@ -32,11 +30,11 @@ namespace ArrayVisualizerExt.ArrayLoaders
       return dimenstions;
     }
 
-    #endregion
-
-    private static string RemoveBrackets(string expType)
+    public bool IsExpressionArrayType(string typeExpression)
     {
-      return expType.Replace("}", "").Replace("{", "");
+      return Helper.IsExpressionFsArrayType(Helper.RemoveBrackets(typeExpression));
     }
+
+    #endregion
   }
 }

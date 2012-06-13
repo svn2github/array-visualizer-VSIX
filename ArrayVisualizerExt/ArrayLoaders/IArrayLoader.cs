@@ -6,5 +6,6 @@ namespace ArrayVisualizerExt.ArrayLoaders
   {
     void ArraysLoader(Dictionary<string, EnvDTE.Expression> arrayExpressions, string prefix, EnvDTE.Expression expression);
     int[] DimensionsLoader(EnvDTE.Expression expression);
+    bool IsExpressionArrayType(string typeExpression);
   }
 }

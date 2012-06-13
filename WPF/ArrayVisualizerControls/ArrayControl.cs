@@ -67,12 +67,6 @@ namespace ArrayVisualizerControls
 
       popup.MaxWidth = SystemParameters.PrimaryScreenWidth * .85;
       popup.MaxHeight = SystemParameters.PrimaryScreenHeight * .85;
-
-      // popup.MouseLeave += new MouseEventHandler(popup_MouseLeave);
-
-      //popup.AllowsTransparency = true;
-      //popup.
-
     }
 
     #region Properties
@@ -298,12 +292,17 @@ namespace ArrayVisualizerControls
 
     private void label_MouseUp(object sender, MouseButtonEventArgs e)
     {
+      Array data = (Array)((FrameworkElement)sender).Tag;
+
+      ShowArrayPopup(sender, data);
+    }
+
+    private void ShowArrayPopup(object sender, Array data)
+    {
       if (popup == null)
         InitPopup();
 
       HideSelfAndChildren();
-
-      Array data = (Array)((FrameworkElement)sender).Tag;
 
       ArrayControl arrCtl;
       switch (data.Rank)

@@ -132,6 +132,7 @@
     </Compile>
     <Compile Include="ArrayVisualizerToolWindow.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
