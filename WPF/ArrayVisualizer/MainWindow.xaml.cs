@@ -47,7 +47,7 @@ namespace ArrayVisualizer
 
       fillOptionsTabControlWidth = fillOptionsTabControl.Width;
 
-      dimenstionsTab.SelectedIndex = 2;
+      dimenstionsTab.SelectedIndex = 3;
     }
 
     #region Local Fields
@@ -72,30 +72,34 @@ namespace ArrayVisualizer
 
         switch (dims)
         {
-          case -1: //Jagged
+          case -1: //Jagged 
             PrepairGrid(new Array1D());
-            arrayCtl.Data = GetJaggedArray();
+            arrayCtl.SetControlData(GetJaggedArray1D());
             break;
           case 1:
             PrepairGrid(new Array1D());
-            arrayCtl.Data = Get1DArray(x);
+            arrayCtl.SetControlData(Get1DArray(x));
+            break;
+          case -2: //Jagged 
+            PrepairGrid(new Array2D());
+            arrayCtl.SetControlData(GetJaggedArray2D());
             break;
           case 2:
             PrepairGrid(new Array2D());
-            arrayCtl.Data = Get2DArray(x, y);
+            arrayCtl.SetControlData(Get2DArray(x, y));
             break;
           case 3:
             PrepairGrid(new Array3D());
-            arrayCtl.Data = Get3DArray(x, y, z);
+            arrayCtl.SetControlData(Get3DArray(x, y, z));
             break;
           case 4:
             PrepairGrid(new Array4D());
-            arrayCtl.Data = Get4DArray(x, y, z, a);
+            arrayCtl.SetControlData(Get4DArray(x, y, z, a));
             break;
         }
 
-        rotateGrid.IsEnabled = dims > 1;
-        resizeGrid.IsEnabled = true;
+        rotateGrid.IsEnabled = Math.Abs(dims) > 1;
+        resizeGrid.IsEnabled = dims > 0;
         saveButton.IsEnabled = true;
       }
       catch (Exception ex)
@@ -131,16 +135,16 @@ namespace ArrayVisualizer
           break;
       }
 
-      switch (dims)
+      switch (Math.Abs(dims))
       {
         case 2:
-          arrayCtl.Data = ((double[,])arrayCtl.Data).Rotate(angle);
+          arrayCtl.SetControlData(((object[,])arrayCtl.Data).Rotate(angle));
           break;
         case 3:
-          arrayCtl.Data = ((double[, ,])arrayCtl.Data).Rotate(r, angle);
+          arrayCtl.SetControlData(((object[, ,])arrayCtl.Data).Rotate(r, angle));
           break;
         case 4:
-          arrayCtl.Data = ((double[, , ,])arrayCtl.Data).Rotate(r, angle);
+          arrayCtl.SetControlData(((object[, , ,])arrayCtl.Data).Rotate(r, angle));
           break;
       }
     }
@@ -157,22 +161,22 @@ namespace ArrayVisualizer
         switch (dims)
         {
           case 1:
-            arrayCtl.Data = ((double[])arrayCtl.Data).Resize(x);
+            arrayCtl.SetControlData(((double[])arrayCtl.Data).Resize(x));
             break;
           case 2:
-            arrayCtl.Data = ((double[,])arrayCtl.Data).Resize(y, x);
+            arrayCtl.SetControlData(((double[,])arrayCtl.Data).Resize(y, x));
             break;
           case 3:
-            arrayCtl.Data = ((double[, ,])arrayCtl.Data).Resize(z, y, x);
+            arrayCtl.SetControlData(((double[, ,])arrayCtl.Data).Resize(z, y, x));
             break;
           case 4:
-            arrayCtl.Data = ((double[, , ,])arrayCtl.Data).Resize(a, z, y, x);
+            arrayCtl.SetControlData(((double[, , ,])arrayCtl.Data).Resize(a, z, y, x));
             break;
           default:
             throw new ArrayTypeMismatchException();
         }
       }
-      catch 
+      catch
       {
         MessageBox.Show(this, "Unable to resize this array.", "ResizeE Error", MessageBoxButton.OK, MessageBoxImage.Error);
       }
@@ -390,16 +394,27 @@ namespace ArrayVisualizer
       }
     }
 
-    private Array GetJaggedArray()
+    private Array GetJaggedArray1D()
     {
       int[][][][] arr = new int[5][][][];
-      for (int i = 0; i < 5; i++)      
+      for (int i = 0; i < 5; i++)
         arr[i] = GetJaggedArray2();
-      
       return arr;
     }
 
-    private int [][][] GetJaggedArray2()
+    private Array GetJaggedArray2D()
+    {
+      int[,][][][] arr = new int[5, 3][][][];
+      for (int i = 0; i < 5; i++)
+      {
+        arr[i, 0] = GetJaggedArray2();
+        arr[i, 1] = GetJaggedArray3();
+        arr[i, 2] = GetJaggedArray2();
+      }
+      return arr;
+    }
+
+    private int[][][] GetJaggedArray2()
     {
       int[][][] arr = new int[][][] { 
         new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5 }, new int[] { 1 }, new int[] { 1, 2, 3 }, new int[] { 1, 2 } },
@@ -411,15 +426,27 @@ namespace ArrayVisualizer
       return arr;
     }
 
+    private int[][][] GetJaggedArray3()
+    {
+      int[][][] arr = new int[][][] { 
+        new int[][]{new int[] { 11, 21, 3 }, new int[] { 11, 21, 31, 41, 5 }, new int[] { 1 }, new int[] { 11, 21, 3 }, new int[] { 11, 2 } },
+        new int[][]{new int[] { 11, 21, 3 }, new int[] { 11, 21, 31, 41, 5 }, new int[] { 1 }, new int[] { 11, 21, 3 }},
+        new int[][]{new int[] { 11, 21, 3 }, new int[] { 11, 21, 31, 41, 5 }, new int[] { 1 }},
+        new int[][]{new int[] { 11, 21, 3 }, new int[] { 11, 21, 31, 41, 51, 21, 31, 41, 51, 21, 31, 4, 5, 2, 31, 41, 51, 21, 31, 41, 51, 21, 31, 41, 51, 21, 31, 41, 51, 21, 3 }, new int[] { 1 }, new int[] { 11, 21, 3 }, new int[] { 11, 2 } }
+      };
+
+      return arr;
+    }
+
     private void ArrangeFrames()
     {
       int temp = int.Parse((string)((TabItem)dimenstionsTab.SelectedItem).Tag);
-      jagged = temp == -1;
+      jagged = temp < 0;
       if (jagged)
       {
         fillOptionsTabControl.Visibility = System.Windows.Visibility.Hidden;
         resizeGrid.Visibility = System.Windows.Visibility.Hidden;
-        rotateGrid.Visibility = System.Windows.Visibility.Hidden;
+        rotateGrid.Visibility = temp == -1 ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
         xDimComboBox.Visibility = System.Windows.Visibility.Hidden;
         x1Label.Visibility = System.Windows.Visibility.Hidden;
       }

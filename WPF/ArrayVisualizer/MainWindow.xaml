@@ -9,8 +9,9 @@
             </StackPanel>
         </ScrollViewer>
         <TabControl Height="777" HorizontalAlignment="Left" Margin="12,12,0,0" Name="dimenstionsTab" VerticalAlignment="Top" Width="171" SelectionChanged="dimenstionsTab_SelectionChanged" Background="#FF35496A">
-            <TabItem Header="J" Name="tabItemJ" Tag="-1"></TabItem>
+            <TabItem Header="1J" Name="tabItem1J" Tag="-1"></TabItem>
             <TabItem Header="1D" Name="tabItem1D" Tag="1"></TabItem>
+            <TabItem Header="2J" Name="tabItem2J" Tag="-2"></TabItem>
             <TabItem Header="2D" Name="tabItem2D" Tag="2"></TabItem>
             <TabItem Header="3D" Name="tabItem3D" Tag="3"></TabItem>
             <TabItem Header="4D" Name="tabItem4D" Tag="4"></TabItem>

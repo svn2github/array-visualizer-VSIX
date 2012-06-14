@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using LinqLib.Array;
 
+
 namespace ArrayVisualizerControls
 {
   public abstract class ArrayControl : UserControl
@@ -19,6 +20,7 @@ namespace ArrayVisualizerControls
 
     private Grid arrayGrid;
     private System.Array controlData;
+    private string tooltipPrefix;
     private Size cellSize;
     private string formatter;
     private bool truncated;
@@ -48,6 +50,7 @@ namespace ArrayVisualizerControls
       base.AddChild(arrayGrid);
       this.cellSize = new Size(80, 55);
       this.formatter = "";
+      this.tooltipPrefix = "";
     }
 
     private void InitPopup()
@@ -69,22 +72,30 @@ namespace ArrayVisualizerControls
       popup.MaxHeight = SystemParameters.PrimaryScreenHeight * .85;
     }
 
+
+    public void SetControlData(System.Array data)
+    {
+      SetControlData(data, "");
+    }
+
+    public void SetControlData(System.Array data, string tooltipPrefix)
+    {
+      this.controlData = data;
+      this.tooltipPrefix = tooltipPrefix;
+      if (data == null)
+        arrayGrid.Children.Clear();
+      else
+      {
+        SetAxisSize();
+        Render();
+      }
+    }
+
     #region Properties
 
     public System.Array Data
     {
       get { return controlData; }
-      set
-      {
-        this.controlData = value;
-        if (value == null)
-          arrayGrid.Children.Clear();
-        else
-        {
-          SetAxisSize();
-          Render();
-        }
-      }
     }
 
     public Size CellSize
@@ -182,7 +193,7 @@ namespace ArrayVisualizerControls
 
       Label label = AddLabel(section, "", x, y, text);
 
-      label.ToolTip = string.Format("{0} : {1}\r\nClick to zoom in.", toolTipCoords, text);
+      label.ToolTip = string.Format("{0}{1} : {2}\r\nClick to zoom in.", this.tooltipPrefix, toolTipCoords, text);
 
       label.Tag = data;
       label.Cursor = Cursors.Hand;
@@ -219,7 +230,7 @@ namespace ArrayVisualizerControls
       label.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
 
       label.Content = text;
-      label.ToolTip = string.Format("{0} : {1}", toolTipCoords, text);
+      label.ToolTip = string.Format("{0}{1} : {2}", this.tooltipPrefix,toolTipCoords, text);
 
       arrayGrid.Children.Add(label);
 
@@ -260,23 +271,23 @@ namespace ArrayVisualizerControls
 
       this.DimX = this.DimY = this.DimZ = this.DimA = 1;
 
-      this.DimX = this.Data.GetLength(ranks - 1);
+      this.DimX = this.controlData.GetLength(ranks - 1);
       if (ranks > 1)
       {
-        this.DimY = this.Data.GetLength(ranks - 2);
+        this.DimY = this.controlData.GetLength(ranks - 2);
         if (ranks > 2)
         {
-          this.DimZ = this.Data.GetLength(ranks - 3);
+          this.DimZ = this.controlData.GetLength(ranks - 3);
           if (ranks > 3)
-            this.DimA = this.Data.GetLength(ranks - 4);
+            this.DimA = this.controlData.GetLength(ranks - 4);
         }
       }
 
-      this.Truncated = this.Data.Length > MAX_ELEMENTS;
+      this.Truncated = this.controlData.Length > MAX_ELEMENTS;
 
       if (this.Truncated)
       {
-        double r = Math.Pow((double)this.Data.Length / MAX_ELEMENTS, 1.0 / ranks);
+        double r = Math.Pow((double)this.controlData.Length / MAX_ELEMENTS, 1.0 / ranks);
         this.DimA = AdjustDimensionSize(this.DimA, r);
         this.DimZ = AdjustDimensionSize(this.DimZ, r);
         this.DimY = AdjustDimensionSize(this.DimY, r);
@@ -292,12 +303,23 @@ namespace ArrayVisualizerControls
 
     private void label_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      Array data = (Array)((FrameworkElement)sender).Tag;
+      FrameworkElement fe = (FrameworkElement)sender;
+      Array data = (Array)fe.Tag;
 
-      ShowArrayPopup(sender, data);
+      string toolTip = "";
+
+      if (fe.ToolTip != null)
+      {
+        toolTip = (string)fe.ToolTip;
+        int pos = toolTip.IndexOf(":");
+        if (pos > 0)
+          toolTip = toolTip.Substring(0, pos - 1);
+      }
+
+      ShowArrayPopup(sender, data, toolTip);
     }
 
-    private void ShowArrayPopup(object sender, Array data)
+    private void ShowArrayPopup(object sender, Array data, string tooltipPrefix)
     {
       if (popup == null)
         InitPopup();
@@ -325,7 +347,7 @@ namespace ArrayVisualizerControls
       arrCtl.Formatter = this.formatter;
       arrCtl.CellHeight = this.CellHeight;
       arrCtl.CellWidth = this.CellWidth;
-      arrCtl.Data = data;
+      arrCtl.SetControlData(data, tooltipPrefix);
 
       arrCtl.Padding = new Thickness(8);
       arrCtl.Width += 16;

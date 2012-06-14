@@ -112,13 +112,13 @@ namespace ArrayVisualizerExt
       switch (arrCtl.Data.Rank)
       {
         case 2:
-          arrCtl.Data = ((string[,])arrCtl.Data).Rotate(angle);
+          arrCtl.SetControlData(((string[,])arrCtl.Data).Rotate(angle));
           break;
         case 3:
-          arrCtl.Data = ((string[, ,])arrCtl.Data).Rotate(r, angle);
+          arrCtl.SetControlData(((string[, ,])arrCtl.Data).Rotate(r, angle));
           break;
         case 4:
-          arrCtl.Data = ((string[, , ,])arrCtl.Data).Rotate(r, angle);
+          arrCtl.SetControlData(((string[, , ,])arrCtl.Data).Rotate(r, angle));
           break;
       }
 
@@ -225,7 +225,7 @@ namespace ArrayVisualizerExt
           arrCtl.CellHeight = double.Parse(cellHeightTextBox.Text);
           arrCtl.CellWidth = double.Parse(cellWidthTextBox.Text);
 
-          arrCtl.Data = arr;
+          arrCtl.SetControlData(arr);
 
           if (truncate)
           {
@@ -263,18 +263,22 @@ namespace ArrayVisualizerExt
       {
         case 1:
           axisComboBox.Visibility = System.Windows.Visibility.Hidden;
+          angelComboBox.Visibility = System.Windows.Visibility.Hidden;
           break;
         case 2:
           axisComboBox.Visibility = System.Windows.Visibility.Hidden;
+          angelComboBox.Visibility = System.Windows.Visibility.Visible;
           break;
         case 3:
           axisComboBox.Visibility = System.Windows.Visibility.Visible;
+          angelComboBox.Visibility = System.Windows.Visibility.Visible;
           break;
         case 4:
           angelComboBox.Items.Add(360);
           angelComboBox.Items.Add(450);
           axisComboBox.Items.Add("A");
           axisComboBox.Visibility = System.Windows.Visibility.Visible;
+          angelComboBox.Visibility = System.Windows.Visibility.Visible;
           break;
         default:
           return;
@@ -283,7 +287,7 @@ namespace ArrayVisualizerExt
       angelComboBox.SelectedItem = 90;
       axisComboBox.SelectedItem = "Z";
 
-      rotateGrid.IsEnabled = true;
+      rotateGrid.IsEnabled = dimensions != 1;
     }
 
     private void ShowArrays()
