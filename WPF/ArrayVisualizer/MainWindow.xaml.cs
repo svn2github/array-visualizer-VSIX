@@ -1,127 +1,846 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using ArrayVisualizerControls;
-using LinqLib.Array;
-using LinqLib.Sequence;
-using Microsoft.Win32;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainWindow.xaml.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Interaction logic for MainWindow.xaml
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+
 using AvProp = ArrayVisualizer.Properties;
 
 namespace ArrayVisualizer
 {
+  using System;
   using System.Globalization;
+  using System.IO;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Input;
+
+  using ArrayVisualizerControls;
+
+  using LinqLib.Array;
+  using LinqLib.Sequence;
+
+  using Microsoft.Win32;
 
   /// <summary>
-  /// Interaction logic for MainWindow.xaml
+  ///   Interaction logic for MainWindow.xaml
   /// </summary>
   public partial class MainWindow : Window
   {
-    public MainWindow()
-    {
-      InitializeComponent();
+    #region Fields
 
-      for (int i = 1; i <= 100; i++)
-      {
-        xDimComboBox.Items.Add(i);
-        yDimComboBox.Items.Add(i);
-        zDimComboBox.Items.Add(i);
-        aDimComboBox.Items.Add(i);
-
-        xResizeComboBox.Items.Add(i);
-        yResizeComboBox.Items.Add(i);
-        zResizeComboBox.Items.Add(i);
-        aResizeComboBox.Items.Add(i);
-      }
-
-      xDimComboBox.SelectedItem = 3;
-      yDimComboBox.SelectedItem = 4;
-      zDimComboBox.SelectedItem = 5;
-      aDimComboBox.SelectedItem = 6;
-
-      xResizeComboBox.SelectedItem = 5;
-      yResizeComboBox.SelectedItem = 5;
-      zResizeComboBox.SelectedItem = 5;
-      aResizeComboBox.SelectedItem = 5;
-
-      fillOptionsTabControlWidth = fillOptionsTabControl.Width;
-
-      dimenstionsTab.SelectedIndex = 3;
-    }
-
-    #region Local Fields
-
+    /// <summary>
+    /// The array ctl.
+    /// </summary>
     private ArrayControl arrayCtl;
+
+    /// <summary>
+    /// The dims.
+    /// </summary>
     private int dims;
-    private bool jagged;
+
+    /// <summary>
+    /// The fill options tab control width.
+    /// </summary>
     private double fillOptionsTabControlWidth;
+
+    /// <summary>
+    /// The jagged.
+    /// </summary>
+    private bool jagged;
 
     #endregion
 
-    #region Events
+    #region Constructors and Destructors
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MainWindow"/> class.
+    /// </summary>
+    public MainWindow()
+    {
+      this.InitializeComponent();
+
+      for (int i = 1; i <= 100; i++)
+      {
+        this.xDimComboBox.Items.Add(i);
+        this.yDimComboBox.Items.Add(i);
+        this.zDimComboBox.Items.Add(i);
+        this.aDimComboBox.Items.Add(i);
+
+        this.xResizeComboBox.Items.Add(i);
+        this.yResizeComboBox.Items.Add(i);
+        this.zResizeComboBox.Items.Add(i);
+        this.aResizeComboBox.Items.Add(i);
+      }
+
+      this.xDimComboBox.SelectedItem = 3;
+      this.yDimComboBox.SelectedItem = 4;
+      this.zDimComboBox.SelectedItem = 5;
+      this.aDimComboBox.SelectedItem = 6;
+
+      this.xResizeComboBox.SelectedItem = 5;
+      this.yResizeComboBox.SelectedItem = 5;
+      this.zResizeComboBox.SelectedItem = 5;
+      this.aResizeComboBox.SelectedItem = 5;
+
+      this.fillOptionsTabControlWidth = this.fillOptionsTabControl.Width;
+
+      this.dimenstionsTab.SelectedIndex = 3;
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// The get items.
+    /// </summary>
+    /// <param name="list">
+    /// The list.
+    /// </param>
+    /// <returns>
+    /// The <see cref="string[]"/>.
+    /// </returns>
+    private static string[] GetItems(string list)
+    {
+      list = list.Replace(" ", string.Empty);
+      list = list.Replace('\r', ',');
+      list = list.Replace('\n', ',');
+
+      while (list.IndexOf(",,", StringComparison.CurrentCulture) != -1)
+      {
+        list = list.Replace(",,", ",");
+      }
+
+      list = list.Trim(',');
+
+      return list.Split(new[] { ',' });
+    }
+
+    /// <summary>
+    /// The arrange frames.
+    /// </summary>
+    private void ArrangeFrames()
+    {
+      int temp = int.Parse((string)((TabItem)this.dimenstionsTab.SelectedItem).Tag);
+      this.jagged = temp < 0;
+      if (this.jagged)
+      {
+        this.fillOptionsTabControl.Visibility = Visibility.Hidden;
+        this.resizeGrid.Visibility = Visibility.Hidden;
+        this.rotateGrid.Visibility = temp == -1 ? Visibility.Hidden : Visibility.Visible;
+        this.xDimComboBox.Visibility = Visibility.Hidden;
+        this.x1Label.Visibility = Visibility.Hidden;
+      }
+      else
+      {
+        this.fillOptionsTabControl.Visibility = Visibility.Visible;
+        this.resizeGrid.Visibility = Visibility.Visible;
+        this.rotateGrid.Visibility = Visibility.Visible;
+        this.xDimComboBox.Visibility = Visibility.Visible;
+        this.x1Label.Visibility = Visibility.Visible;
+      }
+
+      if (temp != this.dims)
+      {
+        this.dims = temp;
+
+        this.angelComboBox.Items.Clear();
+        this.axisComboBox.Items.Clear();
+
+        this.angelComboBox.Items.Add(90);
+        this.angelComboBox.Items.Add(180);
+        this.angelComboBox.Items.Add(270);
+
+        this.axisComboBox.Items.Add("X");
+        this.axisComboBox.Items.Add("Y");
+        this.axisComboBox.Items.Add("Z");
+
+        if (this.dims >= 2)
+        {
+          this.yDimComboBox.Visibility = Visibility.Visible;
+          this.y1Label.Visibility = Visibility.Visible;
+
+          this.yResizeComboBox.Visibility = Visibility.Visible;
+          this.y2Label.Visibility = Visibility.Visible;
+        }
+        else
+        {
+          // 1
+          this.yDimComboBox.Visibility = Visibility.Hidden;
+          this.y1Label.Visibility = Visibility.Hidden;
+
+          this.yResizeComboBox.Visibility = Visibility.Hidden;
+          this.y2Label.Visibility = Visibility.Hidden;
+        }
+
+        if (this.dims >= 3)
+        {
+          this.zDimComboBox.Visibility = Visibility.Visible;
+          this.z1Label.Visibility = Visibility.Visible;
+
+          this.axisComboBox.Visibility = Visibility.Visible;
+          this.axisLabel.Visibility = Visibility.Visible;
+
+          this.zResizeComboBox.Visibility = Visibility.Visible;
+          this.z2Label.Visibility = Visibility.Visible;
+        }
+        else
+        {
+          // 2 or 1
+          this.zDimComboBox.Visibility = Visibility.Hidden;
+          this.z1Label.Visibility = Visibility.Hidden;
+
+          this.axisComboBox.Visibility = Visibility.Hidden;
+          this.axisLabel.Visibility = Visibility.Hidden;
+
+          this.zResizeComboBox.Visibility = Visibility.Hidden;
+          this.z2Label.Visibility = Visibility.Hidden;
+        }
+
+        if (this.dims >= 4)
+        {
+          this.angelComboBox.Items.Add(360);
+          this.angelComboBox.Items.Add(450);
+
+          this.axisComboBox.Items.Add("A");
+
+          this.aDimComboBox.Visibility = Visibility.Visible;
+          this.a1Label.Visibility = Visibility.Visible;
+
+          this.aResizeComboBox.Visibility = Visibility.Visible;
+          this.a2Label.Visibility = Visibility.Visible;
+        }
+        else
+        {
+          // 3 2 or 1
+          this.aDimComboBox.Visibility = Visibility.Hidden;
+          this.a1Label.Visibility = Visibility.Hidden;
+
+          this.aResizeComboBox.Visibility = Visibility.Hidden;
+          this.a2Label.Visibility = Visibility.Hidden;
+        }
+
+        this.angelComboBox.SelectedItem = 90;
+        this.axisComboBox.SelectedItem = "Z";
+
+        this.rotateGrid.IsEnabled = false;
+        this.resizeGrid.IsEnabled = false;
+      }
+    }
+
+    /// <summary>
+    /// The get 1 d array.
+    /// </summary>
+    /// <param name="x">
+    /// The x.
+    /// </param>
+    /// <returns>
+    /// The <see cref="Array"/>.
+    /// </returns>
+    /// <exception cref="FormatException">
+    /// </exception>
+    private Array Get1DArray(int x)
+    {
+      if (this.autoFillTab.IsSelected)
+      {
+        return
+          Enumerator.Generate(
+            double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), 
+            double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), 
+            x).Select(V => V).ToArray();
+      }
+      else if (this.manualTab.IsSelected)
+      {
+        try
+        {
+          string[] items = this.GetManualItems();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray();
+        }
+        catch (Exception ex)
+        {
+          throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
+        }
+      }
+      else
+      {
+        // file
+        try
+        {
+          string[] items = this.GetFileItems();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray();
+        }
+        catch (FormatException ex)
+        {
+          throw new FormatException(AvProp.Resources.InvalidFileContent, ex);
+        }
+        catch
+        {
+          throw;
+        }
+      }
+    }
+
+    /// <summary>
+    /// The get 2 d array.
+    /// </summary>
+    /// <param name="x">
+    /// The x.
+    /// </param>
+    /// <param name="y">
+    /// The y.
+    /// </param>
+    /// <returns>
+    /// The <see cref="Array"/>.
+    /// </returns>
+    /// <exception cref="FormatException">
+    /// </exception>
+    private Array Get2DArray(int x, int y)
+    {
+      if (this.autoFillTab.IsSelected)
+      {
+        return
+          Enumerator.Generate(
+            double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), 
+            double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), 
+            x * y).Select(V => V).ToArray(y, x);
+      }
+      else if (this.manualTab.IsSelected)
+      {
+        try
+        {
+          string[] items = this.GetManualItems();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(y, x);
+        }
+        catch (Exception ex)
+        {
+          throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
+        }
+      }
+      else
+      {
+        // file
+        try
+        {
+          string[] items = this.GetFileItems();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(y, x);
+        }
+        catch (FormatException ex)
+        {
+          throw new FormatException(AvProp.Resources.InvalidFileContent, ex);
+        }
+        catch
+        {
+          throw;
+        }
+      }
+    }
+
+    /// <summary>
+    /// The get 3 d array.
+    /// </summary>
+    /// <param name="x">
+    /// The x.
+    /// </param>
+    /// <param name="y">
+    /// The y.
+    /// </param>
+    /// <param name="z">
+    /// The z.
+    /// </param>
+    /// <returns>
+    /// The <see cref="Array"/>.
+    /// </returns>
+    /// <exception cref="FormatException">
+    /// </exception>
+    private Array Get3DArray(int x, int y, int z)
+    {
+      if (this.autoFillTab.IsSelected)
+      {
+        return
+          Enumerator.Generate(
+            double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), 
+            double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), 
+            x * y * z).Select(V => V).ToArray(z, y, x);
+      }
+      else if (this.manualTab.IsSelected)
+      {
+        try
+        {
+          string[] items = this.GetManualItems();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(z, y, x);
+        }
+        catch (Exception ex)
+        {
+          throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
+        }
+      }
+      else
+      {
+        // file
+        try
+        {
+          string[] items = this.GetFileItems();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(z, y, x);
+        }
+        catch (FormatException ex)
+        {
+          throw new FormatException(AvProp.Resources.InvalidFileContent, ex);
+        }
+        catch
+        {
+          throw;
+        }
+      }
+    }
+
+    /// <summary>
+    /// The get 4 d array.
+    /// </summary>
+    /// <param name="x">
+    /// The x.
+    /// </param>
+    /// <param name="y">
+    /// The y.
+    /// </param>
+    /// <param name="z">
+    /// The z.
+    /// </param>
+    /// <param name="a">
+    /// The a.
+    /// </param>
+    /// <returns>
+    /// The <see cref="Array"/>.
+    /// </returns>
+    /// <exception cref="FormatException">
+    /// </exception>
+    private Array Get4DArray(int x, int y, int z, int a)
+    {
+      if (this.autoFillTab.IsSelected)
+      {
+        return
+          Enumerator.Generate(
+            double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), 
+            double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), 
+            x * y * z * a).Select(V => V).ToArray(a, z, y, x);
+      }
+      else if (this.manualTab.IsSelected)
+      {
+        try
+        {
+          string[] items = this.GetManualItems();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(a, z, y, x);
+        }
+        catch
+        {
+          throw new FormatException(AvProp.Resources.InvalidInputFormat);
+        }
+      }
+      else
+      {
+        // file
+        try
+        {
+          string[] items = this.GetFileItems();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(a, z, y, x);
+        }
+        catch (FormatException)
+        {
+          throw new FormatException(AvProp.Resources.InvalidFileContent);
+        }
+        catch
+        {
+          throw;
+        }
+      }
+    }
+
+    /// <summary>
+    /// The get file items.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="string[]"/>.
+    /// </returns>
+    private string[] GetFileItems()
+    {
+      var name = (string)this.fileLabel.Tag;
+      string list = string.Join(",", File.ReadAllLines(name));
+      return GetItems(list);
+    }
+
+    /// <summary>
+    /// The get jagged array 1 d.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="Array"/>.
+    /// </returns>
+    private Array GetJaggedArray1D()
+    {
+      var arr = new int[5][][][];
+      for (int i = 0; i < 5; i++)
+      {
+        arr[i] = this.GetJaggedArray2();
+      }
+
+      return arr;
+    }
+
+    /// <summary>
+    /// The get jagged array 2.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="int[][][]"/>.
+    /// </returns>
+    private int[][][] GetJaggedArray2()
+    {
+      var arr = new[]
+                  {
+                    new[] { new[] { 1, 2, 3 }, new[] { 1, 2, 3, 4, 5 }, new[] { 1 }, new[] { 1, 2, 3 }, new[] { 1, 2 } }
+                    , new[] { new[] { 1, 2, 3 }, new[] { 1, 2, 3, 4, 5 }, new[] { 1 }, new[] { 1, 2, 3 } }, 
+                    new[] { new[] { 1, 2, 3 }, new[] { 1, 2, 3, 4, 5 }, new[] { 1 } }, 
+                    new[]
+                      {
+                        new[] { 1, 2, 3 }, 
+                        new[]
+                          {
+                            1, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3
+                          }, 
+                        new[] { 1 }, new[] { 1, 2, 3 }, new[] { 1, 2 }
+                      }
+                  };
+
+      return arr;
+    }
+
+    /// <summary>
+    /// The get jagged array 2 d.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="Array"/>.
+    /// </returns>
+    private Array GetJaggedArray2D()
+    {
+      var arr = new int[5, 3][][][];
+      for (int i = 0; i < 5; i++)
+      {
+        arr[i, 0] = this.GetJaggedArray2();
+        arr[i, 1] = this.GetJaggedArray3();
+        arr[i, 2] = this.GetJaggedArray2();
+      }
+
+      return arr;
+    }
+
+    /// <summary>
+    /// The get jagged array 3.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="int[][][]"/>.
+    /// </returns>
+    private int[][][] GetJaggedArray3()
+    {
+      var arr = new[]
+                  {
+                    new[]
+                      {
+                        new[] { 11, 21, 3 }, new[] { 11, 21, 31, 41, 5 }, new[] { 1 }, new[] { 11, 21, 3 }, 
+                        new[] { 11, 2 }
+                      }, 
+                    new[] { new[] { 11, 21, 3 }, new[] { 11, 21, 31, 41, 5 }, new[] { 1 }, new[] { 11, 21, 3 } }, 
+                    new[] { new[] { 11, 21, 3 }, new[] { 11, 21, 31, 41, 5 }, new[] { 1 } }, 
+                    new[]
+                      {
+                        new[] { 11, 21, 3 }, 
+                        new[]
+                          {
+                            11, 21, 31, 41, 51, 21, 31, 41, 51, 21, 31, 4, 5, 2, 31, 41, 51, 21, 31, 41, 51, 21, 31, 41, 
+                            51, 21, 31, 41, 51, 21, 3
+                          }, 
+                        new[] { 1 }, new[] { 11, 21, 3 }, new[] { 11, 2 }
+                      }
+                  };
+
+      return arr;
+    }
+
+    /// <summary>
+    /// The get manual items.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="string[]"/>.
+    /// </returns>
+    private string[] GetManualItems()
+    {
+      return GetItems(this.manualItemsTextBox.Text);
+    }
+
+    /// <summary>
+    /// The prepair grid.
+    /// </summary>
+    /// <param name="arrayControl">
+    /// The array control.
+    /// </param>
+    private void PrepairGrid(ArrayControl arrayControl)
+    {
+      if (this.arrayCtl != null)
+      {
+        this.mainPanel.Children.Remove(this.arrayCtl);
+      }
+
+      this.arrayCtl = arrayControl;
+      this.arrayCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
+      this.arrayCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
+      this.arrayCtl.Formatter = this.formatterTextBox.Text;
+      this.arrayCtl.Margin = new Thickness(12, 12, 0, 0);
+      this.arrayCtl.HorizontalAlignment = HorizontalAlignment.Left;
+      this.arrayCtl.Width = 285;
+      this.arrayCtl.Height = 251;
+      this.arrayCtl.VerticalAlignment = VerticalAlignment.Top;
+      this.mainPanel.Children.Add(this.arrayCtl);
+    }
+
+    /// <summary>
+    /// The save to file.
+    /// </summary>
+    /// <param name="fileName">
+    /// The file name.
+    /// </param>
+    private void SaveToFile(string fileName)
+    {
+      double[] values = this.arrayCtl.Data.AsEnumerable<double>().ToArray();
+      string list = string.Join(",", values);
+
+      File.WriteAllText(fileName, list);
+    }
+
+    /// <summary>
+    /// The text box_ preview key down.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
+    private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Space)
+      {
+        e.Handled = true;
+      }
+    }
+
+    /// <summary>
+    /// The text box_ preview text input.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
+    private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+      var textBox = sender as TextBox;
+      if (textBox != null)
+      {
+        string text = textBox.Text + e.Text;
+        double temp;
+        bool ok = double.TryParse(text, out temp);
+        e.Handled = !ok;
+      }
+    }
+
+    /// <summary>
+    /// The dimenstions tab_ selection changed.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
+    private void dimenstionsTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      this.ArrangeFrames();
+    }
+
+    /// <summary>
+    /// The manual items text box_ got focus.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
+    private void manualItemsTextBox_GotFocus(object sender, RoutedEventArgs e)
+    {
+      this.fillOptionsTabControlWidth = this.fillOptionsTabControl.Width;
+      this.fillOptionsTabControl.Width = this.Width - 53;
+    }
+
+    /// <summary>
+    /// The manual items text box_ lost focus.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
+    private void manualItemsTextBox_LostFocus(object sender, RoutedEventArgs e)
+    {
+      this.fillOptionsTabControl.Width = this.fillOptionsTabControlWidth;
+    }
+
+    /// <summary>
+    /// The open file button_ click.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
+    private void openFileButton_Click(object sender, RoutedEventArgs e)
+    {
+      var ofd = new OpenFileDialog();
+      ofd.Filter = "Text Files|*.txt|Csv Files|*.csv|All Files|*.*";
+      ofd.Title = "Select Input File";
+
+      bool? res = ofd.ShowDialog();
+      if (res.HasValue && res.Value)
+      {
+        string name = ofd.FileName;
+        this.fileLabel.Tag = name;
+        this.fileLabel.Content = Path.GetFileName(name);
+        this.fileLabel.ToolTip = name;
+      }
+    }
+
+    /// <summary>
+    /// The render button_ click.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
     private void renderButton_Click(object sender, RoutedEventArgs e)
     {
       try
       {
-        int x = (int)xDimComboBox.SelectedItem;
-        int y = (int)yDimComboBox.SelectedItem;
-        int z = (int)zDimComboBox.SelectedItem;
-        int a = (int)aDimComboBox.SelectedItem;
+        var x = (int)this.xDimComboBox.SelectedItem;
+        var y = (int)this.yDimComboBox.SelectedItem;
+        var z = (int)this.zDimComboBox.SelectedItem;
+        var a = (int)this.aDimComboBox.SelectedItem;
 
-        switch (dims)
+        switch (this.dims)
         {
-          case -1: //Jagged 
-            PrepairGrid(new Array1D());
-            arrayCtl.SetControlData(GetJaggedArray1D());
+          case -1: // Jagged 
+            this.PrepairGrid(new Array1D());
+            this.arrayCtl.SetControlData(this.GetJaggedArray1D());
             break;
           case 1:
-            PrepairGrid(new Array1D());
-            arrayCtl.SetControlData(Get1DArray(x));
+            this.PrepairGrid(new Array1D());
+            this.arrayCtl.SetControlData(this.Get1DArray(x));
             break;
-          case -2: //Jagged 
-            PrepairGrid(new Array2D());
-            arrayCtl.SetControlData(GetJaggedArray2D());
+          case -2: // Jagged 
+            this.PrepairGrid(new Array2D());
+            this.arrayCtl.SetControlData(this.GetJaggedArray2D());
             break;
           case 2:
-            PrepairGrid(new Array2D());
-            arrayCtl.SetControlData(Get2DArray(x, y));
+            this.PrepairGrid(new Array2D());
+            this.arrayCtl.SetControlData(this.Get2DArray(x, y));
             break;
           case 3:
-            PrepairGrid(new Array3D());
-            arrayCtl.SetControlData(Get3DArray(x, y, z));
+            this.PrepairGrid(new Array3D());
+            this.arrayCtl.SetControlData(this.Get3DArray(x, y, z));
             break;
           case 4:
-            PrepairGrid(new Array4D());
-            arrayCtl.SetControlData(Get4DArray(x, y, z, a));
+            this.PrepairGrid(new Array4D());
+            this.arrayCtl.SetControlData(this.Get4DArray(x, y, z, a));
             break;
         }
 
-        rotateGrid.IsEnabled = Math.Abs(dims) > 1;
-        resizeGrid.IsEnabled = dims > 0;
-        saveButton.IsEnabled = true;
+        this.rotateGrid.IsEnabled = Math.Abs(this.dims) > 1;
+        this.resizeGrid.IsEnabled = this.dims > 0;
+        this.saveButton.IsEnabled = true;
       }
       catch (Exception ex)
       {
         MessageBox.Show(this, ex.Message, AvProp.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
       }
-
     }
 
-    private void dimenstionsTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    /// <summary>
+    /// The resize button_ click.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
+    /// <exception cref="ArrayTypeMismatchException">
+    /// </exception>
+    private void resizeButton_Click(object sender, RoutedEventArgs e)
     {
-      ArrangeFrames();
+      try
+      {
+        var x = (int)this.xResizeComboBox.SelectedItem;
+        var y = (int)this.yResizeComboBox.SelectedItem;
+        var z = (int)this.zResizeComboBox.SelectedItem;
+        var a = (int)this.aResizeComboBox.SelectedItem;
+
+        switch (this.dims)
+        {
+          case 1:
+            this.arrayCtl.SetControlData(((double[])this.arrayCtl.Data).Resize(x));
+            break;
+          case 2:
+            this.arrayCtl.SetControlData(((double[,])this.arrayCtl.Data).Resize(y, x));
+            break;
+          case 3:
+            this.arrayCtl.SetControlData(((double[,,])this.arrayCtl.Data).Resize(z, y, x));
+            break;
+          case 4:
+            this.arrayCtl.SetControlData(((double[,,,])this.arrayCtl.Data).Resize(a, z, y, x));
+            break;
+          default:
+            throw new ArrayTypeMismatchException();
+        }
+      }
+      catch
+      {
+        MessageBox.Show(
+          this, "Unable to resize this array.", "ResizeE Error", MessageBoxButton.OK, MessageBoxImage.Error);
+      }
     }
 
+    /// <summary>
+    /// The rotate button_ click.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
     private void rotateButton_Click(object sender, RoutedEventArgs e)
     {
-      RotateAxis r = RotateAxis.RotateNone;
-      int angle = (int)angelComboBox.SelectedItem;
+      var r = RotateAxis.RotateNone;
+      var angle = (int)this.angelComboBox.SelectedItem;
 
-      switch ((string)axisComboBox.SelectedItem)
+      switch ((string)this.axisComboBox.SelectedItem)
       {
         case "X":
           r = RotateAxis.RotateX;
@@ -137,447 +856,40 @@ namespace ArrayVisualizer
           break;
       }
 
-      switch (Math.Abs(dims))
+      switch (Math.Abs(this.dims))
       {
         case 2:
-          arrayCtl.SetControlData(((object[,])arrayCtl.Data).Rotate(angle));
+          this.arrayCtl.SetControlData(((object[,])this.arrayCtl.Data).Rotate(angle));
           break;
         case 3:
-          arrayCtl.SetControlData(((object[, ,])arrayCtl.Data).Rotate(r, angle));
+          this.arrayCtl.SetControlData(((object[,,])this.arrayCtl.Data).Rotate(r, angle));
           break;
         case 4:
-          arrayCtl.SetControlData(((object[, , ,])arrayCtl.Data).Rotate(r, angle));
+          this.arrayCtl.SetControlData(((object[,,,])this.arrayCtl.Data).Rotate(r, angle));
           break;
       }
     }
 
-    private void resizeButton_Click(object sender, RoutedEventArgs e)
-    {
-      try
-      {
-        int x = (int)xResizeComboBox.SelectedItem;
-        int y = (int)yResizeComboBox.SelectedItem;
-        int z = (int)zResizeComboBox.SelectedItem;
-        int a = (int)aResizeComboBox.SelectedItem;
-
-        switch (dims)
-        {
-          case 1:
-            arrayCtl.SetControlData(((double[])arrayCtl.Data).Resize(x));
-            break;
-          case 2:
-            arrayCtl.SetControlData(((double[,])arrayCtl.Data).Resize(y, x));
-            break;
-          case 3:
-            arrayCtl.SetControlData(((double[, ,])arrayCtl.Data).Resize(z, y, x));
-            break;
-          case 4:
-            arrayCtl.SetControlData(((double[, , ,])arrayCtl.Data).Resize(a, z, y, x));
-            break;
-          default:
-            throw new ArrayTypeMismatchException();
-        }
-      }
-      catch
-      {
-        MessageBox.Show(this, "Unable to resize this array.", "ResizeE Error", MessageBoxButton.OK, MessageBoxImage.Error);
-      }
-    }
-
-    private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-    {
-      TextBox textBox = sender as TextBox;
-      if (textBox != null)
-      {
-        string text = textBox.Text + e.Text;
-        double temp;
-        bool ok = double.TryParse(text, out temp);
-        e.Handled = !ok;
-      }
-    }
-
-    private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-    {
-      if (e.Key == Key.Space)
-        e.Handled = true;
-    }
-
-    private void manualItemsTextBox_LostFocus(object sender, RoutedEventArgs e)
-    {
-      fillOptionsTabControl.Width = fillOptionsTabControlWidth;
-    }
-
-    private void manualItemsTextBox_GotFocus(object sender, RoutedEventArgs e)
-    {
-      fillOptionsTabControlWidth = fillOptionsTabControl.Width;
-      fillOptionsTabControl.Width = this.Width - 53;
-    }
-
-    private void openFileButton_Click(object sender, RoutedEventArgs e)
-    {
-      OpenFileDialog ofd = new OpenFileDialog();
-      ofd.Filter = "Text Files|*.txt|Csv Files|*.csv|All Files|*.*";
-      ofd.Title = "Select Input File";
-
-      bool? res = ofd.ShowDialog();
-      if (res.HasValue && res.Value)
-      {
-        string name = ofd.FileName;
-        fileLabel.Tag = name;
-        fileLabel.Content = Path.GetFileName(name);
-        fileLabel.ToolTip = name;
-      }
-    }
-
+    /// <summary>
+    /// The save button_ click.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
     private void saveButton_Click(object sender, RoutedEventArgs e)
     {
-      SaveFileDialog sfd = new SaveFileDialog();
+      var sfd = new SaveFileDialog();
       sfd.Filter = "Text Files|*.txt|Csv Files|*.csv|All Files|*.*";
       sfd.Title = "Select Input File";
 
       bool? res = sfd.ShowDialog();
       if (res.HasValue && res.Value)
-        SaveToFile(sfd.FileName);
-    }
-
-    #endregion
-
-    #region Methods
-
-    private void PrepairGrid(ArrayControl arrayControl)
-    {
-      if (arrayCtl != null)
-        mainPanel.Children.Remove(arrayCtl);
-      arrayCtl = arrayControl;
-      arrayCtl.CellWidth = double.Parse(cellWidthTextBox.Text, CultureInfo.InvariantCulture);
-      arrayCtl.CellHeight = double.Parse(cellHeightTextBox.Text, CultureInfo.InvariantCulture);
-      arrayCtl.Formatter = formatterTextBox.Text;
-      arrayCtl.Margin = new Thickness(12, 12, 0, 0);
-      arrayCtl.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-      arrayCtl.Width = 285;
-      arrayCtl.Height = 251;
-      arrayCtl.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-      mainPanel.Children.Add(arrayCtl);
-    }
-
-    private Array Get1DArray(int x)
-    {
-      if (autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(stepTextBox.Text, CultureInfo.InvariantCulture), x).Select(V => (double)V).ToArray();
-      else if (manualTab.IsSelected)
       {
-        try
-        {
-          string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray();
-        }
-        catch (Exception ex)
-        {
-          throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
-        }
+        this.SaveToFile(sfd.FileName);
       }
-      else //file
-      {
-        try
-        {
-          string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray();
-        }
-        catch (FormatException ex)
-        {
-          throw new FormatException(AvProp.Resources.InvalidFileContent, ex);
-        }
-        catch
-        {
-          throw;
-        }
-      }
-    }
-
-    private Array Get2DArray(int x, int y)
-    {
-      if (autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(stepTextBox.Text, CultureInfo.InvariantCulture), x * y).Select(V => (double)V).ToArray(y, x);
-      else if (manualTab.IsSelected)
-      {
-        try
-        {
-          string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(y, x);
-        }
-        catch (Exception ex)
-        {
-          throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
-        }
-      }
-      else //file
-      {
-        try
-        {
-          string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(y, x);
-        }
-        catch (FormatException ex)
-        {
-          throw new FormatException(AvProp.Resources.InvalidFileContent, ex);
-        }
-        catch
-        {
-          throw;
-        }
-      }
-    }
-
-    private Array Get3DArray(int x, int y, int z)
-    {
-      if (autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(stepTextBox.Text, CultureInfo.InvariantCulture), x * y * z).Select(V => (double)V).ToArray(z, y, x);
-      else if (manualTab.IsSelected)
-      {
-        try
-        {
-          string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(z, y, x);
-        }
-        catch (Exception ex)
-        {
-          throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
-        }
-      }
-      else //file
-      {
-        try
-        {
-          string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(z, y, x);
-        }
-        catch (FormatException ex)
-        {
-          throw new FormatException(AvProp.Resources.InvalidFileContent, ex);
-        }
-        catch
-        {
-          throw;
-        }
-      }
-    }
-
-    private Array Get4DArray(int x, int y, int z, int a)
-    {
-      if (autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(stepTextBox.Text, CultureInfo.InvariantCulture), x * y * z * a).Select(V => (double)V).ToArray(a, z, y, x);
-      else if (manualTab.IsSelected)
-      {
-        try
-        {
-          string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(a, z, y, x);
-        }
-        catch
-        {
-          throw new FormatException(AvProp.Resources.InvalidInputFormat);
-        }
-      }
-      else //file
-      {
-        try
-        {
-          string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(a, z, y, x);
-        }
-        catch (FormatException)
-        {
-          throw new FormatException(AvProp.Resources.InvalidFileContent);
-        }
-        catch
-        {
-          throw;
-        }
-      }
-    }
-
-    private Array GetJaggedArray1D()
-    {
-      int[][][][] arr = new int[5][][][];
-      for (int i = 0; i < 5; i++)
-        arr[i] = GetJaggedArray2();
-      return arr;
-    }
-
-    private Array GetJaggedArray2D()
-    {
-      int[,][][][] arr = new int[5, 3][][][];
-      for (int i = 0; i < 5; i++)
-      {
-        arr[i, 0] = GetJaggedArray2();
-        arr[i, 1] = GetJaggedArray3();
-        arr[i, 2] = GetJaggedArray2();
-      }
-      return arr;
-    }
-
-    private int[][][] GetJaggedArray2()
-    {
-      int[][][] arr = new int[][][] { 
-        new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5 }, new int[] { 1 }, new int[] { 1, 2, 3 }, new int[] { 1, 2 } },
-        new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5 }, new int[] { 1 }, new int[] { 1, 2, 3 }},
-        new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5 }, new int[] { 1 }},
-        new int[][]{new int[] { 1, 2, 3 }, new int[] { 1, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3 }, new int[] { 1 }, new int[] { 1, 2, 3 }, new int[] { 1, 2 } }
-      };
-
-      return arr;
-    }
-
-    private int[][][] GetJaggedArray3()
-    {
-      int[][][] arr = new int[][][] { 
-        new int[][]{new int[] { 11, 21, 3 }, new int[] { 11, 21, 31, 41, 5 }, new int[] { 1 }, new int[] { 11, 21, 3 }, new int[] { 11, 2 } },
-        new int[][]{new int[] { 11, 21, 3 }, new int[] { 11, 21, 31, 41, 5 }, new int[] { 1 }, new int[] { 11, 21, 3 }},
-        new int[][]{new int[] { 11, 21, 3 }, new int[] { 11, 21, 31, 41, 5 }, new int[] { 1 }},
-        new int[][]{new int[] { 11, 21, 3 }, new int[] { 11, 21, 31, 41, 51, 21, 31, 41, 51, 21, 31, 4, 5, 2, 31, 41, 51, 21, 31, 41, 51, 21, 31, 41, 51, 21, 31, 41, 51, 21, 3 }, new int[] { 1 }, new int[] { 11, 21, 3 }, new int[] { 11, 2 } }
-      };
-
-      return arr;
-    }
-
-    private void ArrangeFrames()
-    {
-      int temp = int.Parse((string)((TabItem)dimenstionsTab.SelectedItem).Tag);
-      jagged = temp < 0;
-      if (jagged)
-      {
-        fillOptionsTabControl.Visibility = System.Windows.Visibility.Hidden;
-        resizeGrid.Visibility = System.Windows.Visibility.Hidden;
-        rotateGrid.Visibility = temp == -1 ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
-        xDimComboBox.Visibility = System.Windows.Visibility.Hidden;
-        x1Label.Visibility = System.Windows.Visibility.Hidden;
-      }
-      else
-      {
-        fillOptionsTabControl.Visibility = System.Windows.Visibility.Visible;
-        resizeGrid.Visibility = System.Windows.Visibility.Visible;
-        rotateGrid.Visibility = System.Windows.Visibility.Visible;
-        xDimComboBox.Visibility = System.Windows.Visibility.Visible;
-        x1Label.Visibility = System.Windows.Visibility.Visible;
-      }
-
-      if (temp != dims)
-      {
-        dims = temp;
-
-        this.angelComboBox.Items.Clear();
-        this.axisComboBox.Items.Clear();
-
-        this.angelComboBox.Items.Add(90);
-        this.angelComboBox.Items.Add(180);
-        this.angelComboBox.Items.Add(270);
-
-        this.axisComboBox.Items.Add("X");
-        this.axisComboBox.Items.Add("Y");
-        this.axisComboBox.Items.Add("Z");
-
-        if (dims >= 2)
-        {
-          yDimComboBox.Visibility = System.Windows.Visibility.Visible;
-          y1Label.Visibility = System.Windows.Visibility.Visible;
-
-          yResizeComboBox.Visibility = System.Windows.Visibility.Visible;
-          y2Label.Visibility = System.Windows.Visibility.Visible;
-        }
-        else //1
-        {
-          yDimComboBox.Visibility = System.Windows.Visibility.Hidden;
-          y1Label.Visibility = System.Windows.Visibility.Hidden;
-
-          yResizeComboBox.Visibility = System.Windows.Visibility.Hidden;
-          y2Label.Visibility = System.Windows.Visibility.Hidden;
-        }
-
-        if (dims >= 3)
-        {
-          zDimComboBox.Visibility = System.Windows.Visibility.Visible;
-          z1Label.Visibility = System.Windows.Visibility.Visible;
-
-          axisComboBox.Visibility = System.Windows.Visibility.Visible;
-          axisLabel.Visibility = System.Windows.Visibility.Visible;
-
-          zResizeComboBox.Visibility = System.Windows.Visibility.Visible;
-          z2Label.Visibility = System.Windows.Visibility.Visible;
-        }
-        else //2 or 1
-        {
-          zDimComboBox.Visibility = System.Windows.Visibility.Hidden;
-          z1Label.Visibility = System.Windows.Visibility.Hidden;
-
-          axisComboBox.Visibility = System.Windows.Visibility.Hidden;
-          axisLabel.Visibility = System.Windows.Visibility.Hidden;
-
-          zResizeComboBox.Visibility = System.Windows.Visibility.Hidden;
-          z2Label.Visibility = System.Windows.Visibility.Hidden;
-        }
-
-        if (dims >= 4)
-        {
-          this.angelComboBox.Items.Add(360);
-          this.angelComboBox.Items.Add(450);
-
-          this.axisComboBox.Items.Add("A");
-
-          aDimComboBox.Visibility = System.Windows.Visibility.Visible;
-          a1Label.Visibility = System.Windows.Visibility.Visible;
-
-          aResizeComboBox.Visibility = System.Windows.Visibility.Visible;
-          a2Label.Visibility = System.Windows.Visibility.Visible;
-        }
-        else //3 2 or 1
-        {
-          aDimComboBox.Visibility = System.Windows.Visibility.Hidden;
-          a1Label.Visibility = System.Windows.Visibility.Hidden;
-
-          aResizeComboBox.Visibility = System.Windows.Visibility.Hidden;
-          a2Label.Visibility = System.Windows.Visibility.Hidden;
-        }
-
-        this.angelComboBox.SelectedItem = 90;
-        this.axisComboBox.SelectedItem = "Z";
-
-        rotateGrid.IsEnabled = false;
-        resizeGrid.IsEnabled = false;
-      }
-    }
-
-    private string[] GetManualItems()
-    {
-      return GetItems(manualItemsTextBox.Text);
-    }
-
-    private static string[] GetItems(string list)
-    {
-      list = list.Replace(" ", "");
-      list = list.Replace('\r', ',');
-      list = list.Replace('\n', ',');
-
-      while (list.IndexOf(",,", StringComparison.CurrentCulture) != -1)
-        list = list.Replace(",,", ",");
-
-      list = list.Trim(',');
-
-      return list.Split(new char[] { ',' });
-    }
-
-    private void SaveToFile(string fileName)
-    {
-      double[] values = arrayCtl.Data.AsEnumerable<double>().ToArray();
-      string list = string.Join(",", values);
-
-      File.WriteAllText(fileName, list);
-    }
-
-    private string[] GetFileItems()
-    {
-      string name = (string)fileLabel.Tag;
-      string list = string.Join(",", File.ReadAllLines(name));
-      return GetItems(list);
     }
 
     #endregion
