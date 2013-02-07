@@ -13,6 +13,8 @@ using AvProp = ArrayVisualizer.Properties;
 
 namespace ArrayVisualizer
 {
+  using System.Globalization;
+
   /// <summary>
   /// Interaction logic for MainWindow.xaml
   /// </summary>
@@ -247,8 +249,8 @@ namespace ArrayVisualizer
       if (arrayCtl != null)
         mainPanel.Children.Remove(arrayCtl);
       arrayCtl = arrayControl;
-      arrayCtl.CellWidth = double.Parse(cellWidthTextBox.Text);
-      arrayCtl.CellHeight = double.Parse(cellHeightTextBox.Text);
+      arrayCtl.CellWidth = double.Parse(cellWidthTextBox.Text, CultureInfo.InvariantCulture);
+      arrayCtl.CellHeight = double.Parse(cellHeightTextBox.Text, CultureInfo.InvariantCulture);
       arrayCtl.Formatter = formatterTextBox.Text;
       arrayCtl.Margin = new Thickness(12, 12, 0, 0);
       arrayCtl.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
@@ -261,13 +263,13 @@ namespace ArrayVisualizer
     private Array Get1DArray(int x)
     {
       if (autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(startValueTextBox.Text), double.Parse(stepTextBox.Text), x).Select(V => (double)V).ToArray();
+        return Enumerator.Generate(double.Parse(startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(stepTextBox.Text, CultureInfo.InvariantCulture), x).Select(V => (double)V).ToArray();
       else if (manualTab.IsSelected)
       {
         try
         {
           string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray();
         }
         catch (Exception ex)
         {
@@ -279,7 +281,7 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray();
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray();
         }
         catch (FormatException ex)
         {
@@ -295,13 +297,13 @@ namespace ArrayVisualizer
     private Array Get2DArray(int x, int y)
     {
       if (autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(startValueTextBox.Text), double.Parse(stepTextBox.Text), x * y).Select(V => (double)V).ToArray(y, x);
+        return Enumerator.Generate(double.Parse(startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(stepTextBox.Text, CultureInfo.InvariantCulture), x * y).Select(V => (double)V).ToArray(y, x);
       else if (manualTab.IsSelected)
       {
         try
         {
           string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(y, x);
         }
         catch (Exception ex)
         {
@@ -313,7 +315,7 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(y, x);
         }
         catch (FormatException ex)
         {
@@ -329,13 +331,13 @@ namespace ArrayVisualizer
     private Array Get3DArray(int x, int y, int z)
     {
       if (autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(startValueTextBox.Text), double.Parse(stepTextBox.Text), x * y * z).Select(V => (double)V).ToArray(z, y, x);
+        return Enumerator.Generate(double.Parse(startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(stepTextBox.Text, CultureInfo.InvariantCulture), x * y * z).Select(V => (double)V).ToArray(z, y, x);
       else if (manualTab.IsSelected)
       {
         try
         {
           string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(z, y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(z, y, x);
         }
         catch (Exception ex)
         {
@@ -347,7 +349,7 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(z, y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(z, y, x);
         }
         catch (FormatException ex)
         {
@@ -363,13 +365,13 @@ namespace ArrayVisualizer
     private Array Get4DArray(int x, int y, int z, int a)
     {
       if (autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(startValueTextBox.Text), double.Parse(stepTextBox.Text), x * y * z * a).Select(V => (double)V).ToArray(a, z, y, x);
+        return Enumerator.Generate(double.Parse(startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(stepTextBox.Text, CultureInfo.InvariantCulture), x * y * z * a).Select(V => (double)V).ToArray(a, z, y, x);
       else if (manualTab.IsSelected)
       {
         try
         {
           string[] items = GetManualItems();
-          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(a, z, y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(a, z, y, x);
         }
         catch
         {
@@ -381,7 +383,7 @@ namespace ArrayVisualizer
         try
         {
           string[] items = GetFileItems();
-          return items.Select(X => double.Parse(X, Thread.CurrentThread.CurrentUICulture.NumberFormat)).ToArray(a, z, y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(a, z, y, x);
         }
         catch (FormatException)
         {

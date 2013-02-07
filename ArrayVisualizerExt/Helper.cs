@@ -14,7 +14,8 @@ namespace ArrayVisualizerExt
 
     internal static bool IsExpressionCsArrayType(string typeExpression)
     {
-      return typeExpression.EndsWith("]") && (typeExpression.EndsWith("[]") || typeExpression.EndsWith("[,]") || typeExpression.EndsWith("[,,]") || typeExpression.EndsWith("[,,,]"));
+      return typeExpression.StartsWith("SharpDX.Matrix") ||typeExpression.StartsWith("SharpDX.Vector")
+        || (typeExpression.EndsWith("]") && (typeExpression.EndsWith("[]") || typeExpression.EndsWith("[,]") || typeExpression.EndsWith("[,,]") || typeExpression.EndsWith("[,,,]")));
     }
 
     internal static bool IsExpressionFsArrayType(string typeExpression)
@@ -24,7 +25,8 @@ namespace ArrayVisualizerExt
 
     internal static bool IsExpressionVbArrayType(string typeExpression)
     {
-      return typeExpression.EndsWith(")") && (typeExpression.EndsWith("()") || typeExpression.EndsWith("(,)") || typeExpression.EndsWith("(,,)") || typeExpression.EndsWith("(,,,)"));
+      return typeExpression.StartsWith("SharpDX.Matrix") ||typeExpression.StartsWith("SharpDX.Vector")
+        || (typeExpression.EndsWith(")") && (typeExpression.EndsWith("()") || typeExpression.EndsWith("(,)") || typeExpression.EndsWith("(,,)") || typeExpression.EndsWith("(,,,)")));
     }
   }
 }

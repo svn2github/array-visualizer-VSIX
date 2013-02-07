@@ -40,7 +40,9 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LinqLib, Version=1.0.2.8, Culture=neutral, PublicKeyToken=100a413726ba3d7c, processorArchitecture=MSIL" />
+    <Reference Include="LinqLib">
+      <HintPath>..\packages\LinqExtLibrary.1.0.4.0\lib\LinqLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
@@ -157,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ArrayVisualizer.pfx" />
+	<None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

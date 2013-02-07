@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WinForms", "WinForms", "{A61C476F-0130-40D7-9D34-BD914E2865E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsArrayVisualizer", "WinForms\ArrayVisualizer\WinFormsArrayVisualizer.csproj", "{3795E735-B135-407A-A779-52E5231BF040}"

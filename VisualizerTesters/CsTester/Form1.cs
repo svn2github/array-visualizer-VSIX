@@ -5,6 +5,8 @@ using LinqLib.Sequence;
 
 namespace CsTester
 {
+  using SharpDX;
+
   public partial class Form1 : Form
   {
     public Form1()
@@ -31,7 +33,16 @@ namespace CsTester
       arr1 = Enumerator.Generate<int>(1, 1, 100).Shuffle().ToArray(5, 5, 4);
       arr2 = Enumerator.Generate<int>(1, 1, 49).Shuffle().ToArray(7, 7);
       arr3 = Enumerator.Generate<TestType>(15, (X) => GetNewType(X)).Shuffle().ToArray(5, 3);
-      arr4 = Enumerator.Generate<TestType>(27, (X) => GetNewType(X)).Shuffle().ToArray(9, 3);      
+      arr4 = Enumerator.Generate<TestType>(27, (X) => GetNewType(X)).Shuffle().ToArray(9, 3);
+
+      var v1 = new Vector2(1, 2);
+      var v2 = new Vector3(1,2,3);
+      var v3 = new Vector4(1, 2, 3,4);
+      var m1 = Matrix.Identity;
+      var m2 = Matrix3x2.Identity;
+      var m3 = Matrix5x4.Identity;
+
+      var o = new other { w = new Vector3(1, 2, 3) };
 
       System.Diagnostics.Debugger.Break();
     }
@@ -51,6 +62,11 @@ namespace CsTester
     {
       return string.Format("{0} of {1}", a, b);
     }
+  }
+
+  public class other
+  {
+    public Vector3 w { get; set; }
   }
 }
 

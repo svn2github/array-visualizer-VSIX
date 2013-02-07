@@ -12,6 +12,11 @@ using Microsoft.VisualStudio.Shell;
 
 namespace ArrayVisualizerExt
 {
+  using System.Globalization;
+  using System.Linq;
+
+  using Expression = EnvDTE.Expression;
+
   /// <summary>
   /// Interaction logic for ArrayVisualizerToolControl.xaml
   /// </summary>
@@ -159,14 +164,20 @@ namespace ArrayVisualizerExt
     private void LoadScopeArrays()
     {
       ClearVisualizer();
-      expressions = new Dictionary<string, EnvDTE.Expression>();
+      this.expressions = new Dictionary<string, Expression>();
 
-      if (dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
-        foreach (EnvDTE.Expression expression in dte.Debugger.CurrentStackFrame.Locals)
-          ArrayLoader.ArraysLoader(expressions, "", expression);
+      if (this.dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
+      {
+        foreach (Expression expression in this.dte.Debugger.CurrentStackFrame.Locals)
+        {
+          this.ArrayLoader.ArraysLoader(this.expressions, string.Empty, expression);
+        }
+      }
 
-      foreach (string item in expressions.Keys)
-        arraysListBox.Items.Add(item);
+      foreach (string item in this.expressions.Keys)
+      {
+        this.arraysListBox.Items.Add(item);
+      }
     }
 
     private void LoadArrayControl(string arrayName)
@@ -177,66 +188,143 @@ namespace ArrayVisualizerExt
         EnvDTE.Expression expression = expressions[arrayName];
         if (expression.Value != "null")
         {
+          bool truncate = false;
+          int members;
+          string[] values;
           Array arr;
-          int[] dimenstions = ArrayLoader.DimensionsLoader(expression);
-          int members = expression.DataMembers.Count;
-          bool truncate = members > 1500;
-          if (truncate)
+          int[] dimenstions;
+
+          switch (expression.Type)
           {
-            int dims = dimenstions.Length;
-            double r = Math.Pow((double)members / 1500, 1.0 / dims);
-            int members2 = 1;
-            for (int i = 0; i < dims; i++)
-            {
-              dimenstions[i] = (int)(dimenstions[i] / r + .5);
-              members2 = members2 * dimenstions[i];
-            }
-            members = members2;
+            case "SharpDX.Matrix":
+              dimenstions = new[] { 4, 4 };
+              values =
+                expression.DataMembers.Cast<Expression>()
+                          .Where(e => e.Name.StartsWith("M"))
+                          .Select(e => e.Value)
+                          .ToArray();
+              members = values.Length;
+              break;
+            case "SharpDX.Matrix3x2":
+              //SharpDX.Matrix3x2 a; 2 columns
+              dimenstions = new[] { 3, 2 };
+              values =
+                expression.DataMembers.Cast<Expression>()
+                          .OrderBy(e => e.Name)
+                          .Where(e => e.Name.StartsWith("M"))
+                          .Select(e => e.Value)
+                          .ToArray();
+              members = values.Length;
+              break;
+            case "SharpDX.Matrix5x4":
+              dimenstions = new[] { 5, 4 };
+              values =
+                expression.DataMembers.Cast<Expression>()
+                          .OrderBy(e => e.Name)
+                          .Where(e => e.Name.StartsWith("M"))
+                          .Select(e => e.Value)
+                          .ToArray();
+              members = values.Length;
+              break;
+            case "SharpDX.Vector2":
+              dimenstions = new[] { 2, 1 };
+              values =
+                expression.DataMembers.Cast<Expression>()
+                          .Where(e => e.Name.EndsWith("X") || e.Name.EndsWith("Y"))
+                          .Select(e => e.Value)
+                          .ToArray();
+              members = values.Length;
+              break;
+            case "SharpDX.Vector3":
+              dimenstions = new[] { 3, 1 };
+              values =
+                expression.DataMembers.Cast<Expression>()
+                          .Where(e => e.Name.EndsWith("X") || e.Name.EndsWith("Y") || e.Name.EndsWith("Z"))
+                          .Select(e => e.Value)
+                          .ToArray();
+              members = values.Length;
+              break;
+            case "SharpDX.Vector4":
+              dimenstions = new[] { 4, 1 };
+              values =
+                expression.DataMembers.Cast<Expression>()
+                          .Where(
+                            e =>
+                            e.Name.EndsWith("X") || e.Name.EndsWith("Y") || e.Name.EndsWith("Z") || e.Name.EndsWith("W"))
+                          .Select(e => e.Value)
+                          .ToArray();
+              string tmp = values[0];
+              values[0] = values[1];
+              values[1] = values[2];
+              values[2] = values[3];
+              values[3] = tmp;
+
+              members = values.Length;
+              break;
+            default:
+              dimenstions = this.ArrayLoader.DimensionsLoader(expression);
+              members = expression.DataMembers.Count;
+              truncate = members > 1500;
+              if (truncate)
+              {
+                int dims = dimenstions.Length;
+                double r = Math.Pow((double)members / 1500, 1.0 / dims);
+                int members2 = 1;
+                for (int i = 0; i < dims; i++)
+                {
+                  dimenstions[i] = (int)(dimenstions[i] / r + .5);
+                  members2 = members2 * dimenstions[i];
+                }
+                members = members2;
+              }
+              values = new string[members];
+
+              for (int i = 0; i < members; i++)
+              {
+                values[i] = expression.DataMembers.Item(i + 1).Value;
+              }
+              break;
           }
-          string[] values = new string[members];
 
-          for (int i = 0; i < members; i++)
-            values[i] = expression.DataMembers.Item(i + 1).Value;
-
-          SetRotationOptions(dimenstions.Length);
+          this.SetRotationOptions(dimenstions.Length);
 
           switch (dimenstions.Length)
           {
             case 1:
               arr = values.ToArray(dimenstions[0]);
-              arrCtl = new Array1D();
+              this.arrCtl = new Array1D();
               break;
             case 2:
               arr = values.ToArray(dimenstions[0], dimenstions[1]);
-              arrCtl = new Array2D();
+              this.arrCtl = new Array2D();
               break;
             case 3:
               arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2]);
-              arrCtl = new Array3D();
+              this.arrCtl = new Array3D();
               break;
             case 4:
               arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2], dimenstions[3]);
-              arrCtl = new Array4D();
+              this.arrCtl = new Array4D();
               break;
             default:
               return;
           }
-          arrCtl.Formatter = formatterTextBox.Text;
-          arrCtl.CellHeight = double.Parse(cellHeightTextBox.Text);
-          arrCtl.CellWidth = double.Parse(cellWidthTextBox.Text);
+          this.arrCtl.Formatter = this.formatterTextBox.Text;
+          this.arrCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
+          this.arrCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
 
-          arrCtl.SetControlData(arr);
+          this.arrCtl.SetControlData(arr);
 
           if (truncate)
           {
-            Label msg = new Label();
+            var msg = new Label();
             msg.Content = string.Format("Array is too large, displaying first {0} items only.", members);
-            mainPanel.Children.Add(msg);
+            this.mainPanel.Children.Add(msg);
           }
-          arrCtl.Padding = new Thickness(8);
-          arrCtl.Width += 16;
-          arrCtl.Height += 16;
-          mainPanel.Children.Add(arrCtl);
+          this.arrCtl.Padding = new Thickness(8);
+          this.arrCtl.Width += 16;
+          this.arrCtl.Height += 16;
+          this.mainPanel.Children.Add(this.arrCtl);
         }
       }
       catch (Exception ex)

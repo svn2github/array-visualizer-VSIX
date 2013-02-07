@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace ArrayVisualizerExt.ArrayLoaders
 {
+  using EnvDTE;
+
   internal class CsArrayLoader : IArrayLoader
   {
     #region IArrayLoader Members
@@ -19,18 +21,25 @@ namespace ArrayVisualizerExt.ArrayLoaders
         arrayExpressions.Add(item, expression);
       }
       else if (expression.Name == "this")
-        foreach (EnvDTE.Expression subExpression in expression.DataMembers)
-          ArraysLoader(arrayExpressions, "this.", subExpression);
+      {
+        foreach (Expression subExpression in expression.DataMembers)
+        {
+          this.ArraysLoader(arrayExpressions, "this.", subExpression);
+        }
+      }
 
     }
 
     public int[] DimensionsLoader(EnvDTE.Expression expression)
     {
-      string dims = expression.Value;
+      int[] dimenstions;
+      
+           string dims = expression.Value;
       dims = dims.Substring(dims.IndexOf("[") + 1);
       dims = dims.Substring(0, dims.IndexOf("]"));
 
-      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
+      dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
+         
       return dimenstions;
     }
 
