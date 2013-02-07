@@ -48,9 +48,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="LinqLib">
-      <HintPath>..\..\packages\LinqExtLibrary.1.0.2.8\lib\LinqLib.dll</HintPath>
-      <Private>True</Private>
+   <Reference Include="LinqLib">
+      <HintPath>..\..\packages\LinqExtLibrary.1.0.4.0\lib\LinqLib.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\packages\SharpDX.2.4.2\lib\net40\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" />
