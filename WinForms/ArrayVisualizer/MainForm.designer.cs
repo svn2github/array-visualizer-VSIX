@@ -4,30 +4,20 @@ namespace WinFormsArrayVisualizer
 {
   partial class MainForm
   {
-    /// <summary>
-    /// Required designer variable.
-    /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-    /// <summary>
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing)
     {
       if (disposing && (components != null))
       {
         components.Dispose();
       }
+
       base.Dispose(disposing);
     }
 
     #region Windows Form Designer generated code
 
-    /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
-    /// </summary>
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
@@ -83,9 +73,9 @@ namespace WinFormsArrayVisualizer
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.buttonSave = new System.Windows.Forms.Button();
-      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.mainPanel = new System.Windows.Forms.Panel();
       this.array2D1 = new WinFormsArrayVisualizerControls.Array2D();
+      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.panel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCellHeight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCellWidth)).BeginInit();
@@ -655,10 +645,6 @@ namespace WinFormsArrayVisualizer
       this.buttonSave.UseVisualStyleBackColor = true;
       this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
       // 
-      // saveFileDialog
-      // 
-      resources.ApplyResources(this.saveFileDialog, "saveFileDialog");
-      // 
       // mainPanel
       // 
       resources.ApplyResources(this.mainPanel, "mainPanel");
@@ -680,6 +666,10 @@ namespace WinFormsArrayVisualizer
       this.array2D1.RenderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.array2D1.TabStop = false;
       this.toolTip.SetToolTip(this.array2D1, resources.GetString("array2D1.ToolTip"));
+      // 
+      // saveFileDialog
+      // 
+      resources.ApplyResources(this.saveFileDialog, "saveFileDialog");
       // 
       // MainForm
       // 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,18 +10,12 @@ using ArrayVisualizerExt.ArrayLoaders;
 using EnvDTE;
 using EnvDTE80;
 using LinqLib.Array;
+using LinqLib.Sequence;
 using Microsoft.VisualStudio.Shell;
+using Expression = EnvDTE.Expression;
 
 namespace ArrayVisualizerExt
 {
-  using System.Globalization;
-  using System.Linq;
-
-  using Expression = EnvDTE.Expression;
-
-  /// <summary>
-  /// Interaction logic for ArrayVisualizerToolControl.xaml
-  /// </summary>
   public partial class ArrayVisualizerToolControl : UserControl
   {
     #region Fields
@@ -29,7 +25,7 @@ namespace ArrayVisualizerExt
     private EnvDTE.DebuggerEvents debugerEvents;
     private ArrayControl arrCtl;
 
-    IArrayLoader ArrayLoader;
+    private IArrayLoader ArrayLoader;
 
     #endregion
 
@@ -135,19 +131,19 @@ namespace ArrayVisualizerExt
     private void arraysListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       if (e.AddedItems.Count == 1)
-        LoadArrayControl((string)e.AddedItems[0]);
+        LoadArrayControl((string)e.AddedItems[0], false);
     }
 
     private void refreshButton_Click(object sender, RoutedEventArgs e)
     {
       if (arraysListBox.SelectedItems.Count == 1)
-        LoadArrayControl((string)arraysListBox.SelectedItem);
+        LoadArrayControl((string)arraysListBox.SelectedItem, false);
     }
 
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.6");
+      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.9");
     }
 
     #endregion
@@ -167,20 +163,14 @@ namespace ArrayVisualizerExt
       this.expressions = new Dictionary<string, Expression>();
 
       if (this.dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
-      {
         foreach (Expression expression in this.dte.Debugger.CurrentStackFrame.Locals)
-        {
           this.ArrayLoader.ArraysLoader(this.expressions, string.Empty, expression);
-        }
-      }
 
       foreach (string item in this.expressions.Keys)
-      {
         this.arraysListBox.Items.Add(item);
-      }
     }
 
-    private void LoadArrayControl(string arrayName)
+    private void LoadArrayControl(string arrayName, bool ignoreArraySize)
     {
       mainPanel.Children.Clear();
       try
@@ -188,100 +178,54 @@ namespace ArrayVisualizerExt
         EnvDTE.Expression expression = expressions[arrayName];
         if (expression.Value != "null")
         {
-          bool truncate = false;
-          int members;
           string[] values;
-          Array arr;
           int[] dimenstions;
+          Array arr;
 
           switch (expression.Type)
           {
             case "SharpDX.Matrix":
               dimenstions = new[] { 4, 4 };
-              values =
-                expression.DataMembers.Cast<Expression>()
-                          .Where(e => e.Name.StartsWith("M"))
-                          .Select(e => e.Value)
-                          .ToArray();
-              members = values.Length;
+              values = GetValues(expression, e => 'M' == e.Name[0]);
               break;
             case "SharpDX.Matrix3x2":
-              //SharpDX.Matrix3x2 a; 2 columns
               dimenstions = new[] { 3, 2 };
-              values =
-                expression.DataMembers.Cast<Expression>()
-                          .OrderBy(e => e.Name)
-                          .Where(e => e.Name.StartsWith("M"))
-                          .Select(e => e.Value)
-                          .ToArray();
-              members = values.Length;
+              values = GetValues(expression, e => 'M' == e.Name[0]);
               break;
             case "SharpDX.Matrix5x4":
               dimenstions = new[] { 5, 4 };
-              values =
-                expression.DataMembers.Cast<Expression>()
-                          .OrderBy(e => e.Name)
-                          .Where(e => e.Name.StartsWith("M"))
-                          .Select(e => e.Value)
-                          .ToArray();
-              members = values.Length;
+              values = GetValues(expression, e => 'M' == e.Name[0]);
               break;
             case "SharpDX.Vector2":
               dimenstions = new[] { 2, 1 };
-              values =
-                expression.DataMembers.Cast<Expression>()
-                          .Where(e => e.Name.EndsWith("X") || e.Name.EndsWith("Y"))
-                          .Select(e => e.Value)
-                          .ToArray();
-              members = values.Length;
+              values = GetValues(expression, e => "XY".Contains(e.Name.Last()));
               break;
             case "SharpDX.Vector3":
               dimenstions = new[] { 3, 1 };
-              values =
-                expression.DataMembers.Cast<Expression>()
-                          .Where(e => e.Name.EndsWith("X") || e.Name.EndsWith("Y") || e.Name.EndsWith("Z"))
-                          .Select(e => e.Value)
-                          .ToArray();
-              members = values.Length;
+              values = GetValues(expression, e => "XYZ".Contains(e.Name.Last()));
               break;
             case "SharpDX.Vector4":
               dimenstions = new[] { 4, 1 };
-              values =
-                expression.DataMembers.Cast<Expression>()
-                          .Where(
-                            e =>
-                            e.Name.EndsWith("X") || e.Name.EndsWith("Y") || e.Name.EndsWith("Z") || e.Name.EndsWith("W"))
-                          .Select(e => e.Value)
-                          .ToArray();
-              string tmp = values[0];
-              values[0] = values[1];
-              values[1] = values[2];
-              values[2] = values[3];
-              values[3] = tmp;
-
-              members = values.Length;
+              values = GetValues(expression, e => "XYZW".Contains(e.Name.Last())).RotateLeft(1).ToArray();
               break;
             default:
               dimenstions = this.ArrayLoader.DimensionsLoader(expression);
-              members = expression.DataMembers.Count;
-              truncate = members > 1500;
-              if (truncate)
+              int count = expression.DataMembers.Count;
+              if (ignoreArraySize || count <= 2000)
+                values = expression.DataMembers.Cast<Expression>().Select(e => e.Value).ToArray();
+              else
               {
-                int dims = dimenstions.Length;
-                double r = Math.Pow((double)members / 1500, 1.0 / dims);
-                int members2 = 1;
-                for (int i = 0; i < dims; i++)
-                {
-                  dimenstions[i] = (int)(dimenstions[i] / r + .5);
-                  members2 = members2 * dimenstions[i];
-                }
-                members = members2;
-              }
-              values = new string[members];
-
-              for (int i = 0; i < members; i++)
-              {
-                values[i] = expression.DataMembers.Item(i + 1).Value;
+                LargeArrayHandler largeArrayHandler = new LargeArrayHandler(count, 2000, 40000);
+                largeArrayHandler.LoadArrayRequest += largeArrayHandler_LoadArrayRequest;
+                this.mainPanel.Children.Add(largeArrayHandler);
+                //Label msg = new Label();
+                //msg.Content = string.Format("Array Visualizer is limited to arrays of 2000 elements or less. The selected array contains {0} elements.", count);
+                //this.mainPanel.Children.Add(msg);
+                //Button btnOverride = new Button();
+                //btnOverride.Content = "Load";
+                //btnOverride.Click += btnOverride_Click;
+                //this.mainPanel.Children.Add(btnOverride);
+                return;
               }
               break;
           }
@@ -315,12 +259,6 @@ namespace ArrayVisualizerExt
 
           this.arrCtl.SetControlData(arr);
 
-          if (truncate)
-          {
-            var msg = new Label();
-            msg.Content = string.Format("Array is too large, displaying first {0} items only.", members);
-            this.mainPanel.Children.Add(msg);
-          }
           this.arrCtl.Padding = new Thickness(8);
           this.arrCtl.Width += 16;
           this.arrCtl.Height += 16;
@@ -333,6 +271,19 @@ namespace ArrayVisualizerExt
         errorLabel.Content = string.Format("Error rendering array '{0}'\r\n\r\n'{1}'", arrayName, ex.Message);
         mainPanel.Children.Add(errorLabel);
       }
+    }
+
+    void largeArrayHandler_LoadArrayRequest(object sender, RoutedEventArgs e)
+    {
+      if (arraysListBox.SelectedItems.Count == 1)
+        LoadArrayControl((string)arraysListBox.SelectedItem, true);
+    }
+
+    private static string[] GetValues(EnvDTE.Expression expression, Predicate<Expression> p)
+    {
+      string[] values;
+      values = expression.DataMembers.Cast<Expression>().Where(e => p(e)).Select(e => e.Value).ToArray();
+      return values;
     }
 
     private void SetRotationOptions(int dimensions)

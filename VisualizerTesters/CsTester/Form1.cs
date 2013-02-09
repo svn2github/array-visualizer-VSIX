@@ -1,52 +1,26 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Form1.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The form 1.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
+using System.Diagnostics;
+using System.Windows.Forms;
+
+using LinqLib.Array;
+using LinqLib.Sequence;
+
+using SharpDX;
 
 namespace CsTester
 {
-  using System;
-  using System.Diagnostics;
-  using System.Windows.Forms;
-
-  using LinqLib.Array;
-  using LinqLib.Sequence;
-
-  using SharpDX;
-
-  /// <summary>
-  /// The form 1.
-  /// </summary>
   public partial class Form1 : Form
   {
     #region Fields
 
-    /// <summary>
-    /// The m arr 1.
-    /// </summary>
     private int[,] mArr1;
-
-    /// <summary>
-    /// The m arr 2.
-    /// </summary>
     private Array mArr2;
-
-    /// <summary>
-    /// The m arr unused 1.
-    /// </summary>
-    private long[,,] mArrUnused1;
+    private long[, ,] mArrUnused1;
 
     #endregion
 
     #region Constructors and Destructors
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Form1"/> class.
-    /// </summary>
     public Form1()
     {
       this.InitializeComponent();
@@ -56,34 +30,16 @@ namespace CsTester
 
     #region Methods
 
-    /// <summary>
-    /// The get new type.
-    /// </summary>
-    /// <param name="X">
-    /// The x.
-    /// </param>
-    /// <returns>
-    /// The <see cref="TestType"/>.
-    /// </returns>
     private TestType GetNewType(int X)
     {
       return new TestType { a = X, b = X * 2 };
     }
 
-    /// <summary>
-    /// The button 1_ click.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void button1_Click(object sender, EventArgs e)
     {
-      int[,,] arr1;
+      int[, ,] arr1;
       Array arr2;
-      long[,,] arrUnused1;
+      long[, ,] arrUnused1;
       TestType[,] arr3;
       Array arr4;
 
@@ -110,33 +66,17 @@ namespace CsTester
     #endregion
   }
 
-  /// <summary>
-  /// The test type.
-  /// </summary>
   public class TestType
   {
     #region Fields
 
-    /// <summary>
-    /// The a.
-    /// </summary>
     public int a;
-
-    /// <summary>
-    /// The b.
-    /// </summary>
     public int b;
 
     #endregion
 
     #region Public Methods and Operators
 
-    /// <summary>
-    /// The to string.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="string"/>.
-    /// </returns>
     public override string ToString()
     {
       return string.Format("{0} of {1}", this.a, this.b);
@@ -145,16 +85,10 @@ namespace CsTester
     #endregion
   }
 
-  /// <summary>
-  /// The other.
-  /// </summary>
   public class other
   {
     #region Public Properties
 
-    /// <summary>
-    /// Gets or sets the w.
-    /// </summary>
     public Vector3 w { get; set; }
 
     #endregion

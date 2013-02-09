@@ -1,67 +1,31 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MainWindow.xaml.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Interaction logic for MainWindow.xaml
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using ArrayVisualizerControls;
+using LinqLib.Array;
+using LinqLib.Sequence;
+using Microsoft.Win32;
 using AvProp = ArrayVisualizer.Properties;
 
 namespace ArrayVisualizer
 {
-  using System;
-  using System.Globalization;
-  using System.IO;
-  using System.Linq;
-  using System.Windows;
-  using System.Windows.Controls;
-  using System.Windows.Input;
-
-  using ArrayVisualizerControls;
-
-  using LinqLib.Array;
-  using LinqLib.Sequence;
-
-  using Microsoft.Win32;
-
-  /// <summary>
-  ///   Interaction logic for MainWindow.xaml
-  /// </summary>
   public partial class MainWindow : Window
   {
     #region Fields
 
-    /// <summary>
-    /// The array ctl.
-    /// </summary>
     private ArrayControl arrayCtl;
-
-    /// <summary>
-    /// The dims.
-    /// </summary>
     private int dims;
-
-    /// <summary>
-    /// The fill options tab control width.
-    /// </summary>
     private double fillOptionsTabControlWidth;
-
-    /// <summary>
-    /// The jagged.
-    /// </summary>
     private bool jagged;
 
     #endregion
 
     #region Constructors and Destructors
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MainWindow"/> class.
-    /// </summary>
     public MainWindow()
     {
       this.InitializeComponent();
@@ -98,15 +62,6 @@ namespace ArrayVisualizer
 
     #region Methods
 
-    /// <summary>
-    /// The get items.
-    /// </summary>
-    /// <param name="list">
-    /// The list.
-    /// </param>
-    /// <returns>
-    /// The <see cref="string[]"/>.
-    /// </returns>
     private static string[] GetItems(string list)
     {
       list = list.Replace(" ", string.Empty);
@@ -114,18 +69,13 @@ namespace ArrayVisualizer
       list = list.Replace('\n', ',');
 
       while (list.IndexOf(",,", StringComparison.CurrentCulture) != -1)
-      {
         list = list.Replace(",,", ",");
-      }
 
       list = list.Trim(',');
 
       return list.Split(new[] { ',' });
     }
 
-    /// <summary>
-    /// The arrange frames.
-    /// </summary>
     private void ArrangeFrames()
     {
       int temp = int.Parse((string)((TabItem)this.dimenstionsTab.SelectedItem).Tag);
@@ -235,29 +185,11 @@ namespace ArrayVisualizer
       }
     }
 
-    /// <summary>
-    /// The get 1 d array.
-    /// </summary>
-    /// <param name="x">
-    /// The x.
-    /// </param>
-    /// <returns>
-    /// The <see cref="Array"/>.
-    /// </returns>
-    /// <exception cref="FormatException">
-    /// </exception>
     private Array Get1DArray(int x)
     {
       if (this.autoFillTab.IsSelected)
-      {
-        return
-          Enumerator.Generate(
-            double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), 
-            double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), 
-            x).Select(V => V).ToArray();
-      }
+        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), x).Select(V => V).ToArray();
       else if (this.manualTab.IsSelected)
-      {
         try
         {
           string[] items = this.GetManualItems();
@@ -267,9 +199,7 @@ namespace ArrayVisualizer
         {
           throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
         }
-      }
       else
-      {
         // file
         try
         {
@@ -284,35 +214,13 @@ namespace ArrayVisualizer
         {
           throw;
         }
-      }
     }
 
-    /// <summary>
-    /// The get 2 d array.
-    /// </summary>
-    /// <param name="x">
-    /// The x.
-    /// </param>
-    /// <param name="y">
-    /// The y.
-    /// </param>
-    /// <returns>
-    /// The <see cref="Array"/>.
-    /// </returns>
-    /// <exception cref="FormatException">
-    /// </exception>
     private Array Get2DArray(int x, int y)
     {
       if (this.autoFillTab.IsSelected)
-      {
-        return
-          Enumerator.Generate(
-            double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), 
-            double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), 
-            x * y).Select(V => V).ToArray(y, x);
-      }
+        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), x * y).Select(V => V).ToArray(y, x);
       else if (this.manualTab.IsSelected)
-      {
         try
         {
           string[] items = this.GetManualItems();
@@ -322,9 +230,7 @@ namespace ArrayVisualizer
         {
           throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
         }
-      }
       else
-      {
         // file
         try
         {
@@ -339,38 +245,14 @@ namespace ArrayVisualizer
         {
           throw;
         }
-      }
     }
 
-    /// <summary>
-    /// The get 3 d array.
-    /// </summary>
-    /// <param name="x">
-    /// The x.
-    /// </param>
-    /// <param name="y">
-    /// The y.
-    /// </param>
-    /// <param name="z">
-    /// The z.
-    /// </param>
-    /// <returns>
-    /// The <see cref="Array"/>.
-    /// </returns>
-    /// <exception cref="FormatException">
-    /// </exception>
     private Array Get3DArray(int x, int y, int z)
     {
       if (this.autoFillTab.IsSelected)
-      {
-        return
-          Enumerator.Generate(
-            double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), 
-            double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), 
-            x * y * z).Select(V => V).ToArray(z, y, x);
-      }
+        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture),
+                                   double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), x * y * z).Select(V => V).ToArray(z, y, x);
       else if (this.manualTab.IsSelected)
-      {
         try
         {
           string[] items = this.GetManualItems();
@@ -380,9 +262,7 @@ namespace ArrayVisualizer
         {
           throw new FormatException(AvProp.Resources.InvalidInputFormat, ex);
         }
-      }
       else
-      {
         // file
         try
         {
@@ -397,41 +277,14 @@ namespace ArrayVisualizer
         {
           throw;
         }
-      }
     }
 
-    /// <summary>
-    /// The get 4 d array.
-    /// </summary>
-    /// <param name="x">
-    /// The x.
-    /// </param>
-    /// <param name="y">
-    /// The y.
-    /// </param>
-    /// <param name="z">
-    /// The z.
-    /// </param>
-    /// <param name="a">
-    /// The a.
-    /// </param>
-    /// <returns>
-    /// The <see cref="Array"/>.
-    /// </returns>
-    /// <exception cref="FormatException">
-    /// </exception>
     private Array Get4DArray(int x, int y, int z, int a)
     {
       if (this.autoFillTab.IsSelected)
-      {
-        return
-          Enumerator.Generate(
-            double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), 
-            double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), 
-            x * y * z * a).Select(V => V).ToArray(a, z, y, x);
-      }
+        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture),
+                                   double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), x * y * z * a).Select(V => V).ToArray(a, z, y, x);
       else if (this.manualTab.IsSelected)
-      {
         try
         {
           string[] items = this.GetManualItems();
@@ -441,9 +294,7 @@ namespace ArrayVisualizer
         {
           throw new FormatException(AvProp.Resources.InvalidInputFormat);
         }
-      }
       else
-      {
         // file
         try
         {
@@ -458,15 +309,8 @@ namespace ArrayVisualizer
         {
           throw;
         }
-      }
     }
 
-    /// <summary>
-    /// The get file items.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="string[]"/>.
-    /// </returns>
     private string[] GetFileItems()
     {
       var name = (string)this.fileLabel.Tag;
@@ -474,29 +318,15 @@ namespace ArrayVisualizer
       return GetItems(list);
     }
 
-    /// <summary>
-    /// The get jagged array 1 d.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="Array"/>.
-    /// </returns>
     private Array GetJaggedArray1D()
     {
       var arr = new int[5][][][];
       for (int i = 0; i < 5; i++)
-      {
         arr[i] = this.GetJaggedArray2();
-      }
 
       return arr;
     }
 
-    /// <summary>
-    /// The get jagged array 2.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="int[][][]"/>.
-    /// </returns>
     private int[][][] GetJaggedArray2()
     {
       var arr = new[]
@@ -518,12 +348,6 @@ namespace ArrayVisualizer
       return arr;
     }
 
-    /// <summary>
-    /// The get jagged array 2 d.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="Array"/>.
-    /// </returns>
     private Array GetJaggedArray2D()
     {
       var arr = new int[5, 3][][][];
@@ -537,12 +361,6 @@ namespace ArrayVisualizer
       return arr;
     }
 
-    /// <summary>
-    /// The get jagged array 3.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="int[][][]"/>.
-    /// </returns>
     private int[][][] GetJaggedArray3()
     {
       var arr = new[]
@@ -569,29 +387,15 @@ namespace ArrayVisualizer
       return arr;
     }
 
-    /// <summary>
-    /// The get manual items.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="string[]"/>.
-    /// </returns>
     private string[] GetManualItems()
     {
       return GetItems(this.manualItemsTextBox.Text);
     }
 
-    /// <summary>
-    /// The prepair grid.
-    /// </summary>
-    /// <param name="arrayControl">
-    /// The array control.
-    /// </param>
     private void PrepairGrid(ArrayControl arrayControl)
     {
       if (this.arrayCtl != null)
-      {
         this.mainPanel.Children.Remove(this.arrayCtl);
-      }
 
       this.arrayCtl = arrayControl;
       this.arrayCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
@@ -605,12 +409,6 @@ namespace ArrayVisualizer
       this.mainPanel.Children.Add(this.arrayCtl);
     }
 
-    /// <summary>
-    /// The save to file.
-    /// </summary>
-    /// <param name="fileName">
-    /// The file name.
-    /// </param>
     private void SaveToFile(string fileName)
     {
       double[] values = this.arrayCtl.Data.AsEnumerable<double>().ToArray();
@@ -619,32 +417,12 @@ namespace ArrayVisualizer
       File.WriteAllText(fileName, list);
     }
 
-    /// <summary>
-    /// The text box_ preview key down.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
     {
       if (e.Key == Key.Space)
-      {
         e.Handled = true;
-      }
     }
 
-    /// <summary>
-    /// The text box_ preview text input.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
       var textBox = sender as TextBox;
@@ -657,58 +435,22 @@ namespace ArrayVisualizer
       }
     }
 
-    /// <summary>
-    /// The dimenstions tab_ selection changed.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void dimenstionsTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       this.ArrangeFrames();
     }
 
-    /// <summary>
-    /// The manual items text box_ got focus.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void manualItemsTextBox_GotFocus(object sender, RoutedEventArgs e)
     {
       this.fillOptionsTabControlWidth = this.fillOptionsTabControl.Width;
       this.fillOptionsTabControl.Width = this.Width - 53;
     }
 
-    /// <summary>
-    /// The manual items text box_ lost focus.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void manualItemsTextBox_LostFocus(object sender, RoutedEventArgs e)
     {
       this.fillOptionsTabControl.Width = this.fillOptionsTabControlWidth;
     }
 
-    /// <summary>
-    /// The open file button_ click.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void openFileButton_Click(object sender, RoutedEventArgs e)
     {
       var ofd = new OpenFileDialog();
@@ -725,15 +467,6 @@ namespace ArrayVisualizer
       }
     }
 
-    /// <summary>
-    /// The render button_ click.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void renderButton_Click(object sender, RoutedEventArgs e)
     {
       try
@@ -781,17 +514,6 @@ namespace ArrayVisualizer
       }
     }
 
-    /// <summary>
-    /// The resize button_ click.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
-    /// <exception cref="ArrayTypeMismatchException">
-    /// </exception>
     private void resizeButton_Click(object sender, RoutedEventArgs e)
     {
       try
@@ -810,10 +532,10 @@ namespace ArrayVisualizer
             this.arrayCtl.SetControlData(((double[,])this.arrayCtl.Data).Resize(y, x));
             break;
           case 3:
-            this.arrayCtl.SetControlData(((double[,,])this.arrayCtl.Data).Resize(z, y, x));
+            this.arrayCtl.SetControlData(((double[, ,])this.arrayCtl.Data).Resize(z, y, x));
             break;
           case 4:
-            this.arrayCtl.SetControlData(((double[,,,])this.arrayCtl.Data).Resize(a, z, y, x));
+            this.arrayCtl.SetControlData(((double[, , ,])this.arrayCtl.Data).Resize(a, z, y, x));
             break;
           default:
             throw new ArrayTypeMismatchException();
@@ -826,15 +548,6 @@ namespace ArrayVisualizer
       }
     }
 
-    /// <summary>
-    /// The rotate button_ click.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void rotateButton_Click(object sender, RoutedEventArgs e)
     {
       var r = RotateAxis.RotateNone;
@@ -862,23 +575,14 @@ namespace ArrayVisualizer
           this.arrayCtl.SetControlData(((object[,])this.arrayCtl.Data).Rotate(angle));
           break;
         case 3:
-          this.arrayCtl.SetControlData(((object[,,])this.arrayCtl.Data).Rotate(r, angle));
+          this.arrayCtl.SetControlData(((object[, ,])this.arrayCtl.Data).Rotate(r, angle));
           break;
         case 4:
-          this.arrayCtl.SetControlData(((object[,,,])this.arrayCtl.Data).Rotate(r, angle));
+          this.arrayCtl.SetControlData(((object[, , ,])this.arrayCtl.Data).Rotate(r, angle));
           break;
       }
     }
 
-    /// <summary>
-    /// The save button_ click.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
     private void saveButton_Click(object sender, RoutedEventArgs e)
     {
       var sfd = new SaveFileDialog();
@@ -887,9 +591,7 @@ namespace ArrayVisualizer
 
       bool? res = sfd.ShowDialog();
       if (res.HasValue && res.Value)
-      {
         this.SaveToFile(sfd.FileName);
-      }
     }
 
     #endregion

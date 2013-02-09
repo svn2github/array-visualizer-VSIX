@@ -1,47 +1,23 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Array4D.xaml.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The array 4 d.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-
+﻿using System;
 using AvProp = ArrayVisualizerControls.Properties;
 
 namespace ArrayVisualizerControls
 {
-  using System;
-
-  /// <summary>
-  /// The array 4 d.
-  /// </summary>
   public partial class Array4D : ArrayControl
   {
     #region Constants
 
-    /// <summary>
-    /// The spac e_4 d.
-    /// </summary>
     private const int SPACE_4D = 15;
 
     #endregion
 
     #region Methods
 
-    /// <summary>
-    /// The draw content.
-    /// </summary>
-    /// <exception cref="ArrayTypeMismatchException">
-    /// </exception>
     protected override void DrawContent()
     {
       if (this.Data.Rank != 4)
-      {
         throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot4DException);
-      }
+
 
       double zCellHeight = this.CellSize.Height * SIZE_FACTOR_3D;
       double zCellWidth = this.CellSize.Width * SIZE_FACTOR_3D;
@@ -60,7 +36,6 @@ namespace ArrayVisualizerControls
 
         // Main grid (front)
         for (int y = 0; y < base.DimY; y++)
-        {
           for (int x = 0; x < base.DimX; x++)
           {
             object data = this.Data.GetValue(a, 0, y, x);
@@ -70,20 +45,16 @@ namespace ArrayVisualizerControls
             string toolTipCoords = string.Format(toolTipFmt, a, 0, y, x);
 
             if (data.GetType().IsArray)
-            {
               this.AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
-            }
             else
             {
               string text = this.GetText(data);
               AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, text);
             }
           }
-        }
 
         // Top section                    
         for (int z = 0; z < base.DimZ; z++)
-        {
           for (int x = 0; x < base.DimX; x++)
           {
             object data = this.Data.GetValue(a, z, 0, x);
@@ -93,20 +64,16 @@ namespace ArrayVisualizerControls
             string toolTipCoords = string.Format(toolTipFmt, a, z, 0, x);
 
             if (data.GetType().IsArray)
-            {
               this.AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
-            }
             else
             {
               string text = this.GetText(data);
               AddLabel(ArrayRenderSection.Top, toolTipCoords, labelX, labelY, text);
             }
           }
-        }
 
         // Right section
         for (int z = 0; z < base.DimZ; z++)
-        {
           for (int y = 0; y < base.DimY; y++)
           {
             int x = base.DimX - 1;
@@ -117,30 +84,20 @@ namespace ArrayVisualizerControls
             string toolTipCoords = string.Format(toolTipFmt, a, z, y, x);
 
             if (data.GetType().IsArray)
-            {
               this.AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
-            }
             else
             {
               string text = this.GetText(data);
               AddLabel(ArrayRenderSection.Side, toolTipCoords, labelX, labelY, text);
             }
           }
-        }
       }
     }
 
-    /// <summary>
-    /// The render blank grid.
-    /// </summary>
-    /// <exception cref="ArrayTypeMismatchException">
-    /// </exception>
     protected override void RenderBlankGrid()
     {
       if (this.Data.Rank != 4)
-      {
         throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot4DException);
-      }
 
       double zCellHeight = this.CellSize.Height * SIZE_FACTOR_3D;
       double zCellWidth = this.CellSize.Width * SIZE_FACTOR_3D;
@@ -164,20 +121,14 @@ namespace ArrayVisualizerControls
 
         // Front
         for (double y = zSectionHeight; y <= this.Height; y = y + this.CellSize.Height)
-        {
           this.AddLine(aOffset, y, aOffset + xySectionWidth, y);
-        }
 
         for (double x = 0; x <= xySectionWidth; x = x + this.CellSize.Width)
-        {
           this.AddLine(aOffset + x, zSectionHeight, aOffset + x, this.Height);
-        }
 
         // Top section
         for (double x = 0; x <= xySectionWidth; x = x + this.CellSize.Width)
-        {
           this.AddLine(aOffset + x, zSectionHeight, aOffset + x + zSectionWidth, 0);
-        }
 
         double tempX = 0;
         for (double y = zSectionHeight - zCellHeight; y >= 0; y = y - zCellHeight)
@@ -188,9 +139,7 @@ namespace ArrayVisualizerControls
 
         // Right section
         for (double y = zSectionHeight + this.CellHeight; y <= this.Height; y = y + this.CellSize.Height)
-        {
           this.AddLine(aOffset + sectionWidth - zSectionWidth, y, aOffset + sectionWidth, y - zSectionHeight);
-        }
 
         double tempY = 0;
         for (double x = xySectionWidth + zSectionWidth; x >= xySectionWidth + zCellWidth; x = x - zCellWidth)

@@ -15,16 +15,16 @@
         defining some of the constants that we will use inside the file. -->
 
   <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
-  <Extern href="stdidcmd.h"/>
+  <Extern href="stdidcmd.h" />
 
   <!--This header contains the command ids for the menus provided by the shell. -->
-  <Extern href="vsshlids.h"/>
+  <Extern href="vsshlids.h" />
 
   <!--Definition of some VSCT specific constants. In this sample we use it for the IDs inside the guidOfficeIcon group. -->
-  <Extern href="msobtnid.h"/>
+  <!--<Extern href="msobtnid.h" xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" />-->
 
-  <Extern href="VSDbgCmd.h"/>
-  <Extern href="VsDebugGuids.h"/>
+  <Extern href="VSDbgCmd.h" />
+  <Extern href="VsDebugGuids.h" />
 
 
   <!--The Commands section is where we the commands, menus and menu groups are defined.
@@ -62,7 +62,7 @@
 
 
       <Button guid="guidArrayVisualizerExtCmdSet" id="arrayVisualizerTool" priority="0x1100" type="Button">
-        <Parent guid="guidVSDebugGroup" id="IDG_DEBUG_WINDOWS_INSPECT"/>
+        <Parent guid="guidVSDebugGroup" id="IDG_DEBUG_WINDOWS_INSPECT" />
         <Icon guid="guidImages" id="bmpPic2" />
         <!--<CommandFlag>DynamicVisibility</CommandFlag>-->
         <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
@@ -81,7 +81,7 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used 
             inside a button definition. An important aspect of this declaration is that the element id 
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\Images_32bit.bmp" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows"/>
+      <Bitmap guid="guidImages" href="Resources\Images_32bit.bmp" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows" />
 
     </Bitmaps>
 
@@ -104,7 +104,7 @@
 
 
 
-    <GuidSymbol name="guidImages" value="{4a362b5d-0092-496d-83ea-a4b79cc293c9}" >
+    <GuidSymbol name="guidImages" value="{4a362b5d-0092-496d-83ea-a4b79cc293c9}">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

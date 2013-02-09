@@ -18,6 +18,12 @@ namespace ArrayVisualizerExt.ArrayLoaders
         string item = prefix + expression.Name + " - " + expression.Value;
         arrayExpressions.Add(item, expression);
       }
+      else if (Helper.IsExpressionSharpDXType(expType))
+      {
+        string displayName = Helper.GetSharpDxDisplayName(expression);
+        string item = prefix + expression.Name + " - " + displayName;
+        arrayExpressions.Add(item, expression);
+      }
     }
 
     public int[] DimensionsLoader(EnvDTE.Expression expression)
@@ -32,7 +38,7 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public bool IsExpressionArrayType(string typeExpression)
     {
-      return Helper.IsExpressionFsArrayType(Helper.RemoveBrackets(typeExpression));
+      return Helper.IsExpressionFsArrayType(Helper.RemoveBrackets(typeExpression)) || Helper.IsExpressionSharpDXType(typeExpression);
     }
 
     #endregion

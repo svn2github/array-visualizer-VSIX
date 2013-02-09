@@ -32,6 +32,12 @@ namespace ArrayVisualizerExt.ArrayLoaders
           string item = prefix + name + " - " + expType;
           arrayExpressions.Add(item, expression);
         }
+        else if (Helper.IsExpressionSharpDXType(expType))
+        {
+          string displayName = Helper.GetSharpDxDisplayName(expression, '(', ')');
+          string item = prefix + expression.Name + " - " + displayName;
+          arrayExpressions.Add(item, expression);
+        }
         else if (expression.Name == "Me")
           foreach (EnvDTE.Expression subExpression in expression.DataMembers)
             ArraysLoader(arrayExpressions, "Me.", subExpression);
@@ -50,7 +56,7 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public bool IsExpressionArrayType(string typeExpression)
     {
-      return Helper.IsExpressionVbArrayType(Helper.RemoveBrackets(typeExpression));
+      return Helper.IsExpressionVbArrayType(Helper.RemoveBrackets(typeExpression)) || Helper.IsExpressionSharpDXType(typeExpression);
     }
 
     #endregion

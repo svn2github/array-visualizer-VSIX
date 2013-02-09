@@ -3,25 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WinForms", "WinForms", "{A61C476F-0130-40D7-9D34-BD914E2865E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsArrayVisualizer", "WinForms\ArrayVisualizer\WinFormsArrayVisualizer.csproj", "{3795E735-B135-407A-A779-52E5231BF040}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsArrayVisualizerControls", "WinForms\ArrayVisualizerControls\WinFormsArrayVisualizerControls.csproj", "{E26DC262-233B-4E57-B71B-5F3A50E8129F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{DD3750D9-66ED-4C2F-BA66-696910B12268}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizer", "WPF\ArrayVisualizer\ArrayVisualizer.csproj", "{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizerControls", "WPF\ArrayVisualizerControls\ArrayVisualizerControls.csproj", "{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizerExt", "ArrayVisualizerExt\ArrayVisualizerExt.csproj", "{6B42E55F-07EC-4C45-A82C-D37F61BC3117}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualizerTesters", "VisualizerTesters", "{F9C1251A-5C6A-4A3B-ACD1-9DBC1A03FDD9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsTester", "VisualizerTesters\CsTester\CsTester.csproj", "{D23115C0-DA59-45B7-9826-D03A7764F3AF}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VbTester", "VisualizerTesters\VbTester\VbTester.vbproj", "{BCD64B50-6DF1-4084-9590-92D1DF7596D5}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsTester", "VisualizerTesters\FsTester\FsTester.fsproj", "{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E4AC90B6-9A78-47BA-AACA-B3B8D6D865DA}"
 	ProjectSection(SolutionItems) = preProject
@@ -29,6 +13,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E4AC90
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsArrayVisualizer", "WinForms\ArrayVisualizer\WinFormsArrayVisualizer.csproj", "{3795E735-B135-407A-A779-52E5231BF040}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsArrayVisualizerControls", "WinForms\ArrayVisualizerControls\WinFormsArrayVisualizerControls.csproj", "{E26DC262-233B-4E57-B71B-5F3A50E8129F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizer", "WPF\ArrayVisualizer\ArrayVisualizer.csproj", "{9FD9CFC8-2F96-449A-A4E6-C5A10CCA87CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizerControls", "WPF\ArrayVisualizerControls\ArrayVisualizerControls.csproj", "{28EFF5A6-0AD0-42F7-B7D6-547473A0C86F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayVisualizerExt", "ArrayVisualizerExt\ArrayVisualizerExt.csproj", "{6B42E55F-07EC-4C45-A82C-D37F61BC3117}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsTester", "VisualizerTesters\CsTester\CsTester.csproj", "{D23115C0-DA59-45B7-9826-D03A7764F3AF}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VbTester", "VisualizerTesters\VbTester\VbTester.vbproj", "{BCD64B50-6DF1-4084-9590-92D1DF7596D5}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsTester", "VisualizerTesters\FsTester\FsTester.fsproj", "{95907A9E-FA6F-45DE-BCB1-D54F96AD083A}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
