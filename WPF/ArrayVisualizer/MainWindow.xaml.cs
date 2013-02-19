@@ -401,6 +401,7 @@ namespace ArrayVisualizer
       this.arrayCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
       this.arrayCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
       this.arrayCtl.Formatter = this.formatterTextBox.Text;
+      this.arrayCtl.CaptionBuilder = this.CaptionBuilder;
       this.arrayCtl.Margin = new Thickness(12, 12, 0, 0);
       this.arrayCtl.HorizontalAlignment = HorizontalAlignment.Left;
       this.arrayCtl.Width = 285;
@@ -569,16 +570,17 @@ namespace ArrayVisualizer
           break;
       }
 
+      int[] dims = this.arrayCtl.Data.GetDimensions();
       switch (Math.Abs(this.dims))
       {
         case 2:
-          this.arrayCtl.SetControlData(((object[,])this.arrayCtl.Data).Rotate(angle));
+          this.arrayCtl.SetControlData((this.arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1])).Rotate(angle));
           break;
         case 3:
-          this.arrayCtl.SetControlData(((object[, ,])this.arrayCtl.Data).Rotate(r, angle));
+          this.arrayCtl.SetControlData((this.arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2])).Rotate(r, angle));
           break;
         case 4:
-          this.arrayCtl.SetControlData(((object[, , ,])this.arrayCtl.Data).Rotate(r, angle));
+          this.arrayCtl.SetControlData((this.arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2], dims[3])).Rotate(r, angle));
           break;
       }
     }
@@ -592,6 +594,15 @@ namespace ArrayVisualizer
       bool? res = sfd.ShowDialog();
       if (res.HasValue && res.Value)
         this.SaveToFile(sfd.FileName);
+    }
+
+    private string CaptionBuilder(object data, string formatter)
+    {
+      double number;
+      string text = (data ?? "").ToString();
+      if (double.TryParse(text, out number))
+        text = number.ToString(formatter, System.Threading.Thread.CurrentThread.CurrentUICulture.NumberFormat);
+      return text;
     }
 
     #endregion

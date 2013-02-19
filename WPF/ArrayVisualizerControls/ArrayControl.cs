@@ -13,6 +13,9 @@ namespace ArrayVisualizerControls
 {
   public abstract class ArrayControl : UserControl
   {
+
+    public event EventHandler<CellClickEventArgs> CellClick;
+
     #region Constants
 
     public const double MAX_ELEMENTS = 10000;
@@ -28,6 +31,7 @@ namespace ArrayVisualizerControls
     private Size cellSize;
     private Array controlData;
     private string formatter;
+    private Func<object, string, string> captionBuilder;
     private Popup popup;
     private Transform sideTransformer;
     private string tooltipPrefix;
@@ -43,6 +47,7 @@ namespace ArrayVisualizerControls
       this.AddChild(this.arrayGrid);
       this.cellSize = new Size(80, 55);
       this.formatter = string.Empty;
+      this.captionBuilder = this.DefaultCaptionBuilder;
       this.tooltipPrefix = string.Empty;
     }
 
@@ -92,10 +97,18 @@ namespace ArrayVisualizerControls
     public string Formatter
     {
       get { return this.formatter; }
+      set { this.formatter = value; }
+    }
 
+    public Func<object, string, string> CaptionBuilder
+    {
+      get { return this.captionBuilder; }
       set
       {
-        this.formatter = value;
+        if (value == null)
+          this.captionBuilder = this.DefaultCaptionBuilder;
+        else
+          this.captionBuilder = value;
       }
     }
 
@@ -164,27 +177,10 @@ namespace ArrayVisualizerControls
       this.sideTransformer = this.GetSideTransformation();
     }
 
-    protected void AddLabel(ArrayRenderSection section, string toolTipCoords, double x, double y, Array data)
+    protected Label AddLabel(ArrayRenderSection section, string toolTipCoords, double x, double y, object data)
     {
-      int[] dims = data.GetDimensions();
-      string dimsText = string.Join(", ", dims);
-      string text = string.Format("{{{0}}}", data.GetType().Name);
-      int pos1 = text.IndexOf("[");
-      int pos2 = text.IndexOf("]");
-      text = text.Substring(0, pos1) + "[" + dimsText + "]" + text.Substring(pos2 + 1);
-
-      Label label = AddLabel(section, string.Empty, x, y, text);
-
-      label.ToolTip = string.Format("{0}{1} : {2}\r\nClick to zoom in.", this.tooltipPrefix, toolTipCoords, text);
-
-      label.Tag = data;
-      label.Cursor = Cursors.Hand;
-      label.MouseUp += this.label_MouseUp;
-    }
-
-    protected Label AddLabel(ArrayRenderSection section, string toolTipCoords, double x, double y, string text)
-    {
-      var label = new Label();
+      Type dataType = data.GetType();
+      Label label = new Label();
       switch (section)
       {
         case ArrayRenderSection.Front:
@@ -193,7 +189,6 @@ namespace ArrayVisualizerControls
         case ArrayRenderSection.Top:
           label.Margin = new Thickness(x + 1, y - 1, 0, 0);
           label.RenderTransform = this.topTransformer;
-          label.FontWeight = FontWeight.FromOpenTypeWeight(700);
           break;
         case ArrayRenderSection.Side:
           label.Margin = new Thickness(x, y, 0, 0);
@@ -211,10 +206,21 @@ namespace ArrayVisualizerControls
       label.HorizontalContentAlignment = HorizontalAlignment.Center;
       label.VerticalContentAlignment = VerticalAlignment.Center;
 
-      label.Content = text;
-      label.ToolTip = string.Format("{0}{1} : {2}", this.tooltipPrefix, toolTipCoords, text);
+      if (dataType.IsArray)
+        label.Content = this.ArrayCaptionBuilder((Array)data);
+      else
+        label.Content = this.captionBuilder(data, this.formatter);
 
-      this.arrayGrid.Children.Add(label);
+      label.ToolTip = string.Format("{0}{1} : {2}", this.tooltipPrefix, toolTipCoords, label.Content);
+
+      if (!dataType.IsPrimitive && dataType != typeof(string))
+      {
+        label.Tag = data;
+        label.Cursor = Cursors.Hand;
+        label.MouseUp += new MouseButtonEventHandler(label_MouseUp);
+      }
+
+      arrayGrid.Children.Add(label);
 
       return label;
     }
@@ -242,18 +248,6 @@ namespace ArrayVisualizerControls
       tg.Children.Add(skt);
       tg.Children.Add(sct);
       return tg;
-    }
-
-    protected string GetText(object data)
-    {
-      double number;
-      string text = (data ?? string.Empty).ToString();
-      if (double.TryParse(text, out number))
-      {
-        text = number.ToString(this.Formatter, Thread.CurrentThread.CurrentUICulture.NumberFormat);
-      }
-
-      return text;
     }
 
     protected Transform GetTopTransformation()
@@ -286,14 +280,14 @@ namespace ArrayVisualizerControls
       }
     }
 
-    private void InitPopup()
+    private void InitPopup(Color backgroundColor)
     {
       this.popup = new Popup();
       this.popup.Placement = PlacementMode.MousePoint;
       this.popup.StaysOpen = false;
-      var popupGrid = new Grid();
+      Grid popupGrid = new Grid();
 
-      popupGrid.Background = new SolidColorBrush(Colors.SkyBlue);
+      popupGrid.Background = new SolidColorBrush(backgroundColor);
       this.popup.Child = popupGrid;
       popupGrid.Children.Add(new Border { BorderBrush = new SolidColorBrush(Colors.Black), BorderThickness = new Thickness(.25) });
 
@@ -338,10 +332,10 @@ namespace ArrayVisualizerControls
       }
     }
 
-    private void ShowArrayPopup(object sender, Array data, string tooltipPrefix)
+    public void ShowArrayPopup(UIElement target, Array data, string tooltipPrefix, Color backgroundColor)
     {
       if (this.popup == null)
-        this.InitPopup();
+        this.InitPopup(backgroundColor);
 
       this.HideSelfAndChildren();
 
@@ -374,16 +368,19 @@ namespace ArrayVisualizerControls
       arrCtl.Height += 16;
 
       this.arrayContainer.Content = arrCtl;
-      this.popup.PlacementTarget = (UIElement)sender;
+      this.popup.PlacementTarget = target;
       this.popup.IsOpen = true;
     }
 
     private void label_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      var fe = (FrameworkElement)sender;
-      var data = (Array)fe.Tag;
+      OnCellClick(sender, e);
+    }
 
-      string toolTip = string.Empty;
+    private void OnCellClick(object sender, RoutedEventArgs e)
+    {
+      FrameworkElement fe = (FrameworkElement)sender;
+      string toolTip = "";
 
       if (fe.ToolTip != null)
       {
@@ -393,9 +390,66 @@ namespace ArrayVisualizerControls
           toolTip = toolTip.Substring(0, pos - 1);
       }
 
-      this.ShowArrayPopup(sender, data, toolTip);
+      if (CellClick == null)
+      {
+        Array data = (Array)fe.Tag;
+        object depObj = null;
+        FrameworkElement element = fe;
+        while (depObj == null)
+        {
+          element = (FrameworkElement)element.Parent;
+          depObj = element.GetValue(Control.BackgroundProperty);
+        }
+        Color color = ((SolidColorBrush)depObj).Color;
+        ShowArrayPopup((UIElement)sender, data, toolTip, color);
+      }
+      else
+        CellClick(sender, new CellClickEventArgs(fe.Tag, toolTip, e.RoutedEvent, sender));
     }
 
     #endregion
+    private string DefaultCaptionBuilder(object data, string formatter)
+    {
+      double number;
+      string text = (data ?? "").ToString();
+      if (double.TryParse(text, out number))
+        text = number.ToString(formatter, System.Threading.Thread.CurrentThread.CurrentUICulture.NumberFormat);
+      return text;
+    }
+
+    private string ArrayCaptionBuilder(Array data)
+    {
+      int[] dims = data.GetDimensions();
+      string dimsText = string.Join(", ", dims);
+      string text = string.Format("{{{0}}}", data.GetType().Name);
+      int pos1 = text.IndexOf("[");
+      int pos2 = text.IndexOf("]");
+      text = text.Substring(0, pos1) + "[" + dimsText + "]" + text.Substring(pos2 + 1);
+      return text;
+    }
+  }
+
+  public class CellClickEventArgs : RoutedEventArgs
+  {
+    public CellClickEventArgs()
+      : base() { }
+
+    public CellClickEventArgs(RoutedEvent routedEvent)
+      : base(routedEvent) { }
+
+    public CellClickEventArgs(RoutedEvent routedEvent, object source)
+      : base(routedEvent, source) { }
+
+    public CellClickEventArgs(object data, string toolTipPrefix, RoutedEvent routedEvent, object source)
+      : base(routedEvent, source)
+    {
+      this.Data = data;
+      this.ToolTipPrefix = toolTipPrefix;
+    }
+
+    public object Data { get; set; }
+    public string ToolTipPrefix { get; set; }
   }
 }
+
+

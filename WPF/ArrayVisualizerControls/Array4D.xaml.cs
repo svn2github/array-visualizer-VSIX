@@ -44,13 +44,7 @@ namespace ArrayVisualizerControls
 
             string toolTipCoords = string.Format(toolTipFmt, a, 0, y, x);
 
-            if (data.GetType().IsArray)
-              this.AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
-            else
-            {
-              string text = this.GetText(data);
-              AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, text);
-            }
+              AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, data);
           }
 
         // Top section                    
@@ -63,13 +57,7 @@ namespace ArrayVisualizerControls
 
             string toolTipCoords = string.Format(toolTipFmt, a, z, 0, x);
 
-            if (data.GetType().IsArray)
-              this.AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
-            else
-            {
-              string text = this.GetText(data);
-              AddLabel(ArrayRenderSection.Top, toolTipCoords, labelX, labelY, text);
-            }
+              AddLabel(ArrayRenderSection.Top, toolTipCoords, labelX, labelY, data);
           }
 
         // Right section
@@ -83,13 +71,7 @@ namespace ArrayVisualizerControls
 
             string toolTipCoords = string.Format(toolTipFmt, a, z, y, x);
 
-            if (data.GetType().IsArray)
-              this.AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
-            else
-            {
-              string text = this.GetText(data);
-              AddLabel(ArrayRenderSection.Side, toolTipCoords, labelX, labelY, text);
-            }
+              AddLabel(ArrayRenderSection.Side, toolTipCoords, labelX, labelY, data);
           }
       }
     }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ArrayVisualizerControls;
 using ArrayVisualizerExt.ArrayLoaders;
 using EnvDTE;
@@ -143,7 +144,7 @@ namespace ArrayVisualizerExt
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.9");
+      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.10");
     }
 
     #endregion
@@ -178,7 +179,7 @@ namespace ArrayVisualizerExt
         EnvDTE.Expression expression = expressions[arrayName];
         if (expression.Value != "null")
         {
-          string[] values;
+          object[] values;
           int[] dimenstions;
           Array arr;
 
@@ -212,19 +213,12 @@ namespace ArrayVisualizerExt
               dimenstions = this.ArrayLoader.DimensionsLoader(expression);
               int count = expression.DataMembers.Count;
               if (ignoreArraySize || count <= 2000)
-                values = expression.DataMembers.Cast<Expression>().Select(e => e.Value).ToArray();
+                values = GetValues(expression);
               else
               {
                 LargeArrayHandler largeArrayHandler = new LargeArrayHandler(count, 2000, 40000);
                 largeArrayHandler.LoadArrayRequest += largeArrayHandler_LoadArrayRequest;
                 this.mainPanel.Children.Add(largeArrayHandler);
-                //Label msg = new Label();
-                //msg.Content = string.Format("Array Visualizer is limited to arrays of 2000 elements or less. The selected array contains {0} elements.", count);
-                //this.mainPanel.Children.Add(msg);
-                //Button btnOverride = new Button();
-                //btnOverride.Content = "Load";
-                //btnOverride.Click += btnOverride_Click;
-                //this.mainPanel.Children.Add(btnOverride);
                 return;
               }
               break;
@@ -254,14 +248,19 @@ namespace ArrayVisualizerExt
               return;
           }
           this.arrCtl.Formatter = this.formatterTextBox.Text;
+          this.arrCtl.CaptionBuilder = this.CaptionBuilder;
           this.arrCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
           this.arrCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
+
+          this.arrCtl.CaptionBuilder = CaptionBuilder;
+          this.arrCtl.CellClick += new EventHandler<CellClickEventArgs>(arrCtl_CellClick);
 
           this.arrCtl.SetControlData(arr);
 
           this.arrCtl.Padding = new Thickness(8);
           this.arrCtl.Width += 16;
           this.arrCtl.Height += 16;
+
           this.mainPanel.Children.Add(this.arrCtl);
         }
       }
@@ -273,16 +272,36 @@ namespace ArrayVisualizerExt
       }
     }
 
+    void arrCtl_CellClick(object sender, CellClickEventArgs e)
+    {
+      Array values = GetValues((Expression)e.Data);
+      Color color = ((SolidColorBrush)this.mainPanel.Background).Color;
+      arrCtl.ShowArrayPopup((UIElement)e.Source, values, e.ToolTipPrefix, color);
+    }
+
     void largeArrayHandler_LoadArrayRequest(object sender, RoutedEventArgs e)
     {
       if (arraysListBox.SelectedItems.Count == 1)
         LoadArrayControl((string)arraysListBox.SelectedItem, true);
     }
 
-    private static string[] GetValues(EnvDTE.Expression expression, Predicate<Expression> p)
+    private static object[] GetValues(EnvDTE.Expression expression, Predicate<Expression> p)
     {
-      string[] values;
-      values = expression.DataMembers.Cast<Expression>().Where(e => p(e)).Select(e => e.Value).ToArray();
+      object[] values;
+      if (expression.DataMembers.Item(1).Type.Contains("["))
+        values = expression.DataMembers.Cast<Expression>().Where(e => p(e)).ToArray();
+      else
+        values = expression.DataMembers.Cast<Expression>().Where(e => p(e)).Select(e => e.Value).ToArray();
+      return values;
+    }
+
+    private static object[] GetValues(EnvDTE.Expression expression)
+    {
+      object[] values;
+      if (expression.DataMembers.Item(1).Type.Contains("["))
+        values = expression.DataMembers.Cast<Expression>().ToArray();
+      else
+        values = expression.DataMembers.Cast<Expression>().Select(e => e.Value).ToArray();
       return values;
     }
 
@@ -357,5 +376,20 @@ namespace ArrayVisualizerExt
     }
 
     #endregion
+
+    private string CaptionBuilder(object data, string formatter)
+    {
+      EnvDTE.Expression exp = data as EnvDTE.Expression;
+      string text;
+      if (exp == null)
+        text = (data ?? "").ToString();
+      else
+        text = (exp.Value ?? "").ToString();
+
+      double number;
+      if (double.TryParse(text, out number))
+        text = number.ToString(formatter, System.Threading.Thread.CurrentThread.CurrentUICulture.NumberFormat);
+      return text;
+    }
   }
 }

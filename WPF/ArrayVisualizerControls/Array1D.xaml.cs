@@ -20,13 +20,7 @@ namespace ArrayVisualizerControls
 
         string toolTipCoords = string.Format(toolTipFmt, x);
 
-        if (data.GetType().IsArray)
-          this.AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, 1, (Array)data);
-        else
-        {
-          string text = this.GetText(data);
-          AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, 1, text);
-        }
+        AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, 1, data);
       }
     }
 

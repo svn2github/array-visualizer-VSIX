@@ -23,13 +23,7 @@ namespace ArrayVisualizerControls
           double labelX = x * this.CellSize.Width;
           double labelY = y * this.CellSize.Height;
 
-          if (data.GetType().IsArray)
-            this.AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, (Array)data);
-          else
-          {
-            string text = this.GetText(data);
-            AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, text);
-          }
+          AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, data);
         }
     }
 
