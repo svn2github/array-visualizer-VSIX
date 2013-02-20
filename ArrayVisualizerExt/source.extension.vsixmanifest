@@ -3,7 +3,7 @@
 	<Identifier Id="d22013ee-b366-456f-9291-7a2d201d7e24">
 		<Name>Array Visualizer</Name>
 		<Author>Amir Liberman</Author>
-		<Version>1.0.0.10</Version>
+		<Version>1.0.0.11</Version>
 		<Description xml:space="preserve">Array Visualizer is a free, open source extension for visual studio. It is designed to display 2D, 3D and 4D arrays while debugging an application.</Description>
 		<Locale>1033</Locale>
 		<MoreInfoUrl>http://www.amirliberman.com/ArrayVisualizer.aspx</MoreInfoUrl>

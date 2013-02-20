@@ -40,9 +40,9 @@ namespace ArrayVisualizerControls
     #endregion
 
     #region Constructors and Destructors
-
+        
     protected ArrayControl()
-    {
+    {      
       this.arrayGrid = new Grid();
       this.AddChild(this.arrayGrid);
       this.cellSize = new Size(80, 55);
@@ -358,6 +358,8 @@ namespace ArrayVisualizerControls
           return;
       }
 
+      arrCtl.CaptionBuilder = this.captionBuilder;
+      arrCtl.CellClick = this.CellClick;
       arrCtl.Formatter = this.formatter;
       arrCtl.CellHeight = this.CellHeight;
       arrCtl.CellWidth = this.CellWidth;
@@ -370,6 +372,7 @@ namespace ArrayVisualizerControls
       this.arrayContainer.Content = arrCtl;
       this.popup.PlacementTarget = target;
       this.popup.IsOpen = true;
+
     }
 
     private void label_MouseUp(object sender, MouseButtonEventArgs e)
@@ -392,19 +395,22 @@ namespace ArrayVisualizerControls
 
       if (CellClick == null)
       {
-        Array data = (Array)fe.Tag;
-        object depObj = null;
         FrameworkElement element = fe;
-        while (depObj == null)
+        if (fe.Tag.GetType().IsArray)
         {
-          element = (FrameworkElement)element.Parent;
-          depObj = element.GetValue(Control.BackgroundProperty);
+          Array data = (Array)fe.Tag;
+          object depObj = null;
+          while (depObj == null)
+          {
+            element = (FrameworkElement)element.Parent;
+            depObj = element.GetValue(Control.BackgroundProperty);
+          }
+          Color color = ((SolidColorBrush)depObj).Color;
+          ShowArrayPopup((UIElement)sender, data, toolTip, color);
         }
-        Color color = ((SolidColorBrush)depObj).Color;
-        ShowArrayPopup((UIElement)sender, data, toolTip, color);
       }
       else
-        CellClick(sender, new CellClickEventArgs(fe.Tag, toolTip, e.RoutedEvent, sender));
+        CellClick(this, new CellClickEventArgs(fe.Tag, toolTip, e.RoutedEvent, sender));
     }
 
     #endregion

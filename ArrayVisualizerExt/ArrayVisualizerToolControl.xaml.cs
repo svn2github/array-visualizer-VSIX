@@ -144,7 +144,7 @@ namespace ArrayVisualizerExt
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.10");
+      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.11");
     }
 
     #endregion
@@ -276,7 +276,7 @@ namespace ArrayVisualizerExt
     {
       Array values = GetValues((Expression)e.Data);
       Color color = ((SolidColorBrush)this.mainPanel.Background).Color;
-      arrCtl.ShowArrayPopup((UIElement)e.Source, values, e.ToolTipPrefix, color);
+      ((ArrayControl)sender).ShowArrayPopup((UIElement)e.Source, values, e.ToolTipPrefix, color);
     }
 
     void largeArrayHandler_LoadArrayRequest(object sender, RoutedEventArgs e)
