@@ -29,7 +29,7 @@ namespace ArrayVisualizerControls
 
       this.SetTransformers();
 
-      string toolTipFmt = "[{0},{1},{2},{3}]";
+      string toolTipFmt = string.Format("{0}{{0}},{{1}},{{2}},{{3}}{1}", this.LeftBracket, this.RightBracket);
       for (int a = 0; a < base.DimA; a++)
       {
         double aOffset = a * (xySectionWidth + SPACE_4D + zSectionWidth);

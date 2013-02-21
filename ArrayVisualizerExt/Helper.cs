@@ -29,7 +29,7 @@ namespace ArrayVisualizerExt
       return typeExpression.StartsWith("SharpDX.Matrix") || typeExpression.StartsWith("SharpDX.Vector");
     }
 
-    internal static string GetSharpDxDisplayName(EnvDTE.Expression expression, char leftBracket = '[', char rightBracket = ']')
+    internal static string GetSharpDxDisplayName(EnvDTE.Expression expression, char leftBracket, char rightBracket)
     {
       int elements = expression.Value.Where(C => C == ':').Count();
       string formatter;

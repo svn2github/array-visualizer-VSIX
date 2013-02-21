@@ -14,7 +14,8 @@ namespace ArrayVisualizerControls
         throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot2DException);
       }
 
-      string toolTipFmt = "[{0},{1}]";
+
+      string toolTipFmt = string.Format("{0}{{0}},{{1}}{1}", this.LeftBracket, this.RightBracket);
       for (int y = 0; y < base.DimY; y++)
         for (int x = 0; x < base.DimX; x++)
         {

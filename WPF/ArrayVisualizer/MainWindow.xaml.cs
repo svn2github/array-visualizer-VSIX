@@ -407,6 +407,10 @@ namespace ArrayVisualizer
       this.arrayCtl.Width = 285;
       this.arrayCtl.Height = 251;
       this.arrayCtl.VerticalAlignment = VerticalAlignment.Top;
+
+      this.arrayCtl.LeftBracket = '[';
+      this.arrayCtl.RightBracket = ']';
+
       this.mainPanel.Children.Add(this.arrayCtl);
     }
 
@@ -504,6 +508,7 @@ namespace ArrayVisualizer
             this.arrayCtl.SetControlData(this.Get4DArray(x, y, z, a));
             break;
         }
+
 
         this.rotateGrid.IsEnabled = Math.Abs(this.dims) > 1;
         this.resizeGrid.IsEnabled = this.dims > 0;

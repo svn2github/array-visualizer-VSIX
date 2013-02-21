@@ -40,15 +40,17 @@ namespace ArrayVisualizerControls
     #endregion
 
     #region Constructors and Destructors
-        
+
     protected ArrayControl()
-    {      
+    {
       this.arrayGrid = new Grid();
       this.AddChild(this.arrayGrid);
       this.cellSize = new Size(80, 55);
       this.formatter = string.Empty;
       this.captionBuilder = this.DefaultCaptionBuilder;
       this.tooltipPrefix = string.Empty;
+      this.LeftBracket = '[';
+      this.RightBracket = ']';
     }
 
     #endregion
@@ -122,6 +124,9 @@ namespace ArrayVisualizerControls
     protected int DimX { get; set; }
     protected int DimY { get; set; }
     protected int DimZ { get; set; }
+
+    public char LeftBracket { get; set; }
+    public char RightBracket { get; set; }
 
     #endregion
 
@@ -358,6 +363,9 @@ namespace ArrayVisualizerControls
           return;
       }
 
+      arrCtl.LeftBracket = this.LeftBracket;
+      arrCtl.RightBracket = this.RightBracket;
+
       arrCtl.CaptionBuilder = this.captionBuilder;
       arrCtl.CellClick = this.CellClick;
       arrCtl.Formatter = this.formatter;
@@ -414,6 +422,7 @@ namespace ArrayVisualizerControls
     }
 
     #endregion
+
     private string DefaultCaptionBuilder(object data, string formatter)
     {
       double number;
@@ -428,33 +437,11 @@ namespace ArrayVisualizerControls
       int[] dims = data.GetDimensions();
       string dimsText = string.Join(", ", dims);
       string text = string.Format("{{{0}}}", data.GetType().Name);
-      int pos1 = text.IndexOf("[");
-      int pos2 = text.IndexOf("]");
-      text = text.Substring(0, pos1) + "[" + dimsText + "]" + text.Substring(pos2 + 1);
+      int pos1 = text.IndexOf(this.RightBracket);
+      int pos2 = text.IndexOf(this.LeftBracket);
+      text = text.Substring(0, pos1) + this.LeftBracket + dimsText + this.RightBracket + text.Substring(pos2 + 1);
       return text;
     }
-  }
-
-  public class CellClickEventArgs : RoutedEventArgs
-  {
-    public CellClickEventArgs()
-      : base() { }
-
-    public CellClickEventArgs(RoutedEvent routedEvent)
-      : base(routedEvent) { }
-
-    public CellClickEventArgs(RoutedEvent routedEvent, object source)
-      : base(routedEvent, source) { }
-
-    public CellClickEventArgs(object data, string toolTipPrefix, RoutedEvent routedEvent, object source)
-      : base(routedEvent, source)
-    {
-      this.Data = data;
-      this.ToolTipPrefix = toolTipPrefix;
-    }
-
-    public object Data { get; set; }
-    public string ToolTipPrefix { get; set; }
   }
 }
 

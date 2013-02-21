@@ -18,4 +18,6 @@ let arr3 = Enumerator.Generate<TestType>(15, GetNewType).Shuffle().ToArray(5, 3)
 let arr4 = Enumerator.Generate<TestType>(27, GetNewType).Shuffle().ToArray(9, 3)
 
 Debugger.Break()
+Debugger.Break()
+Debugger.Break()
 

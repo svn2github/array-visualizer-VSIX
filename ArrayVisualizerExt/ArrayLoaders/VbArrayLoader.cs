@@ -27,14 +27,14 @@ namespace ArrayVisualizerExt.ArrayLoaders
       if (expression.DataMembers.Count > 0)
         if (Helper.IsExpressionVbArrayType(expType))
         {
-          expType = expType.Substring(0, expType.IndexOf("("));
-          expType = expType + "(" + string.Join(",", DimensionsLoader(expression)) + ")";
+          expType = expType.Substring(0, expType.IndexOf(this.LeftBracket));
+          expType = expType + this.LeftBracket + string.Join(",", DimensionsLoader(expression)) + this.RightBracket;
           string item = prefix + name + " - " + expType;
           arrayExpressions.Add(item, expression);
         }
         else if (Helper.IsExpressionSharpDXType(expType))
         {
-          string displayName = Helper.GetSharpDxDisplayName(expression, '(', ')');
+          string displayName = Helper.GetSharpDxDisplayName(expression, this.LeftBracket, this.RightBracket);
           string item = prefix + expression.Name + " - " + displayName;
           arrayExpressions.Add(item, expression);
         }
@@ -47,8 +47,8 @@ namespace ArrayVisualizerExt.ArrayLoaders
     {
       int last = expression.DataMembers.Count;
       string dims = expression.DataMembers.Item(last).Name;
-      dims = dims.Substring(dims.IndexOf("(") + 1);
-      dims = dims.Substring(0, dims.IndexOf(")"));
+      dims = dims.Substring(dims.IndexOf(this.LeftBracket) + 1);
+      dims = dims.Substring(0, dims.IndexOf(this.RightBracket));
 
       int[] dimenstions = dims.Split(',').Select(X => int.Parse(X) + 1).ToArray();
       return dimenstions;
@@ -58,6 +58,10 @@ namespace ArrayVisualizerExt.ArrayLoaders
     {
       return Helper.IsExpressionVbArrayType(Helper.RemoveBrackets(typeExpression)) || Helper.IsExpressionSharpDXType(typeExpression);
     }
+
+    public char LeftBracket { get { return '('; } }
+
+    public char RightBracket { get { return ')'; } }
 
     #endregion
   }

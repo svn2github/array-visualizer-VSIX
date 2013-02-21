@@ -12,7 +12,7 @@ namespace ArrayVisualizerControls
       if (this.Data.Rank != 1)
         throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot1DException);
 
-      string toolTipFmt = "[{0}]";
+      string toolTipFmt = string.Format("{0}{{0}}{1}", this.LeftBracket, this.RightBracket);
       for (int x = 0; x < base.DimX; x++)
       {
         object data = this.Data.GetValue(x);

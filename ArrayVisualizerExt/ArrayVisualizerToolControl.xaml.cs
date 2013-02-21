@@ -111,16 +111,17 @@ namespace ArrayVisualizerExt
           break;
       }
 
+      int[] dims = this.arrCtl.Data.GetDimensions();
       switch (arrCtl.Data.Rank)
       {
         case 2:
-          arrCtl.SetControlData(((string[,])arrCtl.Data).Rotate(angle));
+          this.arrCtl.SetControlData((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1])).Rotate(angle));
           break;
         case 3:
-          arrCtl.SetControlData(((string[, ,])arrCtl.Data).Rotate(r, angle));
+          this.arrCtl.SetControlData((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2])).Rotate(r, angle));
           break;
         case 4:
-          arrCtl.SetControlData(((string[, , ,])arrCtl.Data).Rotate(r, angle));
+          this.arrCtl.SetControlData((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2], dims[3])).Rotate(r, angle));
           break;
       }
 
@@ -144,7 +145,7 @@ namespace ArrayVisualizerExt
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.11");
+      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.12");
     }
 
     #endregion
@@ -187,33 +188,33 @@ namespace ArrayVisualizerExt
           {
             case "SharpDX.Matrix":
               dimenstions = new[] { 4, 4 };
-              values = GetValues(expression, e => 'M' == e.Name[0]);
+              values = GetValues(expression, e => 'M' == e.Name[0], ArrayLoader.LeftBracket);
               break;
             case "SharpDX.Matrix3x2":
               dimenstions = new[] { 3, 2 };
-              values = GetValues(expression, e => 'M' == e.Name[0]);
+              values = GetValues(expression, e => 'M' == e.Name[0], ArrayLoader.LeftBracket);
               break;
             case "SharpDX.Matrix5x4":
               dimenstions = new[] { 5, 4 };
-              values = GetValues(expression, e => 'M' == e.Name[0]);
+              values = GetValues(expression, e => 'M' == e.Name[0], ArrayLoader.LeftBracket);
               break;
             case "SharpDX.Vector2":
               dimenstions = new[] { 2, 1 };
-              values = GetValues(expression, e => "XY".Contains(e.Name.Last()));
+              values = GetValues(expression, e => "XY".Contains(e.Name.Last()), ArrayLoader.LeftBracket);
               break;
             case "SharpDX.Vector3":
               dimenstions = new[] { 3, 1 };
-              values = GetValues(expression, e => "XYZ".Contains(e.Name.Last()));
+              values = GetValues(expression, e => "XYZ".Contains(e.Name.Last()), ArrayLoader.LeftBracket);
               break;
             case "SharpDX.Vector4":
               dimenstions = new[] { 4, 1 };
-              values = GetValues(expression, e => "XYZW".Contains(e.Name.Last())).RotateLeft(1).ToArray();
+              values = GetValues(expression, e => "XYZW".Contains(e.Name.Last()), ArrayLoader.LeftBracket).RotateLeft(1).ToArray();
               break;
             default:
               dimenstions = this.ArrayLoader.DimensionsLoader(expression);
               int count = expression.DataMembers.Count;
               if (ignoreArraySize || count <= 2000)
-                values = GetValues(expression);
+                values = GetValues(expression, ArrayLoader.LeftBracket);
               else
               {
                 LargeArrayHandler largeArrayHandler = new LargeArrayHandler(count, 2000, 40000);
@@ -252,6 +253,9 @@ namespace ArrayVisualizerExt
           this.arrCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
           this.arrCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
 
+          arrCtl.LeftBracket = ArrayLoader.LeftBracket;
+          arrCtl.RightBracket = ArrayLoader.RightBracket;
+
           this.arrCtl.CaptionBuilder = CaptionBuilder;
           this.arrCtl.CellClick += new EventHandler<CellClickEventArgs>(arrCtl_CellClick);
 
@@ -274,7 +278,7 @@ namespace ArrayVisualizerExt
 
     void arrCtl_CellClick(object sender, CellClickEventArgs e)
     {
-      Array values = GetValues((Expression)e.Data);
+      Array values = GetValues((Expression)e.Data, ArrayLoader.LeftBracket);
       Color color = ((SolidColorBrush)this.mainPanel.Background).Color;
       ((ArrayControl)sender).ShowArrayPopup((UIElement)e.Source, values, e.ToolTipPrefix, color);
     }
@@ -285,20 +289,20 @@ namespace ArrayVisualizerExt
         LoadArrayControl((string)arraysListBox.SelectedItem, true);
     }
 
-    private static object[] GetValues(EnvDTE.Expression expression, Predicate<Expression> p)
+    private static object[] GetValues(EnvDTE.Expression expression, Predicate<Expression> p, char leftBracket)
     {
       object[] values;
-      if (expression.DataMembers.Item(1).Type.Contains("["))
+      if (expression.DataMembers.Item(1).Type.Contains(leftBracket))
         values = expression.DataMembers.Cast<Expression>().Where(e => p(e)).ToArray();
       else
         values = expression.DataMembers.Cast<Expression>().Where(e => p(e)).Select(e => e.Value).ToArray();
       return values;
     }
 
-    private static object[] GetValues(EnvDTE.Expression expression)
+    private static object[] GetValues(EnvDTE.Expression expression, char arrayOpenBarcket)
     {
       object[] values;
-      if (expression.DataMembers.Item(1).Type.Contains("["))
+      if (expression.DataMembers.Item(1).Type.Contains(arrayOpenBarcket))
         values = expression.DataMembers.Cast<Expression>().ToArray();
       else
         values = expression.DataMembers.Cast<Expression>().Select(e => e.Value).ToArray();

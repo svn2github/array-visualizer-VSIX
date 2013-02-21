@@ -101,6 +101,7 @@
     <Compile Include="Array1D.xaml.cs">
       <DependentUpon>Array1D.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CellClickEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
