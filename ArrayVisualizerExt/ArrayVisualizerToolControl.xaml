@@ -8,51 +8,46 @@
              mc:Ignorable="d" d:DesignWidth="808"
              x:Name="ArrayVisualizerToolWindow">
     <Grid>
-        <Label Content="Support" Height="28" HorizontalAlignment="Left" Margin="10,0,0,10" x:Name="supportlabel" VerticalAlignment="Bottom"  Cursor="Hand" MouseUp="supportlabel_MouseUp" />
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="207,12,12,12">
-            <Grid x:Name="mainPanel" Background="#FFFFFFE1">
-                <Border BorderThickness="1" BorderBrush="#FF45597C" Padding="5"/>
-            </Grid>
-        </ScrollViewer>
-        <ListBox Height="160" HorizontalAlignment="Left" Margin="10,43,0,0" x:Name="arraysListBox" VerticalAlignment="Top" Width="192" SelectionChanged="arraysListBox_SelectionChanged" BorderBrush="#FF45597C"/>
-
-
         <Label Content="Arrays:" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" x:Name="arraysTitleLabel" VerticalAlignment="Top" Width="75" />
-        <TabControl HorizontalAlignment="Left" Margin="10,208,0,43" Width="192" SelectionChanged="TabControl_SelectionChanged" Name="VisualizerTab">
-            <TabItem Header="Data" Name="dataTab">
+        <ListBox Height="160" HorizontalAlignment="Left" Margin="10,43,0,0" x:Name="arraysListBox" VerticalAlignment="Top" Width="192" SelectionChanged="arraysListBox_SelectionChanged" BorderBrush="#FF45597C"/>
+        <TabControl HorizontalAlignment="Left" Margin="10,208,0,43" Width="192" SelectionChanged="TabControl_SelectionChanged" x:Name="VisualizerTab">
+            <TabItem Header="Data" x:Name="dataTab">
                 <Grid Background="#FFE5E5E5" Margin="1,0,-1,0" >
-                    <Grid Background="White" Height="100" IsEnabled="False" Margin="10,38,10,0" x:Name="rotateGrid" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                    <Grid Background="White" Height="128" IsEnabled="False" Margin="10,10,10,0" x:Name="rotateGrid" VerticalAlignment="Top">
                         <Border BorderThickness="1" BorderBrush="#FF45597C" />
+                        <Label Content="Angle:" Height="26" HorizontalAlignment="Left" Margin="10,7,0,0" x:Name="angleLabel" VerticalAlignment="Top" Width="52" />
                         <ComboBox Height="23" Margin="68,10,10,0" x:Name="angelComboBox" SelectedIndex="3" VerticalAlignment="Top">
                             <ComboBoxItem Content="90" />
                             <ComboBoxItem Content="180" />
                         </ComboBox>
+                        <Label Content="Axis:" Height="28" HorizontalAlignment="Left" Margin="11,34,0,0" x:Name="axisLabel" VerticalAlignment="Top" Width="52" />
                         <ComboBox Height="23" Margin="68,38,10,0" x:Name="axisComboBox" SelectedIndex="4" VerticalAlignment="Top">
                             <ComboBoxItem Content="X" />
                             <ComboBoxItem Content="Y" />
                         </ComboBox>
-                        <Label Content="Angle:" Height="26" HorizontalAlignment="Left" Margin="10,7,0,0" x:Name="angleLabel" VerticalAlignment="Top" Width="52" />
-                        <Label Content="Axis:" Height="28" HorizontalAlignment="Left" Margin="10,35,0,0" x:Name="axisLabel" VerticalAlignment="Top" Width="52" />
-                        <Button Click="rotateButton_Click" Content="Rotate" Margin="10,67,10,0" x:Name="rotateButton" Height="23" VerticalAlignment="Top" />
+                        <Button Click="rotateButton_Click" Content="Rotate" Margin="68,67,10,0" x:Name="rotateButton" Height="23" VerticalAlignment="Top" />
+                        <Button Click="resetButton_Click" Content="Reset" Margin="68,95,10,0" x:Name="resetButton" Height="23" VerticalAlignment="Top" />
                     </Grid>
 
-                    <Grid Background="White" Height="99" HorizontalAlignment="Left" Margin="10,143,0,0" VerticalAlignment="Top" Width="162" Grid.ColumnSpan="2">
+                    <Grid Background="White" Height="127" HorizontalAlignment="Left" Margin="10,143,0,0" VerticalAlignment="Top" Width="162">
                         <Border BorderThickness="1" BorderBrush="#FF45597C"/>
-                        <Label Content="Cell Height:" Height="28" HorizontalAlignment="Left" Margin="12,36,0,0" x:Name="cellHeightLabel" VerticalAlignment="Top" Width="76" />
-                        <Label Content="Cell Width:" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" x:Name="cellWidthLabel" VerticalAlignment="Top" Width="75" />
+                        <Label Content="Cell Width:" Height="28" HorizontalAlignment="Left" Margin="11,8,0,0" x:Name="cellWidthLabel" VerticalAlignment="Top" Width="75" />
                         <TextBox HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,10,10,0" x:Name="cellWidthTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="60" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" Height="23" VerticalAlignment="Top" />
+                        <Label Content="Cell Height:" Height="28" HorizontalAlignment="Left" Margin="11,36,0,0" x:Name="cellHeightLabel" VerticalAlignment="Top" Width="76" />
                         <TextBox Height="23" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,38,10,0" x:Name="cellHeightTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="40" VerticalAlignment="Top" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                        <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="11,64,0,0" x:Name="formatterLabel" VerticalAlignment="Top" Width="75" />
                         <TextBox HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,66,10,0" x:Name="formatterTextBox" Text="0.##" Width="65" Height="23" VerticalAlignment="Top" />
-                        <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="10,64,0,0" x:Name="formatterLabel" VerticalAlignment="Top" Width="75" />
+                        <Button  Content="Apply" Margin="68,94,10,0" x:Name="applyButton" Height="23" VerticalAlignment="Top" Click="applyButton_Click" />
                     </Grid>
-                    <Button Click="refreshButton_Click" Content="Reset" Margin="10,10,10,0" x:Name="resetButton" Height="23" VerticalAlignment="Top" Grid.ColumnSpan="2" />
                 </Grid>
             </TabItem>
             <TabItem Header="Chart" x:Name="chartTab" >
                 <Grid Background="#FFE5E5E5" >
-                    <Grid Background="White" Height="246" Margin="10,10,10,0" x:Name="chartOptions" VerticalAlignment="Top">
-                        <Border BorderThickness="1" BorderBrush="#FF45597C" >
-                        </Border>
+                    <Label Content="Chart &#xA;Powered By:" Height="43" HorizontalAlignment="Left" Margin="10,0,0,10" x:Name="syncFusionLabel" VerticalAlignment="Bottom"  Cursor="Hand" MouseUp="syncFusionLabel_MouseUp" Width="162" />
+                    <Image  Margin="0,0,15,17"  Source="images\SyncFusionLogo.png" Cursor="Hand" MouseUp="syncFusionLabel_MouseUp" Height="21" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="81" />
+
+                    <Grid Background="White" Height="120" Margin="10,10,10,0" x:Name="chartOptions" VerticalAlignment="Top">
+                        <Border BorderThickness="1" BorderBrush="#FF45597C" />
                         <Label Content="Type:" Height="26" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" Width="39" />
                         <ComboBox Height="23" Margin="54,10,10,0" x:Name="chartType" SelectedIndex="0" VerticalAlignment="Top" SelectionChanged="chartType_SelectionChanged">
                             <ComboBoxItem Content="Line" />
@@ -71,11 +66,7 @@
                         <Label Content="Thickness:" Height="26" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="64" Margin="10,36,0,0" />
 
 
-                        <ComboBox Margin="79,38,10,184" x:Name="lineThickness" SelectedIndex="2" SelectionChanged="lineType_SelectionChanged" >
-                            <ComboBoxItem Content="1 Pt." />
-                            <ComboBoxItem Content="1.5 Pt." />
-                            <ComboBoxItem Content="2 Pt." />
-                            <ComboBoxItem Content="3 Pt."  />
+                        <ComboBox Margin="79,38,10,0" x:Name="lineThickness" SelectedIndex="2" SelectionChanged="lineType_SelectionChanged" Height="24" VerticalAlignment="Top" >
                             <!--<ComboBox.Resources>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGray" />
                             </ComboBox.Resources>-->
@@ -159,25 +150,31 @@
                                     </Image>
                                 </Viewbox>
                             </ComboBoxItem>-->
+                            <ComboBoxItem Content="1 Pt." />
+                            <ComboBoxItem Content="1.5 Pt." />
+                            <ComboBoxItem Content="2 Pt." />
+                            <ComboBoxItem Content="3 Pt."  />
                         </ComboBox>
 
 
 
-                        <Label Content="Grid:" Height="26" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="64" Margin="10,63,0,0" />
-                        <ComboBox Height="23" Margin="79,66,10,0" x:Name="gridLinesType" SelectedIndex="0" VerticalAlignment="Top" SelectionChanged="gridLinesType_SelectionChanged">
+                        <Label Content="Grid:" Height="26" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="64" Margin="10,65,0,0" />
+                        <ComboBox Height="23" Margin="79,67,10,0" x:Name="gridLinesType" SelectedIndex="0" VerticalAlignment="Top" SelectionChanged="gridLinesType_SelectionChanged">
                             <ComboBoxItem Content="None" />
                             <ComboBoxItem Content="Horizontal" />
                             <ComboBoxItem Content="Vertical" />
                             <ComboBoxItem Content="Both" />
                         </ComboBox>
                     </Grid>
-                    <Label Content="Chart &#xD;&#xA;Powered By:" Height="43" HorizontalAlignment="Left" Margin="10,0,0,7" x:Name="syncFusionLabel" VerticalAlignment="Bottom"  Cursor="Hand" MouseUp="syncFusionLabel_MouseUp" Width="162" />
-                    <Image  Margin="0,0,10,10"  Source="images\SyncFusionLogo.png" Cursor="Hand" MouseUp="syncFusionLabel_MouseUp" Height="21" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="81" >
-                    </Image>
-
                 </Grid>
             </TabItem>
         </TabControl>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="207,12,12,12">
+            <Grid x:Name="mainPanel" Background="#FFFFFFE1">
+                <Border BorderThickness="1" BorderBrush="#FF45597C" Padding="5"/>
+            </Grid>
+        </ScrollViewer>
+        <Label Content="Support" Height="28" HorizontalAlignment="Left" Margin="10,0,0,10" x:Name="supportlabel" VerticalAlignment="Bottom"  Cursor="Hand" MouseUp="supportlabel_MouseUp" />
     </Grid>
 
 </UserControl>

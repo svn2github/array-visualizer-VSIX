@@ -33,6 +33,9 @@ namespace ArrayVisualizerExt
     private IArrayLoader ArrayLoader;
     private Exception lastLoadException;
 
+    private bool arraysPending;
+    private bool toolActive;
+
     #endregion
 
     #region Constructor
@@ -60,17 +63,31 @@ namespace ArrayVisualizerExt
 
     private void debugerEvents_OnEnterRunMode(dbgEventReason Reason)
     {
+      arraysPending = false;
       ClearVisualizer();
     }
 
     private void debugerEvents_OnEnterDesignMode(dbgEventReason Reason)
     {
+      arraysPending = false;
       ClearVisualizer();
     }
 
     private void DebuggerEvents_OnEnterBreakMode(dbgEventReason Reason, ref dbgExecutionAction ExecutionAction)
     {
+      arraysPending = true;
       ShowArrays();
+    }
+
+    public void ToolActivated()
+    {
+      toolActive = true;
+      ShowArrays();
+    }
+
+    public void ToolDeactivated()
+    {
+      toolActive = false;
     }
 
     #endregion
@@ -120,19 +137,15 @@ namespace ArrayVisualizerExt
       switch (arrCtl.Data.Rank)
       {
         case 2:
-          this.arrCtl.SetControlData((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1])).Rotate(angle));
+          Reset((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1])).Rotate(angle));
           break;
         case 3:
-          this.arrCtl.SetControlData((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2])).Rotate(r, angle));
+          Reset((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2])).Rotate(r, angle));
           break;
         case 4:
-          this.arrCtl.SetControlData((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2], dims[3])).Rotate(r, angle));
+          Reset((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2], dims[3])).Rotate(r, angle));
           break;
       }
-
-      arrCtl.Padding = new Thickness(8);
-      arrCtl.Width += 16;
-      arrCtl.Height += 16;
     }
 
     private void arraysListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -166,20 +179,63 @@ namespace ArrayVisualizerExt
       }
     }
 
-    private void refreshButton_Click(object sender, RoutedEventArgs e)
+    private void resetButton_Click(object sender, RoutedEventArgs e)
     {
-      if (arraysListBox.SelectedItems.Count == 1)
-      {
-        this.arrCtl.SetControlData(this.data);
-        arrCtl.Padding = new Thickness(8);
-        arrCtl.Width += 16;
-        arrCtl.Height += 16;
-      }
+      Reset(this.data);
     }
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
       System.Diagnostics.Process.Start("http://bit.ly/JjoD5P");
+    }
+
+    private void gridLinesType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SetGridLines();
+    }
+
+    private void arrCtl_CellClick(object sender, CellClickEventArgs e)
+    {
+      Array values = GetValues((Expression)e.Data, ArrayLoader.LeftBracket);
+      Color color = ((SolidColorBrush)this.mainPanel.Background).Color;
+      ((ArrayControl)sender).ShowArrayPopup((UIElement)e.Source, values, e.ToolTipPrefix, color);
+    }
+
+    private void largeArrayHandler_LoadArrayRequest(object sender, RoutedEventArgs e)
+    {
+      if (arraysListBox.SelectedItems.Count == 1)
+      {
+        LoadArray((string)arraysListBox.SelectedItem, true);
+        SetupArrayControl();
+        SetupChartControl();
+        SetControlsVisibility();
+      }
+    }
+
+    private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SetControlsVisibility();
+    }
+
+    private void chartType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SetChartType();
+    }
+
+    private void lineType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SetChartLinwStroke();
+    }
+
+    private void syncFusionLabel_MouseUp(object sender, MouseButtonEventArgs e)
+    {
+      System.Diagnostics.Process.Start("http://bit.ly/Wq50dg");
+    }
+
+    private void applyButton_Click(object sender, RoutedEventArgs e)
+    {
+      if (this.arrCtl != null)
+        Reset(this.arrCtl.Data);
     }
 
     #endregion
@@ -414,24 +470,6 @@ namespace ArrayVisualizerExt
       return chartSeries;
     }
 
-    void arrCtl_CellClick(object sender, CellClickEventArgs e)
-    {
-      Array values = GetValues((Expression)e.Data, ArrayLoader.LeftBracket);
-      Color color = ((SolidColorBrush)this.mainPanel.Background).Color;
-      ((ArrayControl)sender).ShowArrayPopup((UIElement)e.Source, values, e.ToolTipPrefix, color);
-    }
-
-    void largeArrayHandler_LoadArrayRequest(object sender, RoutedEventArgs e)
-    {
-      if (arraysListBox.SelectedItems.Count == 1)
-      {
-        LoadArray((string)arraysListBox.SelectedItem, true);
-        SetupArrayControl();
-        SetupChartControl();
-        SetControlsVisibility();
-      }
-    }
-
     private static object[] GetValues(EnvDTE.Expression expression, Predicate<Expression> predicate, char leftBracket)
     {
       object[] values;
@@ -499,30 +537,35 @@ namespace ArrayVisualizerExt
     {
       if (dte.Mode == vsIDEMode.vsIDEModeDebug && dte.Debugger.CurrentStackFrame != null)
       {
-        string language = dte.Debugger.CurrentStackFrame.Language;
-        switch (language)
+        if (arraysPending && toolActive)
         {
-          case "C#":
-            ArrayLoader = new CsArrayLoader();
-            break;
-          case "F#":
-            ArrayLoader = new FsArrayLoader();
-            break;
-          case "Basic":
-            ArrayLoader = new VbArrayLoader();
-            break;
-          default:
-            ClearVisualizer();
-            Label msg = new Label();
-            msg.Content = string.Format("Sorry, currently {0} is not supported.", language);
-            mainPanel.Children.Add(msg);
-            return;
+          arraysPending = false;
+
+          //System.Diagnostics.Debug.WriteLine("Loading arrays");
+
+          string language = dte.Debugger.CurrentStackFrame.Language;
+          switch (language)
+          {
+            case "C#":
+              ArrayLoader = new CsArrayLoader();
+              break;
+            case "F#":
+              ArrayLoader = new FsArrayLoader();
+              break;
+            case "Basic":
+              ArrayLoader = new VbArrayLoader();
+              break;
+            default:
+              ClearVisualizer();
+              Label msg = new Label();
+              msg.Content = string.Format("Sorry, currently {0} is not supported.", language);
+              mainPanel.Children.Add(msg);
+              return;
+          }
+          LoadScopeArrays();
         }
-        LoadScopeArrays();
       }
     }
-
-    #endregion
 
     private string CaptionBuilder(object data, string formatter)
     {
@@ -539,11 +582,6 @@ namespace ArrayVisualizerExt
       return text;
     }
 
-    private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      SetControlsVisibility();
-    }
-
     private void SetControlsVisibility()
     {
       if (VisualizerTab.SelectedIndex == 0)   // data
@@ -554,14 +592,10 @@ namespace ArrayVisualizerExt
 
     private void ShowElement(Control control)
     {
-      this.mainPanel.Children.Clear();
+      if (this.mainPanel != null)
+        this.mainPanel.Children.Clear();
       if (control != null && !this.mainPanel.Children.Contains(control))
         this.mainPanel.Children.Add(control);
-    }
-
-    private void chartType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      SetChartType();
     }
 
     private void SetChartType()
@@ -575,11 +609,6 @@ namespace ArrayVisualizerExt
       }
     }
 
-    private void gridLinesType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      SetGridLines();
-    }
-
     private void SetGridLines()
     {
       bool seconday = gridLinesType.SelectedIndex == 1 || gridLinesType.SelectedIndex == 3;
@@ -590,11 +619,6 @@ namespace ArrayVisualizerExt
           ChartArea.SetShowGridLines(area.PrimaryAxis, primary);
           ChartArea.SetShowGridLines(area.SecondaryAxis, seconday);
         }
-    }
-
-    private void lineType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      SetChartLinwStroke();
     }
 
     private void SetChartLinwStroke()
@@ -626,18 +650,30 @@ namespace ArrayVisualizerExt
       }
     }
 
+    private void Reset(Array data)
+    {
+      if (this.arrCtl != null)
+      {
+        this.arrCtl.Formatter = this.formatterTextBox.Text;
+        this.arrCtl.CaptionBuilder = this.CaptionBuilder;
+        this.arrCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
+        this.arrCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
+        this.arrCtl.SetControlData(data);
+        arrCtl.Padding = new Thickness(8);
+        arrCtl.Width += 16;
+        arrCtl.Height += 16;
+      }
+    }
+
+    #endregion
+
+
     private enum LoadResults
     {
       Success,
       LargeArray,
       NotSupported,
       Exception
-
-    }
-
-    private void syncFusionLabel_MouseUp(object sender, MouseButtonEventArgs e)
-    {
-      System.Diagnostics.Process.Start("http://bit.ly/Wq50dg");
     }
   }
 
@@ -650,6 +686,5 @@ namespace ArrayVisualizerExt
       else
         element.Visibility = Visibility.Hidden;
     }
-
   }
 }

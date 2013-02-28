@@ -202,7 +202,6 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\SyncFusionLogo.png" />
     <None Include="Resources\Images_32bit.bmp" />
     <Content Include="ArrVizPreview.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -221,6 +220,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Images\SyncFusionLogo.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Package.ico">

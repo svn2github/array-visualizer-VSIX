@@ -16,6 +16,8 @@ namespace ArrayVisualizerExt
   [Guid("c0023666-5bf2-4e35-8732-6490c0736f6b")]
   public class ArrayVisualizerToolWindow : ToolWindowPane
   {
+    ArrayVisualizerToolControl arrayVisualizerToolControl;
+
     /// <summary>
     /// Standard constructor for the tool window.
     /// </summary>
@@ -35,7 +37,31 @@ namespace ArrayVisualizerExt
       // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
       // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on 
       // the object returned by the Content property.
-      base.Content = new ArrayVisualizerToolControl();
+      arrayVisualizerToolControl = new ArrayVisualizerToolControl();
+      base.Content = arrayVisualizerToolControl;
+    }
+
+    public override void OnToolWindowCreated()
+    {
+      EnvDTE.DTE dte = (EnvDTE.DTE)GetService(typeof(EnvDTE.DTE));
+      EnvDTE80.Events2 events = (EnvDTE80.Events2)dte.Events;
+
+      var windowVisibility = events.get_WindowVisibilityEvents();
+
+      windowVisibility.WindowShowing += WindowVisibility_WindowShowing;
+      windowVisibility.WindowHiding += WindowVisibility_WindowHiding;
+    }
+
+    void WindowVisibility_WindowHiding(EnvDTE.Window Window)
+    {
+      if (Window.Kind == "Tool" && Window.Caption == Resources.ToolWindowTitle)
+        arrayVisualizerToolControl.ToolDeactivated();
+    }
+
+    void WindowVisibility_WindowShowing(EnvDTE.Window Window)
+    {
+      if (Window.Kind == "Tool" && Window.Caption == Resources.ToolWindowTitle)
+        arrayVisualizerToolControl.ToolActivated();
     }
   }
 }
