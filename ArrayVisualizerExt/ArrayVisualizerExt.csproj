@@ -208,6 +208,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Resource Include="Images\RefreshArrow.png" />
+    <Resource Include="Images\SyncFusionLogoOld.png" />
     <Content Include="MS-PL.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
