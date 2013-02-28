@@ -13,6 +13,7 @@ using EnvDTE80;
 using LinqLib.Array;
 using LinqLib.Sequence;
 using Microsoft.VisualStudio.Shell;
+using Syncfusion.Windows.Chart;
 using Expression = EnvDTE.Expression;
 
 namespace ArrayVisualizerExt
@@ -25,8 +26,12 @@ namespace ArrayVisualizerExt
     private Dictionary<string, EnvDTE.Expression> expressions;
     private EnvDTE.DebuggerEvents debugerEvents;
     private ArrayControl arrCtl;
+    private Chart chartCtl;
+    private Array data;
+    private int[] dimenstions;
 
     private IArrayLoader ArrayLoader;
+    private Exception lastLoadException;
 
     #endregion
 
@@ -133,19 +138,48 @@ namespace ArrayVisualizerExt
     private void arraysListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       if (e.AddedItems.Count == 1)
-        LoadArrayControl((string)e.AddedItems[0], false);
+      {
+        string arrayName = (string)e.AddedItems[0];
+        LoadResults result = LoadArray(arrayName, false);
+        SetupArrayControl();
+        SetupChartControl();
+        SetControlsVisibility();
+
+        switch (result)
+        {
+          case LoadResults.LargeArray:
+            LargeArrayHandler largeArrayHandler = new LargeArrayHandler(expressions[arrayName].DataMembers.Count, 2000, 40000);
+            largeArrayHandler.LoadArrayRequest += largeArrayHandler_LoadArrayRequest;
+            this.mainPanel.Children.Add(largeArrayHandler);
+            break;
+          case LoadResults.NotSupported:
+            break;
+          case LoadResults.Exception:
+            Label errorLabel = new Label();
+            errorLabel.Content = string.Format("Error rendering array '{0}'\r\n\r\n'{1}'", arrayName, lastLoadException.Message);
+            mainPanel.Children.Add(errorLabel);
+            break;
+          case LoadResults.Success:
+          default:
+            break;
+        }
+      }
     }
 
     private void refreshButton_Click(object sender, RoutedEventArgs e)
     {
       if (arraysListBox.SelectedItems.Count == 1)
-        LoadArrayControl((string)arraysListBox.SelectedItem, false);
+      {
+        this.arrCtl.SetControlData(this.data);
+        arrCtl.Padding = new Thickness(8);
+        arrCtl.Width += 16;
+        arrCtl.Height += 16;
+      }
     }
-
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      System.Diagnostics.Process.Start("http://www.amirliberman.com/ArrayVisualizer.aspx?v=1.0.0.12");
+      System.Diagnostics.Process.Start("http://bit.ly/JjoD5P");
     }
 
     #endregion
@@ -172,17 +206,16 @@ namespace ArrayVisualizerExt
         this.arraysListBox.Items.Add(item);
     }
 
-    private void LoadArrayControl(string arrayName, bool ignoreArraySize)
+    private LoadResults LoadArray(string arrayName, bool ignoreArraySize)
     {
-      mainPanel.Children.Clear();
+      lastLoadException = null;
+      data = null;
       try
       {
         EnvDTE.Expression expression = expressions[arrayName];
         if (expression.Value != "null")
         {
           object[] values;
-          int[] dimenstions;
-          Array arr;
 
           switch (expression.Type)
           {
@@ -216,64 +249,169 @@ namespace ArrayVisualizerExt
               if (ignoreArraySize || count <= 2000)
                 values = GetValues(expression, ArrayLoader.LeftBracket);
               else
-              {
-                LargeArrayHandler largeArrayHandler = new LargeArrayHandler(count, 2000, 40000);
-                largeArrayHandler.LoadArrayRequest += largeArrayHandler_LoadArrayRequest;
-                this.mainPanel.Children.Add(largeArrayHandler);
-                return;
-              }
+                return LoadResults.LargeArray;
               break;
           }
-
-          this.SetRotationOptions(dimenstions.Length);
-
           switch (dimenstions.Length)
           {
             case 1:
-              arr = values.ToArray(dimenstions[0]);
-              this.arrCtl = new Array1D();
+              data = values.ToArray(dimenstions[0]);
               break;
             case 2:
-              arr = values.ToArray(dimenstions[0], dimenstions[1]);
-              this.arrCtl = new Array2D();
+              data = values.ToArray(dimenstions[0], dimenstions[1]);
               break;
             case 3:
-              arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2]);
-              this.arrCtl = new Array3D();
+              data = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2]);
               break;
             case 4:
-              arr = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2], dimenstions[3]);
-              this.arrCtl = new Array4D();
+              data = values.ToArray(dimenstions[0], dimenstions[1], dimenstions[2], dimenstions[3]);
               break;
             default:
-              return;
+              return LoadResults.NotSupported;
           }
-          this.arrCtl.Formatter = this.formatterTextBox.Text;
-          this.arrCtl.CaptionBuilder = this.CaptionBuilder;
-          this.arrCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
-          this.arrCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
-
-          arrCtl.LeftBracket = ArrayLoader.LeftBracket;
-          arrCtl.RightBracket = ArrayLoader.RightBracket;
-
-          this.arrCtl.CaptionBuilder = CaptionBuilder;
-          this.arrCtl.CellClick += new EventHandler<CellClickEventArgs>(arrCtl_CellClick);
-
-          this.arrCtl.SetControlData(arr);
-
-          this.arrCtl.Padding = new Thickness(8);
-          this.arrCtl.Width += 16;
-          this.arrCtl.Height += 16;
-
-          this.mainPanel.Children.Add(this.arrCtl);
         }
       }
       catch (Exception ex)
       {
-        Label errorLabel = new Label();
-        errorLabel.Content = string.Format("Error rendering array '{0}'\r\n\r\n'{1}'", arrayName, ex.Message);
-        mainPanel.Children.Add(errorLabel);
+        lastLoadException = ex;
+        return LoadResults.Exception;
       }
+      return LoadResults.Success;
+    }
+
+    private void SetupArrayControl()
+    {
+      this.SetRotationOptions(dimenstions.Length);
+
+      switch (dimenstions.Length)
+      {
+        case 1:
+          this.arrCtl = new Array1D();
+          break;
+        case 2:
+          this.arrCtl = new Array2D();
+          break;
+        case 3:
+          this.arrCtl = new Array3D();
+          break;
+        case 4:
+          this.arrCtl = new Array4D();
+          break;
+        default:
+          return;
+      }
+      this.arrCtl.Formatter = this.formatterTextBox.Text;
+      this.arrCtl.CaptionBuilder = this.CaptionBuilder;
+      this.arrCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
+      this.arrCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
+
+      arrCtl.LeftBracket = ArrayLoader.LeftBracket;
+      arrCtl.RightBracket = ArrayLoader.RightBracket;
+
+      this.arrCtl.CaptionBuilder = CaptionBuilder;
+      this.arrCtl.CellClick += new EventHandler<CellClickEventArgs>(arrCtl_CellClick);
+
+      this.arrCtl.SetControlData(data);
+
+      this.arrCtl.Padding = new Thickness(8);
+      this.arrCtl.Width += 16;
+      this.arrCtl.Height += 16;
+    }
+
+    private void SetupChartControl()
+    {
+      IEnumerable<double> chartData = null;
+
+      int dimenstionsCount = dimenstions.Length;
+
+      try
+      {
+        if ((dimenstionsCount == 1 || dimenstionsCount == 2) && this.data != null)
+        {
+          chartData = ConvertToDoubles(this.data);
+          chartTab.SetVisible(chartData.Any());
+        }
+        else
+          chartTab.SetVisible(false);
+      }
+      finally
+      {
+        if (chartTab.Visibility == System.Windows.Visibility.Hidden)
+        {
+          dataTab.IsSelected = true;
+        }
+        else
+        {
+          chartTab.Visibility = Visibility.Visible;
+
+          this.chartCtl = new Chart();
+          ChartArea area = new ChartArea();
+
+          if (dimenstionsCount == 1)
+            area.Series.Add(GetSeries(GetSelectedChartType(), chartData));
+          else   //2
+          {
+            double[] chartDataFlat = chartData.ToArray();
+            for (int i = 0; i < dimenstions[0]; i++)
+              area.Series.Add(GetSeries(GetSelectedChartType(), chartDataFlat.Skip(i * dimenstions[1]).Take(dimenstions[1])));
+          }
+          chartCtl.Areas.Add(area);
+
+          SetGridLines();
+        }
+      }
+    }
+
+    private ChartTypes GetSelectedChartType()
+    {
+      switch ((string)((ComboBoxItem)chartType.SelectedItem).Content)
+      {
+        case "Line":
+          return ChartTypes.Line;
+        case "Bar":
+          return ChartTypes.Bar;
+        case "Stack Bar":
+          return ChartTypes.StackingBar;
+        case "Stack Bar 100":
+          return ChartTypes.StackingBar100;
+        case "Column":
+          return ChartTypes.Column;
+        case "Stack Column":
+          return ChartTypes.StackingColumn;
+        case "Stack Column 100":
+          return ChartTypes.StackingColumn100;
+        case "Area":
+          return ChartTypes.Area;
+        case "Stack Area":
+          return ChartTypes.StackingArea;
+        case "Stack Area 100":
+          return ChartTypes.StackingArea100;
+        case "Spline":
+          return ChartTypes.Spline;
+        case "Spline Area":
+          return ChartTypes.SplineArea;
+        default:
+          throw new NotImplementedException();
+      }
+    }
+
+    private IEnumerable<double> ConvertToDoubles(Array array)
+    {
+      foreach (object item in array)
+      {
+        double value;
+        if (double.TryParse(item.ToString(), out value))
+          yield return value;
+        else
+          yield break;
+      }
+    }
+
+    private ChartSeries GetSeries(ChartTypes chartType, IEnumerable<double> chartData)
+    {
+      ChartSeries chartSeries = new ChartSeries(chartType);
+      chartSeries.Data = new ArrayVisualizerExt.ChartData.VisualizerPointsCollection(chartData);
+      return chartSeries;
     }
 
     void arrCtl_CellClick(object sender, CellClickEventArgs e)
@@ -286,16 +424,21 @@ namespace ArrayVisualizerExt
     void largeArrayHandler_LoadArrayRequest(object sender, RoutedEventArgs e)
     {
       if (arraysListBox.SelectedItems.Count == 1)
-        LoadArrayControl((string)arraysListBox.SelectedItem, true);
+      {
+        LoadArray((string)arraysListBox.SelectedItem, true);
+        SetupArrayControl();
+        SetupChartControl();
+        SetControlsVisibility();
+      }
     }
 
-    private static object[] GetValues(EnvDTE.Expression expression, Predicate<Expression> p, char leftBracket)
+    private static object[] GetValues(EnvDTE.Expression expression, Predicate<Expression> predicate, char leftBracket)
     {
       object[] values;
       if (expression.DataMembers.Item(1).Type.Contains(leftBracket))
-        values = expression.DataMembers.Cast<Expression>().Where(e => p(e)).ToArray();
+        values = expression.DataMembers.Cast<Expression>().Where(e => predicate(e)).ToArray();
       else
-        values = expression.DataMembers.Cast<Expression>().Where(e => p(e)).Select(e => e.Value).ToArray();
+        values = expression.DataMembers.Cast<Expression>().Where(e => predicate(e)).Select(e => e.Value).ToArray();
       return values;
     }
 
@@ -395,5 +538,118 @@ namespace ArrayVisualizerExt
         text = number.ToString(formatter, System.Threading.Thread.CurrentThread.CurrentUICulture.NumberFormat);
       return text;
     }
+
+    private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SetControlsVisibility();
+    }
+
+    private void SetControlsVisibility()
+    {
+      if (VisualizerTab.SelectedIndex == 0)   // data
+        ShowElement(this.arrCtl);
+      else                                    // Chart
+        ShowElement(this.chartCtl);
+    }
+
+    private void ShowElement(Control control)
+    {
+      this.mainPanel.Children.Clear();
+      if (control != null && !this.mainPanel.Children.Contains(control))
+        this.mainPanel.Children.Add(control);
+    }
+
+    private void chartType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SetChartType();
+    }
+
+    private void SetChartType()
+    {
+      if (chartCtl != null && chartCtl.Areas.Any())
+      {
+        ChartTypes chartType = GetSelectedChartType();
+        foreach (ChartArea area in chartCtl.Areas)
+          foreach (var item in area.Series)
+            item.Type = chartType;
+      }
+    }
+
+    private void gridLinesType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SetGridLines();
+    }
+
+    private void SetGridLines()
+    {
+      bool seconday = gridLinesType.SelectedIndex == 1 || gridLinesType.SelectedIndex == 3;
+      bool primary = gridLinesType.SelectedIndex == 2 || gridLinesType.SelectedIndex == 3;
+      if (chartCtl != null && chartCtl.Areas.Any())
+        foreach (ChartArea area in chartCtl.Areas)
+        {
+          ChartArea.SetShowGridLines(area.PrimaryAxis, primary);
+          ChartArea.SetShowGridLines(area.SecondaryAxis, seconday);
+        }
+    }
+
+    private void lineType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SetChartLinwStroke();
+    }
+
+    private void SetChartLinwStroke()
+    {
+      float thickness = 1;
+      switch (lineThickness.SelectedIndex)
+      {
+        case 0:
+          thickness = 1;
+          break;
+        case 1:
+          thickness = 1.5f;
+          break;
+        case 2:
+          thickness = 2f;
+          break;
+        case 3:
+          thickness = 3f;
+          break;
+        default:
+          break;
+      }
+      if (chartCtl != null && chartCtl.Areas.Any())
+      {
+        ChartTypes chartType = GetSelectedChartType();
+        foreach (ChartArea area in chartCtl.Areas)
+          foreach (var item in area.Series)
+            item.StrokeThickness = thickness;
+      }
+    }
+
+    private enum LoadResults
+    {
+      Success,
+      LargeArray,
+      NotSupported,
+      Exception
+
+    }
+
+    private void syncFusionLabel_MouseUp(object sender, MouseButtonEventArgs e)
+    {
+      System.Diagnostics.Process.Start("http://bit.ly/Wq50dg");
+    }
+  }
+
+  internal static class ext
+  {
+    public static void SetVisible(this UIElement element, bool value)
+    {
+      if (value)
+        element.Visibility = Visibility.Visible;
+      else
+        element.Visibility = Visibility.Hidden;
+    }
+
   }
 }
