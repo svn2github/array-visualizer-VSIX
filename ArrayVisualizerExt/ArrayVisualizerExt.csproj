@@ -220,7 +220,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Resource Include="Images\SyncFusionLogo.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Package.ico">
