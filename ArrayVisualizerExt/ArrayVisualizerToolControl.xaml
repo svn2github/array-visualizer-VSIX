@@ -67,93 +67,30 @@
 
 
                         <ComboBox Margin="79,38,10,0" x:Name="lineThickness" SelectedIndex="2" SelectionChanged="lineType_SelectionChanged" Height="24" VerticalAlignment="Top" >
-                            <!--<ComboBox.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGray" />
-                            </ComboBox.Resources>-->
-                            <!--<ComboBoxItem x:Name="cmbItemSolid10">
-                                <Viewbox>
-                                    <Image  Height="22" Width="55">
-                                        <Image.Source>
-                                            <DrawingImage>
-                                                <DrawingImage.Drawing>
-                                                    <GeometryDrawing Brush="Black">
-                                                        <GeometryDrawing.Geometry>
-                                                            <LineGeometry StartPoint="0,9" EndPoint="55,9" />
-                                                        </GeometryDrawing.Geometry>
-                                                        <GeometryDrawing.Pen>
-                                                            <Pen Brush="Black"  Thickness="2"  DashStyle="{x:Static DashStyles.Solid}" DashCap="Round" EndLineCap="Round" StartLineCap="Round"/>
-                                                        </GeometryDrawing.Pen>
-                                                    </GeometryDrawing>
-                                                </DrawingImage.Drawing>
-                                            </DrawingImage>
-                                        </Image.Source>
-                                    </Image>
-                                </Viewbox>
+                            <ComboBoxItem >
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="50" Height="1" Fill="Black" />
+                                    <TextBlock TextAlignment="Right"  Text="1 Pt." Width="34"/>
+                                </StackPanel>
                             </ComboBoxItem>
-                            <ComboBoxItem x:Name="cmbItemSolid15">
-                                <Viewbox>
-                                    <Image  Height="22" Width="55">
-                                        <Image.Source>
-                                            <DrawingImage>
-                                                <DrawingImage.Drawing>
-                                                    <GeometryDrawing Brush="Black">
-                                                        <GeometryDrawing.Geometry>
-                                                            <LineGeometry StartPoint="0,9" EndPoint="55,9" />
-                                                        </GeometryDrawing.Geometry>
-                                                        <GeometryDrawing.Pen>
-                                                            <Pen Brush="Black"  Thickness="3"  DashStyle="{x:Static DashStyles.Solid}" DashCap="Round" EndLineCap="Round" StartLineCap="Round"/>
-                                                        </GeometryDrawing.Pen>
-                                                    </GeometryDrawing>
-                                                </DrawingImage.Drawing>
-                                            </DrawingImage>
-                                        </Image.Source>
-                                    </Image>
-                                </Viewbox>
+                            <ComboBoxItem >
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="50" Height="1.5" Fill="Black" />
+                                    <TextBlock TextAlignment="Right"  Text="1.5 Pt." Width="34"/>
+                                </StackPanel>
                             </ComboBoxItem>
-                            <ComboBoxItem x:Name="cmbItemSolid20">
-                                <Viewbox>
-                                    <Image  Height="22" Width="55">
-                                        <Image.Source>
-                                            <DrawingImage>
-                                                <DrawingImage.Drawing>
-                                                    <GeometryDrawing Brush="Black">
-                                                        <GeometryDrawing.Geometry>
-                                                            <LineGeometry StartPoint="0,9" EndPoint="55,9" />
-                                                        </GeometryDrawing.Geometry>
-                                                        <GeometryDrawing.Pen>
-                                                            <Pen Brush="Black"  Thickness="4"  DashStyle="{x:Static DashStyles.Solid}" StartLineCap="Round" DashCap="Round" EndLineCap="Round"/>
-                                                        </GeometryDrawing.Pen>
-                                                    </GeometryDrawing>
-                                                </DrawingImage.Drawing>
-                                            </DrawingImage>
-                                        </Image.Source>
-                                    </Image>
-                                </Viewbox>
+                            <ComboBoxItem >
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="50" Height="2" Fill="Black" />
+                                    <TextBlock TextAlignment="Right"  Text="2 Pt." Width="34"/>
+                                </StackPanel>
                             </ComboBoxItem>
-                            <ComboBoxItem x:Name="cmbItemSolid30">
-                                <Viewbox>
-                                    <Image  Height="22" Width="55">
-                                        <Image.Source>
-                                            <DrawingImage>
-                                                <DrawingImage.Drawing>
-                                                    <GeometryDrawing Brush="Black">
-                                                        <GeometryDrawing.Geometry>
-                                                            <LineGeometry StartPoint="0,9" EndPoint="55,9" />
-                                                        </GeometryDrawing.Geometry>
-                                                        <GeometryDrawing.Pen>
-                                                            <Pen Brush="Black"  Thickness="6"  DashStyle="{x:Static DashStyles.Solid}" DashCap="Round" EndLineCap="Round" StartLineCap="Round" LineJoin="Round"/>
-                                                        </GeometryDrawing.Pen>
-                                                    </GeometryDrawing>
-                                                </DrawingImage.Drawing>
-                                            </DrawingImage>
-                                        </Image.Source>
-                                    </Image>
-                                </Viewbox>
-                            </ComboBoxItem>-->
-                            <ComboBoxItem Content="1 Pt." />
-                            <ComboBoxItem Content="1.5 Pt." />
-                            <ComboBoxItem Content="2 Pt." />
-                            <ComboBoxItem Content="3 Pt."  />
+                            <ComboBoxItem >
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="50" Height="3" Fill="Black" />
+                                    <TextBlock TextAlignment="Right"  Text="3 Pt." Width="34"/>
+                                </StackPanel>
+                            </ComboBoxItem>
                         </ComboBox>
 
 

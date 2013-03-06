@@ -224,7 +224,7 @@ namespace ArrayVisualizerExt
 
     private void lineType_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-      SetChartLinwStroke();
+      SetChartLineStroke();
     }
 
     private void syncFusionLabel_MouseUp(object sender, MouseButtonEventArgs e)
@@ -413,6 +413,8 @@ namespace ArrayVisualizerExt
           }
           chartCtl.Areas.Add(area);
 
+          SetChartLineStroke();
+          SetChartStackModeOptions();
           SetGridLines();
         }
       }
@@ -621,7 +623,7 @@ namespace ArrayVisualizerExt
         }
     }
 
-    private void SetChartLinwStroke()
+    private void SetChartLineStroke()
     {
       float thickness = 1;
       switch (lineThickness.SelectedIndex)
@@ -665,8 +667,24 @@ namespace ArrayVisualizerExt
       }
     }
 
-    #endregion
+    private void SetChartStackModeOptions()
+    {
+      if (dimenstions == null)
+        return;
 
+      bool chart3D = dimenstions.Length == 2;
+      ((ComboBoxItem)chartType.Items[2]).IsEnabled = chart3D;
+      ((ComboBoxItem)chartType.Items[3]).IsEnabled = chart3D;
+      ((ComboBoxItem)chartType.Items[5]).IsEnabled = chart3D;
+      ((ComboBoxItem)chartType.Items[6]).IsEnabled = chart3D;
+      ((ComboBoxItem)chartType.Items[8]).IsEnabled = chart3D;
+      ((ComboBoxItem)chartType.Items[9]).IsEnabled = chart3D;
+
+      if (!((ComboBoxItem)chartType.SelectedItem).IsEnabled)
+        chartType.SelectedItem = chartType.Items[0];
+    }
+
+    #endregion
 
     private enum LoadResults
     {
