@@ -453,6 +453,29 @@ namespace ArrayVisualizerExt
       }
     }
 
+    private RangeCalculationMode GetSelectedChartCalculationMode(ChartTypes chartType)
+    {
+      switch (chartType)
+      {
+        case ChartTypes.Line:
+        case ChartTypes.Area:
+        case ChartTypes.Spline:
+        case ChartTypes.SplineArea:
+        case ChartTypes.StackingArea:
+        case ChartTypes.StackingArea100:
+          return RangeCalculationMode.ConsistentAcrossChartTypes;
+        case ChartTypes.Bar:          
+        case ChartTypes.Column:
+        case ChartTypes.StackingBar:
+        case ChartTypes.StackingBar100:
+        case ChartTypes.StackingColumn:
+        case ChartTypes.StackingColumn100:
+          return RangeCalculationMode.AdjustAcrossChartTypes;
+        default:
+          throw new NotImplementedException();
+      }
+    }    
+
     private IEnumerable<double> ConvertToDoubles(Array array)
     {
       foreach (object item in array)
@@ -605,11 +628,17 @@ namespace ArrayVisualizerExt
       if (chartCtl != null && chartCtl.Areas.Any())
       {
         ChartTypes chartType = GetSelectedChartType();
+        RangeCalculationMode calculationMode = GetSelectedChartCalculationMode(chartType);
+
         foreach (ChartArea area in chartCtl.Areas)
+        {
+          area.PrimaryAxis.RangeCalculationMode = calculationMode;
           foreach (var item in area.Series)
             item.Type = chartType;
+        }
       }
     }
+
 
     private void SetGridLines()
     {
