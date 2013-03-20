@@ -46,6 +46,8 @@ namespace ArrayVisualizerExt
 
       dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
       SetDebugEvents();
+      toolActive = true;
+      arraysPending = true;
       ShowArrays();
     }
 
