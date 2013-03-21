@@ -257,11 +257,26 @@ namespace ArrayVisualizerExt
       this.expressions = new Dictionary<string, Expression>();
 
       if (this.dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
+      {
+        
+        if (this.ArrayLoader.LoadStaticElements)
+      {
+        string[] nameParts = this.dte.Debugger.CurrentStackFrame.FunctionName.Split(this.ArrayLoader.NsSeporator);
+        string seporator = new string(this.ArrayLoader.NsSeporator, 1);
+        for (int i = nameParts.Length - 1; i > 0; i--)
+        {
+          string name = string.Join(seporator, nameParts, 0, i);
+          foreach (Expression expression in this.dte.Debugger.GetExpression(name).DataMembers)
+            this.ArrayLoader.ArraysLoader(this.expressions, name + this.ArrayLoader.NsSeporator, expression);
+        }
+      }
+
         foreach (Expression expression in this.dte.Debugger.CurrentStackFrame.Locals)
           this.ArrayLoader.ArraysLoader(this.expressions, string.Empty, expression);
 
-      foreach (string item in this.expressions.Keys)
-        this.arraysListBox.Items.Add(item);
+        foreach (string item in this.expressions.Keys)
+          this.arraysListBox.Items.Add(item);
+      }
     }
 
     private LoadResults LoadArray(string arrayName, bool ignoreArraySize)
@@ -466,7 +481,7 @@ namespace ArrayVisualizerExt
         case ChartTypes.StackingArea:
         case ChartTypes.StackingArea100:
           return RangeCalculationMode.ConsistentAcrossChartTypes;
-        case ChartTypes.Bar:          
+        case ChartTypes.Bar:
         case ChartTypes.Column:
         case ChartTypes.StackingBar:
         case ChartTypes.StackingBar100:
@@ -476,7 +491,7 @@ namespace ArrayVisualizerExt
         default:
           throw new NotImplementedException();
       }
-    }    
+    }
 
     private IEnumerable<double> ConvertToDoubles(Array array)
     {

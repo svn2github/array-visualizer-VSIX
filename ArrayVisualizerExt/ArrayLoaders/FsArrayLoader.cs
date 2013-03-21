@@ -45,6 +45,10 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public char RightBracket { get { return ']'; } }
 
+    public char NsSeporator { get { return '.'; } }
+
+    public bool LoadStaticElements { get { return false; } }
+
     #endregion
   }
 }
