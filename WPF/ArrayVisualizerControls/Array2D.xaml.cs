@@ -27,8 +27,7 @@ namespace ArrayVisualizerControls
           AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, data);
         }
     }
-
-
+    
     protected override void RenderBlankGrid()
     {
       if (this.Data.Rank != 2)

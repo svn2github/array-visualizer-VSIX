@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using Syncfusion.Windows.Chart;
 
 namespace ArrayVisualizerExt.ChartData
 {
-  class VisualizerPointsCollection : ObservableCollection<VisualizerDataPoint>, IChartData
+  internal class VisualizerPointsCollection : ObservableCollection<VisualizerDataPoint>, IChartData
   {
     public VisualizerPointsCollection() { }
 

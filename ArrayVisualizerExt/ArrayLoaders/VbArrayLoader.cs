@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ArrayVisualizerExt.TypeParsers;
+using EnvDTE;
 
 namespace ArrayVisualizerExt.ArrayLoaders
 {
@@ -7,44 +9,64 @@ namespace ArrayVisualizerExt.ArrayLoaders
   {
     #region IArrayLoader Members
 
-    public void ArraysLoader(Dictionary<string, EnvDTE.Expression> arrayExpressions, string prefix, EnvDTE.Expression expression)
+    public char LeftBracket { get { return '('; } }
+
+    public char RightBracket { get { return ')'; } }
+
+    public bool IsExpressionArrayType(Expression expression)
     {
-      if (expression.DataMembers.Count == 0)
-        return;
-
-      string name = expression.Name;
-      string expType;
+      string expressionType;
       if (expression.Type == "System.Array")
-      {
-        expType = expression.Value;
-        expression = expression.DataMembers.Item(1);
-      }
+        expressionType = expression.Value;
       else
-        expType = expression.Type;
+        expressionType = expression.Type;
 
-      expType = Helper.RemoveBrackets(expType);
-
-      if (expression.DataMembers.Count > 0)
-        if (Helper.IsExpressionVbArrayType(expType))
-        {
-          expType = expType.Substring(0, expType.IndexOf(this.LeftBracket));
-          expType = expType + this.LeftBracket + string.Join(",", DimensionsLoader(expression)) + this.RightBracket;
-          string item = prefix + name + " - " + expType;
-          arrayExpressions.Add(item, expression);
-        }
-        else if (Helper.IsExpressionSharpDXType(expType))
-        {
-          string displayName = Helper.GetSharpDxDisplayName(expression, this.LeftBracket, this.RightBracket);
-          string item = prefix + expression.Name + " - " + displayName;
-          arrayExpressions.Add(item, expression);
-        }
-        else if (expression.Name == "Me")
-          foreach (EnvDTE.Expression subExpression in expression.DataMembers)
-            ArraysLoader(arrayExpressions, "Me.", subExpression);
+      expressionType = Helper.RemoveBrackets(expressionType);
+      return expressionType.EndsWith(")") && (expressionType.EndsWith("()") || expressionType.EndsWith("(,)") || expressionType.EndsWith("(,,)") || expressionType.EndsWith("(,,,)"));
     }
 
-    public int[] DimensionsLoader(EnvDTE.Expression expression)
+    public string GetDisplayName(Expression expression)
     {
+      if (expression.Type == "System.Array")
+        return GetDisplayName(expression.DataMembers.Item(1));
+
+      string expType = expression.Type;
+      expType = expType.Substring(0, expType.IndexOf(this.LeftBracket));
+      expType = expType + this.LeftBracket + string.Join(",", GetDimensions(expression)) + this.RightBracket;
+      return expType;
+    }
+
+    public IEnumerable<ExpressionInfo> GetArrays(string section, Expression expression, TypeParsers.Parsers parsers, int sectionCode)
+    {
+      if (expression.Value == "Nothing" || expression.DataMembers.Count == 0)
+        yield break;
+
+      foreach (ITypeParser parser in parsers)
+        if (parser.IsExpressionTypeSupported(expression))
+        {
+          yield return new ExpressionInfo(expression.Name, section, parser.GetDisplayName(expression), expression, sectionCode);
+          break;
+        }
+
+      if (expression.Name == "Me")
+        foreach (Expression subExpression in expression.DataMembers)
+          foreach (ExpressionInfo item in this.GetArrays("Me.", subExpression, parsers, -1))
+            yield return item;
+    }
+
+    public int GetMembersCount(EnvDTE.Expression expression)
+    {
+      if (expression.Type == "System.Array")
+        return GetMembersCount(expression.DataMembers.Item(1));
+
+      return expression.DataMembers.Count;
+    }
+
+    public int[] GetDimensions(Expression expression)
+    {
+      if (expression.Type == "System.Array")
+        return GetDimensions(expression.DataMembers.Item(1));
+
       int last = expression.DataMembers.Count;
       string dims = expression.DataMembers.Item(last).Name;
       dims = dims.Substring(dims.IndexOf(this.LeftBracket) + 1);
@@ -54,18 +76,18 @@ namespace ArrayVisualizerExt.ArrayLoaders
       return dimenstions;
     }
 
-    public bool IsExpressionArrayType(string typeExpression)
+    public object[] GetValues(Expression expression)
     {
-      return Helper.IsExpressionVbArrayType(Helper.RemoveBrackets(typeExpression)) || Helper.IsExpressionSharpDXType(typeExpression);
+      if (expression.Type == "System.Array")
+        return GetValues(expression.DataMembers.Item(1));
+
+      object[] values;
+      if (expression.DataMembers.Item(1).Type.Contains(this.LeftBracket))
+        values = expression.DataMembers.Cast<EnvDTE.Expression>().ToArray();
+      else
+        values = expression.DataMembers.Cast<EnvDTE.Expression>().Select(e => e.Value).ToArray();
+      return values;
     }
-
-    public char LeftBracket { get { return '('; } }
-
-    public char RightBracket { get { return ')'; } }
-
-    public char NsSeporator { get { return '.'; } }
-
-    public bool LoadStaticElements { get { return true ; } }
 
     #endregion
   }

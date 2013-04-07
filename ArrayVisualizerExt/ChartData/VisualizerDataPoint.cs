@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Syncfusion.Windows.Chart;
+﻿using Syncfusion.Windows.Chart;
 
 namespace ArrayVisualizerExt.ChartData
 {
-  class VisualizerDataPoint: IChartDataPoint
+  internal class VisualizerDataPoint : IChartDataPoint
   {
 
     public VisualizerDataPoint(double X, double Y)

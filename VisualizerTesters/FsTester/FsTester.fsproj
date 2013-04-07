@@ -53,6 +53,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FSharp.PowerPack">
+      <HintPath>..\..\..\..\VS Tests\Temp\FsTester\bin\Debug\FSharp.PowerPack.dll</HintPath>
+    </Reference>
     <Reference Include="LinqLib">
       <HintPath>..\..\packages\LinqExtLibrary.1.0.4.0\lib\LinqLib.dll</HintPath>
     </Reference>

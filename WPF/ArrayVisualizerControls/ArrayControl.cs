@@ -143,7 +143,7 @@ namespace ArrayVisualizerControls
         this.RenderBlankGrid();
         this.DrawContent();
       }
-      catch (Exception)
+      catch (Exception ex)
       {
         throw;
       }
@@ -224,7 +224,7 @@ namespace ArrayVisualizerControls
         label.MouseUp += new MouseButtonEventHandler(label_MouseUp);
       }
 
-      arrayGrid.Children.Add(label);
+      this.arrayGrid.Children.Add(label);
 
       return label;
     }

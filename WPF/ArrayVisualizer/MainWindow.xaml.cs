@@ -398,8 +398,8 @@ namespace ArrayVisualizer
         this.mainPanel.Children.Remove(this.arrayCtl);
 
       this.arrayCtl = arrayControl;
-      this.arrayCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
-      this.arrayCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
+      this.arrayCtl.CellHeight = GetCellSize(this.cellHeightTextBox.Text, 40);
+      this.arrayCtl.CellWidth = GetCellSize(this.cellWidthTextBox.Text, 60); 
       this.arrayCtl.Formatter = this.formatterTextBox.Text;
       this.arrayCtl.CaptionBuilder = this.CaptionBuilder;
       this.arrayCtl.Margin = new Thickness(12, 12, 0, 0);
@@ -608,6 +608,15 @@ namespace ArrayVisualizer
       if (double.TryParse(text, out number))
         text = number.ToString(formatter, System.Threading.Thread.CurrentThread.CurrentUICulture.NumberFormat);
       return text;
+    }
+
+    private int GetCellSize(string text, int defaultValue)
+    {
+      double value;
+      if (double.TryParse(text, out value))
+        return defaultValue;
+      else
+        return 40;
     }
 
     #endregion

@@ -63,6 +63,9 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
+    <Reference Include="NetAssist">
+      <HintPath>..\..\NetAssist\NetAssist\bin\Debug\NetAssist.dll</HintPath>
+    </Reference>
     <Reference Include="ReachFramework" />
     <Reference Include="syncfusion.chart.wpf, Version=11.104.0.21, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -161,10 +164,16 @@
     <Compile Include="ChartSeriesData.cs" />
     <Compile Include="ChartData\VisualizerDataPoint.cs" />
     <Compile Include="ChartData\VisualizerPointsCollection.cs" />
+    <Compile Include="ExpressionInfo.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="LargeArrayHandler.xaml.cs">
       <DependentUpon>LargeArrayHandler.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -175,6 +184,11 @@
     <Compile Include="ArrayVisualizerExtPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
+    <Compile Include="TypeParsers\DefaultParser.cs" />
+    <Compile Include="TypeParsers\FSharpMatrixParser.cs" />
+    <Compile Include="TypeParsers\ITypeParser.cs" />
+    <Compile Include="TypeParsers\Parsers.cs" />
+    <Compile Include="TypeParsers\SharpDXParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
@@ -189,8 +203,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="ArrayVisualizer.pfx" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -261,6 +280,11 @@
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" Condition="false" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "D:\Code\Codeplex\ArrayVisualizer\VisualizerTesters\*.cs" "D:\Code\VS Tests" /D /S /Y /R
+xcopy "D:\Code\Codeplex\ArrayVisualizer\VisualizerTesters\*.vb" "D:\Code\VS Tests" /D /S /Y /R
+xcopy "D:\Code\Codeplex\ArrayVisualizer\VisualizerTesters\*.fs" "D:\Code\VS Tests" /D /S /Y /R</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ArrayVisualizerExt.TypeParsers;
+using EnvDTE;
 
 namespace ArrayVisualizerExt.ArrayLoaders
 {
@@ -7,47 +9,61 @@ namespace ArrayVisualizerExt.ArrayLoaders
   {
     #region IArrayLoader Members
 
-    public void ArraysLoader(Dictionary<string, EnvDTE.Expression> arrayExpressions, string prefix, EnvDTE.Expression expression)
-    {
-      if (expression.DataMembers.Count == 0)
-        return;
-
-      string expType = Helper.RemoveBrackets(expression.Type);
-      if (Helper.IsExpressionFsArrayType(expType))
-      {
-        string item = prefix + expression.Name + " - " + expression.Value;
-        arrayExpressions.Add(item, expression);
-      }
-      else if (Helper.IsExpressionSharpDXType(expType))
-      {
-        string displayName = Helper.GetSharpDxDisplayName(expression, this.LeftBracket, this.RightBracket);
-        string item = prefix + expression.Name + " - " + displayName;
-        arrayExpressions.Add(item, expression);
-      }
-    }
-
-    public int[] DimensionsLoader(EnvDTE.Expression expression)
-    {
-      string dims = expression.Value;
-      dims = dims.Substring(dims.IndexOf(this.LeftBracket) + 1);
-      dims = dims.Substring(0, dims.IndexOf(this.RightBracket));
-
-      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
-      return dimenstions;
-    }
-
-    public bool IsExpressionArrayType(string typeExpression)
-    {
-      return Helper.IsExpressionFsArrayType(Helper.RemoveBrackets(typeExpression)) || Helper.IsExpressionSharpDXType(typeExpression);
-    }
-
     public char LeftBracket { get { return '['; } }
 
     public char RightBracket { get { return ']'; } }
 
-    public char NsSeporator { get { return '.'; } }
+    public bool IsExpressionArrayType(Expression expression)
+    {
+      string expressionType = Helper.RemoveBrackets(expression.Type);
+      return expressionType.EndsWith("]") && (expressionType.EndsWith("[]") || expressionType.EndsWith("[,]") || expressionType.EndsWith("[,,]") || expressionType.EndsWith("[,,,]"));
+    }
 
-    public bool LoadStaticElements { get { return false; } }
+    public string GetDisplayName(Expression expression)
+    {
+      return expression.Value;
+    }
+
+    public IEnumerable<ExpressionInfo> GetArrays(string section, Expression expression, Parsers parsers, int sectionCode)
+    {
+      if (expression.DataMembers.Count == 0)
+        yield break;
+
+      foreach (ITypeParser parser in parsers)
+        if (parser.IsExpressionTypeSupported(expression))
+        {
+          yield return new ExpressionInfo(expression.Name, section, parser.GetDisplayName(expression), expression, sectionCode);
+          break;
+        }
+    }
+
+    public int GetMembersCount(EnvDTE.Expression expression)
+    {
+      return expression.DataMembers.Count;
+    }
+
+    public int[] GetDimensions(Expression expression)
+    {
+      int[] dimenstions;
+
+      string dims = expression.Value;
+      dims = dims.Substring(dims.IndexOf(this.LeftBracket) + 1);
+      dims = dims.Substring(0, dims.IndexOf(this.RightBracket));
+
+      dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
+
+      return dimenstions;
+    }
+
+    public object[] GetValues(Expression expression)
+    {
+      object[] values;
+      if (expression.DataMembers.Item(1).Type.Contains(this.LeftBracket))
+        values = expression.DataMembers.Cast<EnvDTE.Expression>().ToArray();
+      else
+        values = expression.DataMembers.Cast<EnvDTE.Expression>().Select(e => e.Value).ToArray();
+      return values;
+    }
 
     #endregion
   }

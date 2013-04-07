@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.10.0"
-             xmlns:my="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls" xmlns:syncfusion="http://schemas.syncfusion.com/wpf" x:Class="ArrayVisualizerExt.ArrayVisualizerToolControl"
+             xmlns:my="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls" xmlns:syncfusion="http://schemas.syncfusion.com/wpf" x:Class="ArrayVisualizerExt.ArrayVisualizerToolControl"     
              mc:Ignorable="d" d:DesignWidth="808"
-             x:Name="ArrayVisualizerToolWindow">
+             x:Name="ArrayVisualizerToolWindow" >
     <Grid>
         <Label Content="Arrays:" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" x:Name="arraysTitleLabel" VerticalAlignment="Top" Width="75" />
         <ListBox Height="160" HorizontalAlignment="Left" Margin="10,43,0,0" x:Name="arraysListBox" VerticalAlignment="Top" Width="192" SelectionChanged="arraysListBox_SelectionChanged" BorderBrush="#FF45597C"/>
-        <TabControl HorizontalAlignment="Left" Margin="10,208,0,43" Width="192" SelectionChanged="TabControl_SelectionChanged" x:Name="VisualizerTab">
+        <TabControl HorizontalAlignment="Left" Margin="11,208,0,43" Width="192" SelectionChanged="VisualizerTab_SelectionChanged" x:Name="VisualizerTab">
             <TabItem Header="Data" x:Name="dataTab">
                 <Grid Background="#FFE5E5E5" Margin="1,0,-1,0" >
                     <Grid Background="White" Height="128" IsEnabled="False" Margin="10,10,10,0" x:Name="rotateGrid" VerticalAlignment="Top">
@@ -105,10 +105,20 @@
                     </Grid>
                 </Grid>
             </TabItem>
+            <TabItem Header="Options" x:Name="optionsTab" >
+                <Grid Background="#FFE5E5E5" Margin="1,0,-1,0" >
+                    <Grid Background="White" Height="128" Margin="10,14,10,-4" x:Name="optionsGrid" VerticalAlignment="Top">
+                        <Border BorderThickness="1" BorderBrush="#FF45597C" />
+                        <Label Margin="0,0,10,102">Included Parsers</Label>
+                        <CheckBox Name="SharpDXParserCheckBox"  Content="Sharp DX" Unchecked="Parser_CheckedChanged" Checked="Parser_CheckedChanged" Margin="10,31,10,80" Tag="ArrayVisualizerExt.TypeParsers.SharpDXParser"/>
+                        <CheckBox x:Name="FSharpParserCheckBox"  Content="F# Math Matrix" Unchecked="Parser_CheckedChanged" Checked="Parser_CheckedChanged" Margin="10,53,10,58" Tag="ArrayVisualizerExt.TypeParsers.FSharpMatrixParser"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
         </TabControl>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="207,12,12,12">
             <Grid x:Name="mainPanel" Background="#FFFFFFE1">
-                <Border BorderThickness="1" BorderBrush="#FF45597C" Padding="5"/>
+                <Border BorderThickness="1" BorderBrush="#FF45597C" Padding="5" Margin="0,-1,0,1"/>
             </Grid>
         </ScrollViewer>
         <Label Content="Support" Height="28" HorizontalAlignment="Left" Margin="10,0,0,10" x:Name="supportlabel" VerticalAlignment="Bottom"  Cursor="Hand" MouseUp="supportlabel_MouseUp" />

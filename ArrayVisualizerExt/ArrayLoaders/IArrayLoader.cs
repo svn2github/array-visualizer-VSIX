@@ -1,17 +1,25 @@
 ﻿using System.Collections.Generic;
+using ArrayVisualizerExt.TypeParsers;
+using EnvDTE;
 
 namespace ArrayVisualizerExt.ArrayLoaders
 {
   public interface IArrayLoader
   {
     char LeftBracket { get; }
+
     char RightBracket { get; }
-    char NsSeporator { get; }
 
-    bool LoadStaticElements { get; }
+    bool IsExpressionArrayType(Expression expression);
 
-    void ArraysLoader(Dictionary<string, EnvDTE.Expression> arrayExpressions, string prefix, EnvDTE.Expression expression);
-    int[] DimensionsLoader(EnvDTE.Expression expression);
-    bool IsExpressionArrayType(string typeExpression);
+    string GetDisplayName(Expression expression);
+
+    IEnumerable<ExpressionInfo> GetArrays(string section, Expression expression, Parsers parsers, int sectionCode);
+
+    int[] GetDimensions(Expression expression);
+
+    int GetMembersCount(Expression expression);
+
+    object[] GetValues(EnvDTE.Expression expression);
   }
 }
