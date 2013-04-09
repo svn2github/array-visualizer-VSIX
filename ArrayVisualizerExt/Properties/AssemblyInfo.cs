@@ -13,8 +13,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("ArrayVisualizerExt")]
 [assembly: AssemblyCopyright("Copyright ©  Amir Liberman 2012-2013")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]   
-[assembly: ComVisible(false)]     
+[assembly: AssemblyCulture("")]
+[assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]
 [assembly: NeutralResourcesLanguage("en-US")]
 
@@ -28,8 +28,8 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.2.0.4")]
-[assembly: AssemblyFileVersion("1.2.0.4")]
+[assembly: AssemblyVersion("1.2.0.5")]
+[assembly: AssemblyFileVersion("1.2.0.5")]
 
 
 

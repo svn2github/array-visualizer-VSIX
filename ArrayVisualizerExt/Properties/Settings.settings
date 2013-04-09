@@ -17,5 +17,8 @@
     <Setting Name="LoadFSharpMatrix" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="SplitterPosition" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">212</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

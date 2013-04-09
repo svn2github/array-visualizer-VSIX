@@ -251,6 +251,29 @@ namespace ArrayVisualizerExt
         Reset(this.arrCtl.Data);
     }
 
+    private void Parser_CheckedChanged(object sender, RoutedEventArgs e)
+    {
+      CheckBox chkControl = (CheckBox)sender;
+
+      Type parserType = Type.GetType((string)chkControl.Tag);
+
+      if (chkControl.IsChecked.Value)
+        loadedParsers.Add(parserType);
+      else
+        loadedParsers.Remove(parserType);
+
+      this.arraysPending = true;
+      ShowArrays();
+    }
+
+    private void GridSplitter_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      if (MainGrid.ColumnDefinitions[0].Width.Value != 212)
+        MainGrid.ColumnDefinitions[0].Width = new GridLength(212, GridUnitType.Pixel);
+      else
+        MainGrid.ColumnDefinitions[0].Width = new GridLength(360, GridUnitType.Pixel);
+    }
+
     #endregion
 
     #region Methods
@@ -741,6 +764,8 @@ namespace ArrayVisualizerExt
       ds.LoadSharpDX = SharpDXParserCheckBox.IsChecked.GetValueOrDefault();
       ds.LoadFSharpMatrix = FSharpParserCheckBox.IsChecked.GetValueOrDefault();
 
+      ds.SplitterPosition = MainGrid.ColumnDefinitions[0].Width.Value;
+
       ds.Save();
     }
 
@@ -753,6 +778,8 @@ namespace ArrayVisualizerExt
 
       SharpDXParserCheckBox.IsChecked = ds.LoadSharpDX;
       FSharpParserCheckBox.IsChecked = ds.LoadFSharpMatrix;
+
+      MainGrid.ColumnDefinitions[0].Width = new GridLength(ds.SplitterPosition, GridUnitType.Pixel);
     }
 
     #endregion
@@ -763,21 +790,6 @@ namespace ArrayVisualizerExt
       LargeArray,
       NotSupported,
       Exception
-    }
-
-    private void Parser_CheckedChanged(object sender, RoutedEventArgs e)
-    {
-      CheckBox chkControl = (CheckBox)sender;
-
-      Type parserType = Type.GetType((string)chkControl.Tag);
-
-      if (chkControl.IsChecked.Value)
-        loadedParsers.Add(parserType);
-      else
-        loadedParsers.Remove(parserType);
-
-      this.arraysPending = true;
-      ShowArrays();
     }
   }
 }

@@ -82,5 +82,17 @@ namespace ArrayVisualizerExt.Properties {
                 this["LoadFSharpMatrix"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("212")]
+        public double SplitterPosition {
+            get {
+                return ((double)(this["SplitterPosition"]));
+            }
+            set {
+                this["SplitterPosition"] = value;
+            }
+        }
     }
 }
