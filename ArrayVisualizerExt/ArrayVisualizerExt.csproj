@@ -283,7 +283,8 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "D:\Code\Codeplex\ArrayVisualizer\VisualizerTesters\*.cs" "D:\Code\VS Tests" /D /S /Y /R
 xcopy "D:\Code\Codeplex\ArrayVisualizer\VisualizerTesters\*.vb" "D:\Code\VS Tests" /D /S /Y /R
-xcopy "D:\Code\Codeplex\ArrayVisualizer\VisualizerTesters\*.fs" "D:\Code\VS Tests" /D /S /Y /R</PostBuildEvent>
+xcopy "D:\Code\Codeplex\ArrayVisualizer\VisualizerTesters\*.fs" "D:\Code\VS Tests" /D /S /Y /R
+xcopy "D:\Code\Codeplex\ArrayVisualizer\VisualizerTesters\*.cpp" "D:\Code\VS Tests" /D /S /Y /R</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

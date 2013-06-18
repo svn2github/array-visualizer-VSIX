@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-
 using LinqLib.Array;
 
 namespace ArrayVisualizerControls
@@ -423,11 +423,11 @@ namespace ArrayVisualizerControls
     #endregion
 
     private string DefaultCaptionBuilder(object data, string formatter)
-    {
+    {      
       double number;
       string text = (data ?? "").ToString();
-      if (double.TryParse(text, out number))
-        text = number.ToString(formatter, System.Threading.Thread.CurrentThread.CurrentUICulture.NumberFormat);
+      if (double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
+        text = number.ToString(formatter, CultureInfo.InvariantCulture);
       return text;
     }
 

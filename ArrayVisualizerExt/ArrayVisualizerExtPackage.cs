@@ -21,7 +21,7 @@ namespace ArrayVisualizerExt
   // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
   // a package.
   [PackageRegistration(UseManagedResourcesOnly = true)]
-  // This attribute is used to register the informations needed to show the this package
+  // This attribute is used to register the information needed to show the this package
   // in the Help/About dialog of Visual Studio.
   [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
   // This attribute is needed to let the shell know that this package exposes some menus.
@@ -64,12 +64,12 @@ namespace ArrayVisualizerExt
 
 
     /////////////////////////////////////////////////////////////////////////////
-    // Overriden Package Implementation
+    // Overridden Package Implementation
     #region Package Members
 
     /// <summary>
     /// Initialization of the package; this method is called right after the package is sited, so this is the place
-    /// where you can put all the initilaization code that rely on services provided by VisualStudio.
+    /// where you can put all the initialization code that rely on services provided by VisualStudio.
     /// </summary>
     protected override void Initialize()
     {

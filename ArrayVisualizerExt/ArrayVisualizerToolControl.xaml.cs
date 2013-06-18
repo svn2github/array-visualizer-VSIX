@@ -113,7 +113,7 @@ namespace ArrayVisualizerExt
       {
         string text = textBox.Text + e.Text;
         double temp;
-        bool ok = double.TryParse(text, out temp);
+        bool ok = double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out temp);
         e.Handled = !ok;
       }
     }
@@ -196,7 +196,7 @@ namespace ArrayVisualizerExt
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
     {
-      System.Diagnostics.Process.Start("http://bit.ly/JjoD5P");
+      System.Diagnostics.Process.Start("http://bit.ly/155n1RK");
     }
 
     private void gridLinesType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -399,10 +399,10 @@ namespace ArrayVisualizerExt
     private int GetCellSize(string text, int defaultValue)
     {
       double value;
-      if (double.TryParse(text, out value))
-        return defaultValue;
+      if (double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out value))
+        return (int )value;
       else
-        return 40;
+        return defaultValue;
     }
 
     private void SetupChartControl(ExpressionInfo expressionInfo, bool loadChart)
@@ -517,7 +517,7 @@ namespace ArrayVisualizerExt
       foreach (object item in array)
       {
         double value;
-        if (double.TryParse(item.ToString(), out value))
+        if (double.TryParse(item.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out value))
           yield return value;
         else
           yield break;
@@ -594,6 +594,9 @@ namespace ArrayVisualizerExt
             case "Basic":
               this.arrayLoader = new VbArrayLoader();
               break;
+            //case "C++":
+            //  this.arrayLoader = new CppArrayLoader();
+            //  break;
             default:
               this.arrayLoader = GetLanguageLoader();
               if (this.arrayLoader != null)
@@ -626,8 +629,8 @@ namespace ArrayVisualizerExt
         text = (exp.Value ?? "").ToString();
 
       double number;
-      if (double.TryParse(text, out number))
-        text = number.ToString(formatter, System.Threading.Thread.CurrentThread.CurrentUICulture.NumberFormat);
+      if (double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
+        text = number.ToString(formatter, CultureInfo.InvariantCulture);
       return text;
     }
 
