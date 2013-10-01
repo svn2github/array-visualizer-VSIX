@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using EnvDTE;
-
-namespace ArrayVisualizerExt
+﻿namespace ArrayVisualizerExt
 {
   internal static class Helper
   {

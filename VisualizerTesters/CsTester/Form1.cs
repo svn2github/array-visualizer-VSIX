@@ -1,13 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
-
 using LinqLib.Array;
 using LinqLib.Sequence;
-
-using SharpDX;
 using Microsoft.FSharp.Math;
-using System.Collections.Generic;
+using SharpDX;
 
 namespace CsTester
 {
@@ -124,11 +122,11 @@ namespace CsTester
       Array arrJ1 = GetJaggedArray2();
       Array arrJ2 = GetJaggedArray3();
 
-      var m1 = Microsoft.FSharp.Math.MatrixTopLevelOperators.matrix<IEnumerable<double>>(GetEnums(4, 5));
-      var m2 = Microsoft.FSharp.Math.MatrixTopLevelOperators.matrix<IEnumerable<double>>(GetEnums(3, 4));
+      var m1 = MatrixTopLevelOperators.matrix<IEnumerable<double>>(GetEnums(4, 5));
+      var m2 = MatrixTopLevelOperators.matrix<IEnumerable<double>>(GetEnums(3, 4));
 
-      var v1 = Microsoft.FSharp.Math.MatrixTopLevelOperators.vector(new double[] { 1, 2, 3, 4, 5, 4, 3, 2, 1 });
-      var v2 = Microsoft.FSharp.Math.MatrixTopLevelOperators.vector(new double[] { 1.11, 2.22, 3.33, 5.55, 4.44, 3.33, 1.11 });
+      var v1 = MatrixTopLevelOperators.vector(new double[] { 1, 2, 3, 4, 5, 4, 3, 2, 1 });
+      var v2 = MatrixTopLevelOperators.vector(new double[] { 1.11, 2.22, 3.33, 5.55, 4.44, 3.33, 1.11 });
 
       Debugger.Break();
     }

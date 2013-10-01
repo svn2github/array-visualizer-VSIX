@@ -18,8 +18,8 @@ namespace WinFormsArrayVisualizerControls
 
     protected ArrayXD()
     {
-      this.cellSize = new Size(80, 55);
-      this.CellPadding = 10;
+      cellSize = new Size(80, 55);
+      CellPadding = 10;
     }
 
     #endregion
@@ -28,36 +28,36 @@ namespace WinFormsArrayVisualizerControls
 
     public int CellHeight
     {
-      get { return this.cellSize.Height; }
-      set { this.cellSize.Height = value; }
+      get { return cellSize.Height; }
+      set { cellSize.Height = value; }
     }
 
     public int CellPadding { get; set; }
 
     public Size CellSize
     {
-      get { return this.cellSize; }
-      set { this.cellSize = value; }
+      get { return cellSize; }
+      set { cellSize = value; }
     }
 
     public int CellWidth
     {
-      get { return this.cellSize.Width; }
-      set { this.cellSize.Width = value; }
+      get { return cellSize.Width; }
+      set { cellSize.Width = value; }
     }
 
     public Array Data
     {
-      get { return this.data; }
+      get { return data; }
       set
       {
-        this.data = value;
+        data = value;
         if (value == null)
-          this.Refresh();
+          Refresh();
         else
         {
-          this.SetAxisSize();
-          this.Render();
+          SetAxisSize();
+          Render();
         }
       }
     }
@@ -68,12 +68,12 @@ namespace WinFormsArrayVisualizerControls
     {
       get
       {
-        if (this.font == null)
+        if (font == null)
           return base.Font;
         else
-          return this.font;
+          return font;
       }
-      set { this.font = value; }
+      set { font = value; }
     }
 
     #endregion
@@ -82,8 +82,8 @@ namespace WinFormsArrayVisualizerControls
 
     public void Render()
     {
-      this.RenderBlankGrid();
-      this.DrawContent();
+      RenderBlankGrid();
+      DrawContent();
     }
 
     #endregion

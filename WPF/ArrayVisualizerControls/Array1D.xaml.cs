@@ -3,20 +3,20 @@ using AvProp = ArrayVisualizerControls.Properties;
 
 namespace ArrayVisualizerControls
 {
-  public partial class Array1D : ArrayControl
+  public partial class Array1D
   {
     #region Methods
 
     protected override void DrawContent()
     {
-      if (this.Data.Rank != 1)
+      if (Data.Rank != 1)
         throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot1DException);
 
-      string toolTipFmt = string.Format("{0}{{0}}{1}", this.LeftBracket, this.RightBracket);
-      for (int x = 0; x < base.DimX; x++)
+      string toolTipFmt = string.Format("{0}{{0}}{1}", LeftBracket, RightBracket);
+      for (int x = 0; x < DimX; x++)
       {
-        object data = this.Data.GetValue(x);
-        double labelX = x * this.CellSize.Width;
+        object data = Data.GetValue(x);
+        double labelX = x * CellSize.Width;
 
         string toolTipCoords = string.Format(toolTipFmt, x);
 
@@ -26,18 +26,18 @@ namespace ArrayVisualizerControls
 
     protected override void RenderBlankGrid()
     {
-      if (this.Data.Rank != 1)
+      if (Data.Rank != 1)
         throw new ArrayTypeMismatchException(AvProp.Resources.ArrayNot1DException);
 
-      this.Width = this.CellSize.Width * base.DimX + 1;
-      this.Height = this.CellSize.Height + 1;
-      this.InvalidateVisual();
+      Width = CellSize.Width * DimX + 1;
+      Height = CellSize.Height + 1;
+      InvalidateVisual();
 
-      for (double y = 0; y <= this.Height; y = y + this.CellSize.Height)
-        this.AddLine(0, y, this.Width, y);
+      for (double y = 0; y <= Height; y = y + CellSize.Height)
+        AddLine(0, y, Width, y);
 
-      for (double x = 0; x <= this.Width; x = x + this.CellSize.Width)
-        this.AddLine(x, 0, x, this.Height);
+      for (double x = 0; x <= Width; x = x + CellSize.Width)
+        AddLine(x, 0, x, Height);
     }
 
     #endregion

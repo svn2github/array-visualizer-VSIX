@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using EnvDTE;
 using LinqLib.Sequence;
 
@@ -20,9 +19,9 @@ namespace ArrayVisualizerExt.TypeParsers
       return expressionType.StartsWith("SharpDX.Matrix") || expressionType.StartsWith("SharpDX.Vector");
     }
 
-    public string GetDisplayName(EnvDTE.Expression expression)
+    public string GetDisplayName(Expression expression)
     {
-      int elements = expression.Value.Where(C => C == ':').Count();
+      int elements = expression.Value.Count(C => C == ':');
       string formatter;
       switch (elements)
       {
@@ -45,13 +44,13 @@ namespace ArrayVisualizerExt.TypeParsers
           formatter = "Matrix{0}5,4{1}";
           break;
         default:
-          throw new System.Exception();
+          throw new Exception();
       }
 
-      return string.Format(formatter, this.LeftBracket, this.RightBracket);
+      return string.Format(formatter, LeftBracket, RightBracket);
     }
 
-    public int[] GetDimensions(EnvDTE.Expression expression)
+    public int[] GetDimensions(Expression expression)
     {
       switch (expression.Type)
       {
@@ -72,16 +71,16 @@ namespace ArrayVisualizerExt.TypeParsers
       }
     }
 
-    public int GetMembersCount(EnvDTE.Expression expression)
+    public int GetMembersCount(Expression expression)
     {
       int[] dims = GetDimensions(expression);
       if (dims.Length == 1)
         return dims[0];
-      else
-        return dims[0] * dims[1];
+
+      return dims[0] * dims[1];
     }
-  
-    public object[] GetValues(EnvDTE.Expression expression)
+
+    public object[] GetValues(Expression expression)
     {
       Predicate<Expression> predicate;
       bool rotate = false;
@@ -90,34 +89,32 @@ namespace ArrayVisualizerExt.TypeParsers
         case "SharpDX.Matrix":
         case "SharpDX.Matrix3x2":
         case "SharpDX.Matrix5x4":
-          predicate = e => 'M' == e.Name[0];
+          predicate = E => 'M' == E.Name[0];
           break;
         case "SharpDX.Vector2":
-          predicate = e => "XY".Contains(e.Name.Last());
+          predicate = E => "XY".Contains(E.Name.Last());
           break;
         case "SharpDX.Vector3":
-          predicate = e => "XYZ".Contains(e.Name.Last());
+          predicate = E => "XYZ".Contains(E.Name.Last());
           break;
         case "SharpDX.Vector4":
-          predicate = e => "XYZW".Contains(e.Name.Last());
+          predicate = E => "XYZW".Contains(E.Name.Last());
           rotate = true;
           break;
         default:
-          predicate = null;
-          break;
+          return new object[0];
       }
 
       object[] values;
-      IEnumerable<Expression> query = expression.DataMembers.Cast<Expression>().Where(e => predicate(e));
+      IEnumerable<Expression> query = expression.DataMembers.Cast<Expression>().Where(E => predicate(E));
 
       if (rotate)
         query = query.RotateLeft(1);
 
-      values = new object[0];
-      if (expression.DataMembers.Item(1).Type.Contains(this.LeftBracket))
+      if (expression.DataMembers.Item(1).Type.Contains(LeftBracket))
         values = query.ToArray();
       else
-        values = query.Select(e => e.Value).ToArray();
+        values = query.Select(E => E.Value).ToArray();
       return values;
     }
 

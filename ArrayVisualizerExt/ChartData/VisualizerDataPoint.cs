@@ -5,11 +5,11 @@ namespace ArrayVisualizerExt.ChartData
   internal class VisualizerDataPoint : IChartDataPoint
   {
 
-    public VisualizerDataPoint(double X, double Y)
+    public VisualizerDataPoint(double x, double y)
     {
-      this.X = X;
-      this.Y = Y;
-      this.Values = new double[] { Y };
+      X = x;
+      Y = y;
+      Values = new[] { y };
     }
 
     public double X { get; set; }
@@ -26,7 +26,7 @@ namespace ArrayVisualizerExt.ChartData
 
     public object Clone()
     {
-      VisualizerDataPoint customPoint = new VisualizerDataPoint(this.X, this.Y);
+      VisualizerDataPoint customPoint = new VisualizerDataPoint(X, Y);
       return customPoint;
     }
 

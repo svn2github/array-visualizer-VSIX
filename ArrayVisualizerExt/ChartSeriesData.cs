@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Syncfusion.Windows.Chart;
@@ -7,7 +7,7 @@ namespace ArrayVisualizerExt
 {
   internal class ChartSeriesData : IChartData
   {
-    double[] arr;
+    readonly double[] arr;
     #region IChartData Members
 
     public ChartSeriesData(IEnumerable<double> data)
@@ -29,7 +29,7 @@ namespace ArrayVisualizerExt
 
     public IChartDataPoint this[int index]
     {
-      get { return new ChartDataPoint() { X = index, Y = arr[index] }; }
+      get { return new ChartDataPoint { X = index, Y = arr[index] }; }
     }
 
     #endregion

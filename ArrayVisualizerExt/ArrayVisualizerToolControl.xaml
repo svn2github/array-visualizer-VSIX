@@ -4,20 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.10.0"
-             xmlns:my="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls" xmlns:syncfusion="http://schemas.syncfusion.com/wpf" x:Class="ArrayVisualizerExt.ArrayVisualizerToolControl"     
+             xmlns:ArrayVisualizerControls="clr-namespace:ArrayVisualizerControls;assembly=ArrayVisualizerControls"
              mc:Ignorable="d" d:DesignWidth="808" d:DesignHeight="600"
+             x:Class="ArrayVisualizerExt.ArrayVisualizerToolControl"     
              x:Name="ArrayVisualizerToolWindow" >
-    <Grid Name="MainGrid">
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition  Width="212" MinWidth="212" MaxWidth="480"/>
-            <ColumnDefinition />            
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Label Content="Arrays:" Height="28" HorizontalAlignment="Left" Margin="10,2,0,0" x:Name="arraysTitleLabel" VerticalAlignment="Top" Width="75" />
         <ListBox Margin="10,30,10,356" x:Name="arraysListBox" SelectionChanged="arraysListBox_SelectionChanged" BorderBrush="#FF45597C"/>
         <TabControl Margin="10,0,0,33" SelectionChanged="VisualizerTab_SelectionChanged" x:Name="VisualizerTab" HorizontalAlignment="Left" Width="192" Height="318" VerticalAlignment="Bottom">
-            <TabItem Header="Data" x:Name="dataTab">
+            <TabItem Header="Array" x:Name="dataTab">
                 <Grid Background="#FFE5E5E5" Margin="1,0,-1,0" >
-                    <Grid Background="White" Height="134" IsEnabled="False" Margin="10,10,10,0" x:Name="rotateGrid" VerticalAlignment="Top">
+                    <Grid Background="White" Height="102" IsEnabled="False" Margin="10,10,10,0" x:Name="rotateGrid" VerticalAlignment="Top">
                         <Border BorderThickness="1" BorderBrush="#FF45597C" />
                         <Label Content="Angle:" Height="26" HorizontalAlignment="Left" Margin="10,7,0,0" x:Name="angleLabel" VerticalAlignment="Top" Width="52" />
                         <ComboBox Height="23" Margin="68,10,0,0" x:Name="angelComboBox" SelectedIndex="3" VerticalAlignment="Top" HorizontalAlignment="Left" Width="84">
@@ -29,26 +30,25 @@
                             <ComboBoxItem Content="X" />
                             <ComboBoxItem Content="Y" />
                         </ComboBox>
-                        <Button Click="rotateButton_Click" Content="Rotate" Margin="68,67,0,0" x:Name="rotateButton" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="84" />
-                        <Button Click="resetButton_Click" Content="Reset" Margin="68,95,0,0" x:Name="resetButton" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="84" />
+                        <Button Click="rotateButton_Click" Content="Rotate" Margin="85,67,0,0" x:Name="rotateButton" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="67" />
+                        <Button Click="resetButton_Click" Content="Reset" Margin="10,67,0,0" x:Name="resetButton" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="67" />
                     </Grid>
 
-                    <Grid Background="White" Height="127" HorizontalAlignment="Left" Margin="10,149,0,0" VerticalAlignment="Top" Width="162">
-                        <Border BorderThickness="1" BorderBrush="#FF45597C"/>
-                        <Label Content="Cell Width:" Height="28" HorizontalAlignment="Left" Margin="11,8,0,0" x:Name="cellWidthLabel" VerticalAlignment="Top" Width="75" />
-                        <TextBox HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,10,10,0" x:Name="cellWidthTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="60" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" Height="23" VerticalAlignment="Top" />
-                        <Label Content="Cell Height:" Height="28" HorizontalAlignment="Left" Margin="11,36,0,0" x:Name="cellHeightLabel" VerticalAlignment="Top" Width="76" />
-                        <TextBox Height="23" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,38,10,0" x:Name="cellHeightTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="40" VerticalAlignment="Top" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                        <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="11,64,0,0" x:Name="formatterLabel" VerticalAlignment="Top" Width="75" />
-                        <TextBox HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,66,10,0" x:Name="formatterTextBox" Text="0.##" Width="65" Height="23" VerticalAlignment="Top" />
-                        <Button  Content="Apply" Margin="68,94,10,0" x:Name="applyButton" Height="23" VerticalAlignment="Top" Click="applyButton_Click" />
+                    <Grid Background="White" Height="160" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Width="162">
+                        <Border BorderThickness="1" BorderBrush="#FF45597C">
+                            
+                        </Border>
+                        <!--<ArrayVisualizerControls:BoundSelector HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Name="xBounds" LowerBoundChanged="Bounds_LowerBoundChanged" UpperBoundChanged="Bounds_UpperBoundChanged"/>
+                        <ArrayVisualizerControls:BoundSelector HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Name="yBounds" LowerBoundChanged="Bounds_LowerBoundChanged" UpperBoundChanged="Bounds_UpperBoundChanged"/>
+                        <ArrayVisualizerControls:BoundSelector HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Name="zBounds" LowerBoundChanged="Bounds_LowerBoundChanged" UpperBoundChanged="Bounds_UpperBoundChanged"/>
+                        <ArrayVisualizerControls:BoundSelector HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Name="aBounds" LowerBoundChanged="Bounds_LowerBoundChanged" UpperBoundChanged="Bounds_UpperBoundChanged"/>-->
                     </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Chart" x:Name="chartTab" >
                 <Grid Background="#FFE5E5E5" >
                     <Label Content="Chart &#xA;Powered By:" Height="43" HorizontalAlignment="Left" Margin="10,0,0,10" x:Name="syncFusionLabel" VerticalAlignment="Bottom"  Cursor="Hand" MouseUp="syncFusionLabel_MouseUp" Width="162" />
-                    <Image  Margin="0,0,10,10"  Source="images\SyncFusionLogo.png" Cursor="Hand" MouseUp="syncFusionLabel_MouseUp" Height="21" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="81" />
+                    <Image  Margin="0,0,10,12"  Source="images\SyncFusionLogo.png" Cursor="Hand" MouseUp="syncFusionLabel_MouseUp" Height="21" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="81" />
 
                     <Grid Background="White" Height="104" Margin="10,10,10,0" x:Name="chartOptions" VerticalAlignment="Top">
                         <Border BorderThickness="1" BorderBrush="#FF45597C" HorizontalAlignment="Left" Width="162" />
@@ -106,12 +106,27 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Options" x:Name="optionsTab" >
+            <TabItem Header="Layout" x:Name="viewTab" >
+                <Grid Background="#FFE5E5E5" Margin="1,0,-1,0" >
+                    <Grid Background="White" Height="262" Margin="10,14,10,0" x:Name="optionsGrid2" VerticalAlignment="Top">
+                        <Border BorderThickness="1" BorderBrush="#FF45597C"/>
+                        <Label Content="Cell Width:" Height="28" HorizontalAlignment="Left" Margin="11,8,0,0" x:Name="cellWidthLabel" VerticalAlignment="Top" Width="75" />
+                        <TextBox HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,10,10,0" x:Name="cellWidthTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="60" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" Height="23" VerticalAlignment="Top" />
+                        <Label Content="Cell Height:" Height="28" HorizontalAlignment="Left" Margin="11,36,0,0" x:Name="cellHeightLabel" VerticalAlignment="Top" Width="76" />
+                        <TextBox Height="23" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,38,10,0" x:Name="cellHeightTextBox" PreviewTextInput="TextBox_PreviewTextInput" Text="40" VerticalAlignment="Top" Width="38" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                        <Label Content="Formatter:" Height="28" HorizontalAlignment="Left" Margin="11,64,0,0" x:Name="formatterLabel" VerticalAlignment="Top" Width="75" />
+                        <TextBox HorizontalAlignment="Right" HorizontalContentAlignment="Right" Margin="0,66,10,0" x:Name="formatterTextBox" Text="0.##" Width="65" Height="23" VerticalAlignment="Top" />
+                        <Button  Content="Apply" Margin="68,94,10,0" x:Name="applyButton" Height="23" VerticalAlignment="Top" Click="applyButton_Click" />
+
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Parsers" x:Name="parsersTab" >
                 <Grid Background="#FFE5E5E5" Margin="1,0,-1,0" >
                     <Grid Background="White" Height="262" Margin="10,14,10,0" x:Name="optionsGrid" VerticalAlignment="Top">
                         <Border BorderThickness="1" BorderBrush="#FF45597C" HorizontalAlignment="Left" Width="162" />
-                        <Label Margin="0,0,10,0" Height="26" VerticalAlignment="Top">Included Parsers:</Label>
-                        <CheckBox Name="SharpDXParserCheckBox"  Content="Sharp DX" Unchecked="Parser_CheckedChanged" Checked="Parser_CheckedChanged" Margin="20,31,10,0" Tag="ArrayVisualizerExt.TypeParsers.SharpDXParser" Height="17" VerticalAlignment="Top"/>
+                        <Label Margin="0,0,10,0" Height="26" VerticalAlignment="Top" Content="Included Parsers:"/>
+                        <CheckBox x:Name="SharpDXParserCheckBox"  Content="Sharp DX" Unchecked="Parser_CheckedChanged" Checked="Parser_CheckedChanged" Margin="20,31,10,0" Tag="ArrayVisualizerExt.TypeParsers.SharpDXParser" Height="17" VerticalAlignment="Top"/>
                         <CheckBox x:Name="FSharpParserCheckBox"  Content="F# Math Matrix" Unchecked="Parser_CheckedChanged" Checked="Parser_CheckedChanged" Margin="20,53,10,0" Tag="ArrayVisualizerExt.TypeParsers.FSharpMatrixParser" Height="17" VerticalAlignment="Top"/>
                     </Grid>
                 </Grid>
@@ -123,7 +138,7 @@
             </Grid>
         </ScrollViewer>
         <Label Content="Support" Height="26" Margin="10,0,0,2" x:Name="supportlabel" VerticalAlignment="Bottom"  Cursor="Hand" MouseUp="supportlabel_MouseUp" HorizontalAlignment="Left" Width="75" />
-        <GridSplitter Grid.Column ="0" Width="6"  HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="gridSplitter" PreviewMouseDoubleClick="GridSplitter_PreviewMouseDoubleClick" />
+        <GridSplitter Grid.Column ="0" Width="6"  HorizontalAlignment="Right" VerticalAlignment="Stretch" x:Name="gridSplitter" PreviewMouseDoubleClick="GridSplitter_PreviewMouseDoubleClick" />
     </Grid>
 
 </UserControl>

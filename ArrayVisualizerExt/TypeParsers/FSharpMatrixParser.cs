@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ArrayVisualizerExt.TypeParsers
 {
@@ -14,7 +12,7 @@ namespace ArrayVisualizerExt.TypeParsers
       Vector
     }
 
-    private ExpressionType GetExpressionType(EnvDTE.Expression expression)
+    private static ExpressionType GetExpressionType(EnvDTE.Expression expression)
     {
       string expressionName = expression.Type + new string(' ', 28);
       switch (expressionName.Substring(0, 28))
@@ -46,10 +44,10 @@ namespace ArrayVisualizerExt.TypeParsers
       {
         case 2:
           formatter = "Matrix{0}{1},{2}{3}";
-          return string.Format(formatter, this.LeftBracket, dimensions[0], dimensions[1], this.RightBracket);
+          return string.Format(formatter, LeftBracket, dimensions[0], dimensions[1], RightBracket);
         case 1:
           formatter = "Vector{0}{1}{2}";
-          return string.Format(formatter, this.LeftBracket, dimensions[0], this.RightBracket);
+          return string.Format(formatter, LeftBracket, dimensions[0], RightBracket);
         default:
           throw new NotSupportedException(string.Format("'{0} is not supported.'", expression.Type));
       }
@@ -81,8 +79,8 @@ namespace ArrayVisualizerExt.TypeParsers
       int[] dims = GetDimensions(expression);
       if (dims.Length == 1)
         return dims[0];
-      else
-        return dims[0] * dims[1];
+
+      return dims[0] * dims[1];
     }
 
     public object[] GetValues(EnvDTE.Expression expression)
@@ -90,10 +88,10 @@ namespace ArrayVisualizerExt.TypeParsers
       switch (GetExpressionType(expression))
       {
         case ExpressionType.Matrix:
-          return expression.DataMembers.Item("Item").DataMembers.Item("Values").DataMembers.Cast<EnvDTE.Expression>().Select(e => e.Value).ToArray();
+          return expression.DataMembers.Item("Item").DataMembers.Item("Values").DataMembers.Cast<EnvDTE.Expression>().Select(E => E.Value).ToArray();
         case ExpressionType.Vector:
           int count = expression.DataMembers.Count - 1;
-          return expression.DataMembers.Cast<EnvDTE.Expression>().Take(count).Select(e => e.Value).ToArray();
+          return expression.DataMembers.Cast<EnvDTE.Expression>().Take(count).Select(E => E.Value).ToArray();
         default:
           throw new NotSupportedException(string.Format("'{0} is not supported.'", expression.Type));
       }

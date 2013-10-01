@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -12,29 +13,29 @@ using ArrayVisualizerExt.TypeParsers;
 using EnvDTE;
 using EnvDTE80;
 using LinqLib.Array;
-using LinqLib.Sequence;
 using Microsoft.VisualStudio.Shell;
 using Syncfusion.Windows.Chart;
 using Expression = EnvDTE.Expression;
 
 namespace ArrayVisualizerExt
 {
-  public partial class ArrayVisualizerToolControl : UserControl
+  public partial class ArrayVisualizerToolControl
   {
     #region Fields
 
-    private DTE2 dte;
+    private readonly DTE2 dte;
     private List<ExpressionInfo> expressions;
-    private EnvDTE.DebuggerEvents debugerEvents;
+    private DebuggerEvents debugerEvents;
     private ArrayControl arrCtl;
     private Chart chartCtl;
     private Array data;
-    private int[] dimenstions;
+    private Type undelyingExpressionType;
+    private int[] dimensions;
 
     private IArrayLoader arrayLoader;
     private Parsers parsers;
     private Exception lastLoadException;
-    private HashSet<Type> loadedParsers;
+    private readonly HashSet<Type> loadedParsers;
 
     private bool arraysPending;
     private bool toolActive;
@@ -48,14 +49,14 @@ namespace ArrayVisualizerExt
     {
       InitializeComponent();
 
-      this.dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+      dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
       loadedParsers = new HashSet<Type>();
 
       LoadSettings();
 
       SetDebugEvents();
-      this.toolActive = true;
-      this.arraysPending = true;
+      toolActive = true;
+      arraysPending = true;
       ShowArrays();
     }
 
@@ -65,41 +66,41 @@ namespace ArrayVisualizerExt
 
     private void SetDebugEvents()
     {
-      this.debugerEvents = this.dte.Events.DebuggerEvents;
-      this.debugerEvents.OnEnterBreakMode += new _dispDebuggerEvents_OnEnterBreakModeEventHandler(DebuggerEvents_OnEnterBreakMode);
-      this.debugerEvents.OnEnterDesignMode += new _dispDebuggerEvents_OnEnterDesignModeEventHandler(debugerEvents_OnEnterDesignMode);
-      this.debugerEvents.OnEnterRunMode += new _dispDebuggerEvents_OnEnterRunModeEventHandler(debugerEvents_OnEnterRunMode);
+      debugerEvents = dte.Events.DebuggerEvents;
+      debugerEvents.OnEnterBreakMode += DebuggerEvents_OnEnterBreakMode;
+      debugerEvents.OnEnterDesignMode += debugerEvents_OnEnterDesignMode;
+      debugerEvents.OnEnterRunMode += debugerEvents_OnEnterRunMode;
     }
 
-    private void debugerEvents_OnEnterRunMode(dbgEventReason Reason)
+    private void debugerEvents_OnEnterRunMode(dbgEventReason reason)
     {
       SaveSettings();
-      this.arraysPending = false;
+      arraysPending = false;
       ClearVisualizer();
     }
 
-    private void debugerEvents_OnEnterDesignMode(dbgEventReason Reason)
+    private void debugerEvents_OnEnterDesignMode(dbgEventReason reason)
     {
       SaveSettings();
-      this.arraysPending = false;
+      arraysPending = false;
       ClearVisualizer();
     }
 
-    private void DebuggerEvents_OnEnterBreakMode(dbgEventReason Reason, ref dbgExecutionAction ExecutionAction)
+    private void DebuggerEvents_OnEnterBreakMode(dbgEventReason reason, ref dbgExecutionAction executionAction)
     {
-      this.arraysPending = true;
+      arraysPending = true;
       ShowArrays();
     }
 
     public void ToolActivated()
     {
-      this.toolActive = true;
+      toolActive = true;
       ShowArrays();
     }
 
     public void ToolDeactivated()
     {
-      this.toolActive = false;
+      toolActive = false;
     }
 
     #endregion
@@ -145,17 +146,17 @@ namespace ArrayVisualizerExt
           break;
       }
 
-      int[] dims = this.arrCtl.Data.GetDimensions();
-      switch (this.arrCtl.Data.Rank)
+      int[] dims = arrCtl.Data.GetDimensions();
+      switch (arrCtl.Data.Rank)
       {
         case 2:
-          Reset((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1])).Rotate(angle));
+          Reset((arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1])).Rotate(angle));
           break;
         case 3:
-          Reset((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2])).Rotate(r, angle));
+          Reset((arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2])).Rotate(r, angle));
           break;
         case 4:
-          Reset((this.arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2], dims[3])).Rotate(r, angle));
+          Reset((arrCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2], dims[3])).Rotate(r, angle));
           break;
       }
     }
@@ -173,17 +174,17 @@ namespace ArrayVisualizerExt
           case LoadResults.LargeArray:
             LargeArrayHandler largeArrayHandler = new LargeArrayHandler(expressionInfo.Expression.DataMembers.Count, 2000, 40000);
             largeArrayHandler.LoadArrayRequest += largeArrayHandler_LoadArrayRequest;
-            this.mainPanel.Children.Add(largeArrayHandler);
+            mainPanel.Children.Add(largeArrayHandler);
             break;
           case LoadResults.NotSupported:
             break;
           case LoadResults.Exception:
-            Label errorLabel = new Label();
-            errorLabel.Content = string.Format("Error rendering array '{0}'\r\n\r\n'{1}'", expressionInfo.Name, this.lastLoadException.Message);
+            Label errorLabel = new Label
+            {
+              Content = string.Format("Error rendering array '{0}'\r\n\r\n'{1}'",
+              expressionInfo.Name, lastLoadException.Message)
+            };
             mainPanel.Children.Add(errorLabel);
-            break;
-          case LoadResults.Success:
-          default:
             break;
         }
       }
@@ -191,7 +192,7 @@ namespace ArrayVisualizerExt
 
     private void resetButton_Click(object sender, RoutedEventArgs e)
     {
-      Reset(this.data);
+      Reset(data);
     }
 
     private void supportlabel_MouseUp(object sender, MouseButtonEventArgs e)
@@ -206,8 +207,8 @@ namespace ArrayVisualizerExt
 
     private void arrCtl_CellClick(object sender, CellClickEventArgs e)
     {
-      Array values = new DefaultParser(this.arrayLoader).GetValues((Expression)e.Data);
-      Color color = ((SolidColorBrush)this.mainPanel.Background).Color;
+      Array values = new DefaultParser(arrayLoader).GetValues((Expression)e.Data);
+      Color color = ((SolidColorBrush)mainPanel.Background).Color;
       ((ArrayControl)sender).ShowArrayPopup((UIElement)e.Source, values, e.ToolTipPrefix, color);
     }
 
@@ -223,7 +224,7 @@ namespace ArrayVisualizerExt
 
     private void VisualizerTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-      if (e.OriginalSource == VisualizerTab)
+      if (Equals(e.OriginalSource, VisualizerTab))
       {
         ExpressionInfo expressionInfo = (ExpressionInfo)arraysListBox.SelectedItem;
         SetupControls(expressionInfo);
@@ -247,8 +248,8 @@ namespace ArrayVisualizerExt
 
     private void applyButton_Click(object sender, RoutedEventArgs e)
     {
-      if (this.arrCtl != null)
-        Reset(this.arrCtl.Data);
+      if (arrCtl != null)
+        Reset(arrCtl.Data);
     }
 
     private void Parser_CheckedChanged(object sender, RoutedEventArgs e)
@@ -257,18 +258,20 @@ namespace ArrayVisualizerExt
 
       Type parserType = Type.GetType((string)chkControl.Tag);
 
-      if (chkControl.IsChecked.Value)
-        loadedParsers.Add(parserType);
-      else
-        loadedParsers.Remove(parserType);
+      if (parserType != null)
+        if (chkControl.IsChecked.HasValue && chkControl.IsChecked.Value)
+          loadedParsers.Add(parserType);
+        else
+          loadedParsers.Remove(parserType);
 
-      this.arraysPending = true;
+      arraysPending = true;
       ShowArrays();
     }
 
     private void GridSplitter_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-      if (MainGrid.ColumnDefinitions[0].Width.Value != 212)
+      double width = MainGrid.ColumnDefinitions[0].Width.Value;
+      if (width > 212.01 || width < 11.99)
         MainGrid.ColumnDefinitions[0].Width = new GridLength(212, GridUnitType.Pixel);
       else
         MainGrid.ColumnDefinitions[0].Width = new GridLength(360, GridUnitType.Pixel);
@@ -280,7 +283,7 @@ namespace ArrayVisualizerExt
 
     private void ClearVisualizer()
     {
-      this.arraysListBox.ItemsSource = null;
+      arraysListBox.ItemsSource = null;
       mainPanel.Children.Clear();
       rotateGrid.IsEnabled = false;
     }
@@ -288,55 +291,53 @@ namespace ArrayVisualizerExt
     private void LoadScopeArrays()
     {
       ClearVisualizer();
-      this.expressions = new List<ExpressionInfo>();
+      expressions = new List<ExpressionInfo>();
 
-      using (NetAssist.Diagnostics.QuickStopwatch q = new NetAssist.Diagnostics.QuickStopwatch())
-        if (this.dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
-        {
-          foreach (Expression expression in this.dte.Debugger.CurrentStackFrame.Locals)
-            this.expressions.AddRange(this.arrayLoader.GetArrays(string.Empty, expression, this.parsers, 0));
+      if (dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
+      {
+        foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
+          expressions.AddRange(arrayLoader.GetArrays(string.Empty, expression, parsers, 0));
 
-          this.arraysListBox.ItemsSource = this.expressions.OrderBy(A => A.SectionCode).ThenBy(A => A.Name);
-          this.arraysListBox.DisplayMemberPath = "FullName";
-        }
+        arraysListBox.ItemsSource = expressions.OrderBy(A => A.SectionCode).ThenBy(A => A.Name);
+        arraysListBox.DisplayMemberPath = "FullName";
+      }
     }
 
     private LoadResults LoadArray(Expression expression, bool ignoreArraySize)
     {
-      this.lastLoadException = null;
-      this.data = null;
+      lastLoadException = null;
+      data = null;
       try
       {
         if (expression.Value != "null")
         {
           object[] values = null;
 
-          foreach (ITypeParser parser in this.parsers)
-            if (parser.IsExpressionTypeSupported(expression))
-            {
-              this.dimenstions = parser.GetDimensions(expression);
-              int count = parser.GetMembersCount(expression);
-              if (ignoreArraySize || count <= 2000)
-                values = parser.GetValues(expression);
-              else
-                return LoadResults.LargeArray;
+          foreach (ITypeParser parser in parsers.Where(P => P.IsExpressionTypeSupported(expression)))
+          {
+            dimensions = parser.GetDimensions(expression);
+            int count = parser.GetMembersCount(expression);
+            if (ignoreArraySize || count <= 2000)
+              values = parser.GetValues(expression);
+            else
+              return LoadResults.LargeArray;
 
-              break;
-            }
+            break;
+          }
 
-          switch (this.dimenstions.Length)
+          switch (dimensions.Length)
           {
             case 1:
-              this.data = values.ToArray(this.dimenstions[0]);
+              data = values.ToArray(dimensions[0]);
               break;
             case 2:
-              this.data = values.ToArray(this.dimenstions[0], this.dimenstions[1]);
+              data = values.ToArray(dimensions[0], dimensions[1]);
               break;
             case 3:
-              this.data = values.ToArray(this.dimenstions[0], this.dimenstions[1], this.dimenstions[2]);
+              data = values.ToArray(dimensions[0], dimensions[1], dimensions[2]);
               break;
             case 4:
-              this.data = values.ToArray(this.dimenstions[0], this.dimenstions[1], this.dimenstions[2], this.dimenstions[3]);
+              data = values.ToArray(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
               break;
             default:
               return LoadResults.NotSupported;
@@ -345,7 +346,7 @@ namespace ArrayVisualizerExt
       }
       catch (Exception ex)
       {
-        this.lastLoadException = ex;
+        lastLoadException = ex;
         return LoadResults.Exception;
       }
       return LoadResults.Success;
@@ -353,69 +354,83 @@ namespace ArrayVisualizerExt
 
     private void SetupArrayControl(ExpressionInfo expressionInfo)
     {
-      if (this.arrCtl != null && this.arrCtl.Tag == expressionInfo)
+      if (arrCtl != null && arrCtl.Tag == expressionInfo)
         return;
 
-      this.SetRotationOptions(this.dimenstions.Length);
+      SetRotationOptions(dimensions.Length);
 
-      switch (this.dimenstions.Length)
+      switch (dimensions.Length)
       {
         case 1:
-          this.arrCtl = new Array1D();
+          arrCtl = new Array1D();
           break;
         case 2:
-          this.arrCtl = new Array2D();
+          arrCtl = new Array2D();
           break;
         case 3:
-          this.arrCtl = new Array3D();
+          arrCtl = new Array3D();
           break;
         case 4:
-          this.arrCtl = new Array4D();
+          arrCtl = new Array4D();
           break;
         default:
           return;
       }
-      this.arrCtl.Formatter = this.formatterTextBox.Text;
-      this.arrCtl.CaptionBuilder = this.CaptionBuilder;
+      arrCtl.Formatter = formatterTextBox.Text;
+      arrCtl.CaptionBuilder = GetCaptionBuilder(arrCtl.Formatter);
 
-      this.arrCtl.CellHeight = GetCellSize(this.cellHeightTextBox.Text, 40);
-      this.arrCtl.CellWidth = GetCellSize(this.cellWidthTextBox.Text, 60);
+      arrCtl.CellHeight = GetCellSize(cellHeightTextBox.Text, 40);
+      arrCtl.CellWidth = GetCellSize(cellWidthTextBox.Text, 60);
 
-      this.arrCtl.LeftBracket = this.arrayLoader.LeftBracket;
-      this.arrCtl.RightBracket = this.arrayLoader.RightBracket;
+      arrCtl.LeftBracket = arrayLoader.LeftBracket;
+      arrCtl.RightBracket = arrayLoader.RightBracket;
 
-      this.arrCtl.CaptionBuilder = CaptionBuilder;
-      this.arrCtl.CellClick += new EventHandler<CellClickEventArgs>(arrCtl_CellClick);
+      arrCtl.CellClick += arrCtl_CellClick;
 
-      this.arrCtl.SetControlData(this.data);
+      arrCtl.SetControlData(data);
 
-      this.arrCtl.Padding = new Thickness(8);
-      this.arrCtl.Width += 16;
-      this.arrCtl.Height += 16;
+      arrCtl.Padding = new Thickness(8);
+      arrCtl.Width += 16;
+      arrCtl.Height += 16;
 
-      this.arrCtl.Tag = expressionInfo;
+      arrCtl.Tag = expressionInfo;
     }
 
-    private int GetCellSize(string text, int defaultValue)
+    private Func<object, string, string> GetCaptionBuilder(string formatter)
+    {
+      if (!string.IsNullOrEmpty(arrCtl.Formatter))
+        switch (arrCtl.Formatter[0])
+        {
+          case 'D':
+          case 'd':
+          case 'X':
+          case 'x':
+            return IntegralCaptionBuilder;
+        }
+
+      return DefaultCaptionBuilder;
+    }
+
+    private static int GetCellSize(string text, int defaultValue)
     {
       double value;
       if (double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out value))
-        return (int )value;
-      else
-        return defaultValue;
+        return (int)value;
+
+      return defaultValue;
     }
 
-    private void SetupChartControl(ExpressionInfo expressionInfo, bool loadChart)
+    private void SetupChartControl(ExpressionInfo expressionInfo) 
     {
       IEnumerable<double> chartData = null;
 
-      int dimenstionsCount = this.dimenstions.Length;
+      int dimenstionsCount = dimensions.Length;
 
       try
       {
-        if ((dimenstionsCount == 1 || dimenstionsCount == 2) && this.data != null)
+        if ((dimenstionsCount == 1 || dimenstionsCount == 2) && data != null)
         {
-          chartData = ConvertToDoubles(this.data);
+          chartData = ConvertToDoubles(data);
           chartTab.IsEnabled = chartData.Any();
         }
         else
@@ -432,9 +447,9 @@ namespace ArrayVisualizerExt
         {
           chartTab.IsEnabled = true;
 
-          if (this.chartCtl == null || this.chartCtl.Tag != expressionInfo)
+          if (chartCtl == null || chartCtl.Tag != expressionInfo)
           {
-            this.chartCtl = new Chart();
+            chartCtl = new Chart();
             ChartArea area = new ChartArea();
 
             if (dimenstionsCount == 1)
@@ -442,15 +457,15 @@ namespace ArrayVisualizerExt
             else   //2
             {
               double[] chartDataFlat = chartData.ToArray();
-              for (int i = 0; i < this.dimenstions[0]; i++)
-                area.Series.Add(GetSeries(GetSelectedChartType(), chartDataFlat.Skip(i * this.dimenstions[1]).Take(this.dimenstions[1])));
+              for (int i = 0; i < dimensions[0]; i++)
+                area.Series.Add(GetSeries(GetSelectedChartType(), chartDataFlat.Skip(i * dimensions[1]).Take(dimensions[1])));
             }
-            this.chartCtl.Areas.Add(area);
+            chartCtl.Areas.Add(area);
 
             SetChartLineStroke();
             SetChartStackModeOptions();
             SetGridLines();
-            this.chartCtl.Tag = expressionInfo;
+            chartCtl.Tag = expressionInfo;
           }
         }
       }
@@ -489,9 +504,9 @@ namespace ArrayVisualizerExt
       }
     }
 
-    private RangeCalculationMode GetSelectedChartCalculationMode(ChartTypes chartType)
+    private static RangeCalculationMode GetSelectedChartCalculationMode(ChartTypes selectedChartType)
     {
-      switch (chartType)
+      switch (selectedChartType)
       {
         case ChartTypes.Line:
         case ChartTypes.Area:
@@ -512,7 +527,7 @@ namespace ArrayVisualizerExt
       }
     }
 
-    private IEnumerable<double> ConvertToDoubles(Array array)
+    private static IEnumerable<double> ConvertToDoubles(IEnumerable array)
     {
       foreach (object item in array)
       {
@@ -524,10 +539,10 @@ namespace ArrayVisualizerExt
       }
     }
 
-    private ChartSeries GetSeries(ChartTypes chartType, IEnumerable<double> chartData)
+    private static ChartSeries GetSeries(ChartTypes seriesChartType, IEnumerable<double> chartData)
     {
-      ChartSeries chartSeries = new ChartSeries(chartType);
-      chartSeries.Data = new ArrayVisualizerExt.ChartData.VisualizerPointsCollection(chartData);
+      ChartSeries chartSeries = new ChartSeries(seriesChartType);
+      chartSeries.Data = new ChartData.VisualizerPointsCollection(chartData);
       return chartSeries;
     }
 
@@ -546,23 +561,23 @@ namespace ArrayVisualizerExt
       switch (dimensions)
       {
         case 1:
-          axisComboBox.Visibility = System.Windows.Visibility.Hidden;
-          angelComboBox.Visibility = System.Windows.Visibility.Hidden;
+          axisComboBox.Visibility = Visibility.Hidden;
+          angelComboBox.Visibility = Visibility.Hidden;
           break;
         case 2:
-          axisComboBox.Visibility = System.Windows.Visibility.Hidden;
-          angelComboBox.Visibility = System.Windows.Visibility.Visible;
+          axisComboBox.Visibility = Visibility.Hidden;
+          angelComboBox.Visibility = Visibility.Visible;
           break;
         case 3:
-          axisComboBox.Visibility = System.Windows.Visibility.Visible;
-          angelComboBox.Visibility = System.Windows.Visibility.Visible;
+          axisComboBox.Visibility = Visibility.Visible;
+          angelComboBox.Visibility = Visibility.Visible;
           break;
         case 4:
           angelComboBox.Items.Add(360);
           angelComboBox.Items.Add(450);
           axisComboBox.Items.Add("A");
-          axisComboBox.Visibility = System.Windows.Visibility.Visible;
-          angelComboBox.Visibility = System.Windows.Visibility.Visible;
+          axisComboBox.Visibility = Visibility.Visible;
+          angelComboBox.Visibility = Visibility.Visible;
           break;
         default:
           return;
@@ -576,57 +591,59 @@ namespace ArrayVisualizerExt
 
     private void ShowArrays()
     {
-      if (this.dte.Mode == vsIDEMode.vsIDEModeDebug && this.dte.Debugger.CurrentStackFrame != null)
+      if (dte.Mode == vsIDEMode.vsIDEModeDebug && dte.Debugger.CurrentStackFrame != null)
       {
-        if (this.arraysPending && this.toolActive)
+        if (arraysPending && toolActive)
         {
-          this.arraysPending = false;
+          arraysPending = false;
 
-          string language = this.dte.Debugger.CurrentStackFrame.Language;
+          string language = dte.Debugger.CurrentStackFrame.Language;
           switch (language)
           {
             case "C#":
-              this.arrayLoader = new CsArrayLoader();
+              arrayLoader = new CsArrayLoader();
               break;
             case "F#":
-              this.arrayLoader = new FsArrayLoader();
+              arrayLoader = new FsArrayLoader();
               break;
             case "Basic":
-              this.arrayLoader = new VbArrayLoader();
+              arrayLoader = new VbArrayLoader();
               break;
             //case "C++":
-            //  this.arrayLoader = new CppArrayLoader();
+            //  arrayLoader = new CppArrayLoader();
             //  break;
             default:
-              this.arrayLoader = GetLanguageLoader();
-              if (this.arrayLoader != null)
+              arrayLoader = GetLanguageLoader();
+              if (arrayLoader != null)
                 break;
 
               ClearVisualizer();
-              Label msg = new Label();
-              msg.Content = string.Format("Sorry, currently {0} is not supported.", language);
+              Label msg = new Label
+                  {
+                    Content = string.Format("Sorry, currently {0} is not supported.", language)
+                  };
               mainPanel.Children.Add(msg);
               return;
           }
-          parsers = new Parsers(this.arrayLoader, loadedParsers);
+          parsers = new Parsers(arrayLoader, loadedParsers);
           LoadScopeArrays();
         }
       }
     }
 
-    private IArrayLoader GetLanguageLoader()
+    private static IArrayLoader GetLanguageLoader()
     {
-      return null; //Todo, try to load from dlls in bin folder
+      return null; // Todo, try to load from dlls in bin folder
     }
 
-    private string CaptionBuilder(object data, string formatter)
+    private static string DefaultCaptionBuilder(object captionData, string formatter)
     {
-      Expression exp = data as Expression;
+      Expression exp = captionData as Expression;
       string text;
       if (exp == null)
-        text = (data ?? "").ToString();
+        text = (captionData ?? "").ToString();
       else
-        text = (exp.Value ?? "").ToString();
+        text = (exp.Value ?? "");
 
       double number;
       if (double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
@@ -634,9 +651,24 @@ namespace ArrayVisualizerExt
       return text;
     }
 
+    private static string IntegralCaptionBuilder(object captionData, string formatter)
+    {
+      Expression exp = captionData as Expression;
+      string text;
+      if (exp == null)
+        text = (captionData ?? "").ToString();
+      else
+        text = (exp.Value ?? "");
+
+      long number;
+      if (long.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
+        text = number.ToString(formatter, CultureInfo.InvariantCulture);
+      return text;
+    }
+
     private void SetupControls(ExpressionInfo expressionInfo)
     {
-      if (this.data == null || arraysListBox.SelectedIndex == -1)
+      if (data == null || arraysListBox.SelectedIndex == -1)
         return;
 
       int tabIndex = VisualizerTab.SelectedIndex;
@@ -645,15 +677,15 @@ namespace ArrayVisualizerExt
 
       switch (tabIndex)
       {
-        case 0: //data
+        case 0: //defaultData
           SetupArrayControl(expressionInfo);
-          SetupChartControl(expressionInfo, false);
-          ShowElement(this.arrCtl);
+          SetupChartControl(expressionInfo);
+          ShowElement(arrCtl);
           break;
         case 1: //chart
-          SetupChartControl(expressionInfo, true);
+          SetupChartControl(expressionInfo);
           if (VisualizerTab.SelectedIndex == 1)
-            ShowElement(this.chartCtl);
+            ShowElement(chartCtl);
           break;
       }
       lastTabIndex = tabIndex;
@@ -661,24 +693,24 @@ namespace ArrayVisualizerExt
 
     private void ShowElement(Control control)
     {
-      if (this.mainPanel != null)
-        this.mainPanel.Children.Clear();
-      if (control != null && !this.mainPanel.Children.Contains(control))
-        this.mainPanel.Children.Add(control);
+      if (mainPanel != null)
+        mainPanel.Children.Clear();
+      if (mainPanel != null && (control != null && !mainPanel.Children.Contains(control)))
+        mainPanel.Children.Add(control);
     }
 
     private void SetChartType()
     {
-      if (this.chartCtl != null && this.chartCtl.Areas.Any())
+      if (chartCtl != null && chartCtl.Areas.Any())
       {
-        ChartTypes chartType = GetSelectedChartType();
-        RangeCalculationMode calculationMode = GetSelectedChartCalculationMode(chartType);
+        ChartTypes selectedChartType = GetSelectedChartType();
+        RangeCalculationMode calculationMode = GetSelectedChartCalculationMode(selectedChartType);
 
-        foreach (ChartArea area in this.chartCtl.Areas)
+        foreach (ChartArea area in chartCtl.Areas)
         {
           area.PrimaryAxis.RangeCalculationMode = calculationMode;
           foreach (var item in area.Series)
-            item.Type = chartType;
+            item.Type = selectedChartType;
         }
       }
     }
@@ -687,8 +719,8 @@ namespace ArrayVisualizerExt
     {
       bool seconday = gridLinesType.SelectedIndex == 1 || gridLinesType.SelectedIndex == 3;
       bool primary = gridLinesType.SelectedIndex == 2 || gridLinesType.SelectedIndex == 3;
-      if (this.chartCtl != null && this.chartCtl.Areas.Any())
-        foreach (ChartArea area in this.chartCtl.Areas)
+      if (chartCtl != null && chartCtl.Areas.Any())
+        foreach (ChartArea area in chartCtl.Areas)
         {
           ChartArea.SetShowGridLines(area.PrimaryAxis, primary);
           ChartArea.SetShowGridLines(area.SecondaryAxis, seconday);
@@ -712,39 +744,36 @@ namespace ArrayVisualizerExt
         case 3:
           thickness = 3f;
           break;
-        default:
-          break;
       }
-      if (this.chartCtl != null && this.chartCtl.Areas.Any())
+      if (chartCtl != null && chartCtl.Areas.Any())
       {
-        ChartTypes chartType = GetSelectedChartType();
-        foreach (ChartArea area in this.chartCtl.Areas)
+        foreach (ChartArea area in chartCtl.Areas)
           foreach (var item in area.Series)
             item.StrokeThickness = thickness;
       }
     }
 
-    private void Reset(Array data)
+    private void Reset(Array defaultData)
     {
-      if (this.arrCtl != null)
+      if (arrCtl != null)
       {
-        this.arrCtl.Formatter = this.formatterTextBox.Text;
-        this.arrCtl.CaptionBuilder = this.CaptionBuilder;
-        this.arrCtl.CellHeight = double.Parse(this.cellHeightTextBox.Text, CultureInfo.InvariantCulture);
-        this.arrCtl.CellWidth = double.Parse(this.cellWidthTextBox.Text, CultureInfo.InvariantCulture);
-        this.arrCtl.SetControlData(data);
-        this.arrCtl.Padding = new Thickness(8);
-        this.arrCtl.Width += 16;
-        this.arrCtl.Height += 16;
+        arrCtl.Formatter = formatterTextBox.Text;
+        arrCtl.CaptionBuilder = GetCaptionBuilder(arrCtl.Formatter);
+        arrCtl.CellHeight = double.Parse(cellHeightTextBox.Text, CultureInfo.InvariantCulture);
+        arrCtl.CellWidth = double.Parse(cellWidthTextBox.Text, CultureInfo.InvariantCulture);
+        arrCtl.SetControlData(defaultData);
+        arrCtl.Padding = new Thickness(8);
+        arrCtl.Width += 16;
+        arrCtl.Height += 16;
       }
     }
 
     private void SetChartStackModeOptions()
     {
-      if (this.dimenstions == null)
+      if (dimensions == null)
         return;
 
-      bool chart3D = this.dimenstions.Length == 2;
+      bool chart3D = dimensions.Length == 2;
       ((ComboBoxItem)chartType.Items[2]).IsEnabled = chart3D;
       ((ComboBoxItem)chartType.Items[3]).IsEnabled = chart3D;
       ((ComboBoxItem)chartType.Items[5]).IsEnabled = chart3D;
@@ -758,7 +787,7 @@ namespace ArrayVisualizerExt
 
     private void SaveSettings()
     {
-      ArrayVisualizerExt.Properties.Settings ds = ArrayVisualizerExt.Properties.Settings.Default;
+      Properties.Settings ds = Properties.Settings.Default;
 
       ds.CellWidth = cellWidthTextBox.Text;
       ds.CellHeight = cellHeightTextBox.Text;
@@ -774,7 +803,7 @@ namespace ArrayVisualizerExt
 
     private void LoadSettings()
     {
-      ArrayVisualizerExt.Properties.Settings ds = ArrayVisualizerExt.Properties.Settings.Default;
+      Properties.Settings ds = Properties.Settings.Default;
       cellWidthTextBox.Text = ds.CellWidth;
       cellHeightTextBox.Text = ds.CellHeight;
       formatterTextBox.Text = ds.CellFormatter;

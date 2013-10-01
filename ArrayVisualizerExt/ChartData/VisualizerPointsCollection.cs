@@ -14,7 +14,7 @@ namespace ArrayVisualizerExt.ChartData
       foreach (double value in values)
       {
         i++;
-        this.Add(new VisualizerDataPoint(i, value));
+        Add(new VisualizerDataPoint(i, value));
       }
     }
 

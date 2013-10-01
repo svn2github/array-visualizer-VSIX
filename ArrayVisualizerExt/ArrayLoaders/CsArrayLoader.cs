@@ -29,37 +29,39 @@ namespace ArrayVisualizerExt.ArrayLoaders
       if (expression.DataMembers.Count == 0)
         yield break;
 
-      foreach (ITypeParser parser in parsers)
-        if (parser.IsExpressionTypeSupported(expression))
-        {
-          yield return new ExpressionInfo(expression.Name, section, parser.GetDisplayName(expression), expression, sectionCode);
-          break;
-        }
+      foreach (ITypeParser parser in parsers.Where(P => P.IsExpressionTypeSupported(expression)))
+      {
+        yield return new ExpressionInfo(expression.Name, section, parser.GetDisplayName(expression), expression, sectionCode);
+        break;
+      }
 
-      if (expression.Name == "this")
-        foreach (Expression subExpression in expression.DataMembers)
-          foreach (ExpressionInfo item in this.GetArrays("this.", subExpression, parsers, -1))
-            yield return item;
-      else if (expression.Name == "Static members")
-        foreach (Expression subExpression in expression.DataMembers)
-          foreach (ExpressionInfo item in this.GetArrays("(Static) ", subExpression, parsers, -2))
-            yield return item;
+      switch (expression.Name)
+      {
+        case "this":
+          foreach (Expression subExpression in expression.DataMembers)
+            foreach (ExpressionInfo item in GetArrays("this.", subExpression, parsers, -1))
+              yield return item;
+          break;
+        case "Static members":
+          foreach (Expression subExpression in expression.DataMembers)
+            foreach (ExpressionInfo item in GetArrays("(Static) ", subExpression, parsers, -2))
+              yield return item;
+          break;
+      }
     }
 
-    public int GetMembersCount(EnvDTE.Expression expression)
+    public int GetMembersCount(Expression expression)
     {
       return expression.DataMembers.Count;
     }
 
     public int[] GetDimensions(Expression expression)
     {
-      int[] dimenstions;
-
       string dims = expression.Value;
-      dims = dims.Substring(dims.IndexOf(this.LeftBracket) + 1);
-      dims = dims.Substring(0, dims.IndexOf(this.RightBracket));
+      dims = dims.Substring(dims.IndexOf(LeftBracket) + 1);
+      dims = dims.Substring(0, dims.IndexOf(RightBracket));
 
-      dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
+      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
 
       return dimenstions;
     }
@@ -67,10 +69,11 @@ namespace ArrayVisualizerExt.ArrayLoaders
     public object[] GetValues(Expression expression)
     {
       object[] values;
-      if (expression.DataMembers.Item(1).Type.Contains(this.LeftBracket))
-        values = expression.DataMembers.Cast<EnvDTE.Expression>().ToArray();
+      if (expression.DataMembers.Item(1).Type.IndexOf(LeftBracket) != -1)
+        values = expression.DataMembers.Cast<Expression>().ToArray();
       else
-        values = expression.DataMembers.Cast<EnvDTE.Expression>().Select(e => e.Value).ToArray();
+        values = expression.DataMembers.Cast<Expression>().Select(E => E.Value).ToArray();
+
       return values;
     }
 

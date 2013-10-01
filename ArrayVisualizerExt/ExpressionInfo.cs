@@ -1,21 +1,21 @@
-﻿
-using EnvDTE;
+﻿ using EnvDTE;
+
 namespace ArrayVisualizerExt
 {
   public class ExpressionInfo
   {
     public ExpressionInfo(string name, string sectionType, string value, Expression expression, int sectionCode)
-    {      
-      this.Name = name;
-      this.Section = sectionType;
-      this.SectionCode = sectionCode;
-      this.Expression = expression;
-      this.Value = value;
+    {
+      Name = name;
+      Section = sectionType;
+      SectionCode = sectionCode;
+      Expression = expression;
+      Value = value;
     }
 
     public string FullName
     {
-      get { return this.Section + this.Name + " - " + this.Value; }
+      get { return Section + Name + " - " + Value; }
     }
 
     public int SectionCode { get; set; }

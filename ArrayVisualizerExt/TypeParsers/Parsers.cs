@@ -1,31 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ArrayVisualizerExt.ArrayLoaders;
 
 namespace ArrayVisualizerExt.TypeParsers
 {
   public class Parsers : IEnumerable<ITypeParser>
   {
-    private List<ITypeParser> parsers;
-    private IArrayLoader arrayLoader;
+    private readonly List<ITypeParser> parsers;
+    private readonly IArrayLoader arrayLoader;
 
     public Parsers(IArrayLoader arrayLoader, IEnumerable<Type> selectedParsers)
     {
       this.arrayLoader = arrayLoader;
-      this.parsers = new List<ITypeParser>();
+      parsers = new List<ITypeParser>();
 
       foreach (Type parserType in selectedParsers)
         AddParser((ITypeParser)Activator.CreateInstance(parserType));
 
-      AddParser(new DefaultParser(this.arrayLoader)); //must be last!
+      AddParser(new DefaultParser(arrayLoader)); //must be last!
     }
 
     private void AddParser(ITypeParser parser)
     {
-      parser.LeftBracket = this.arrayLoader.LeftBracket;
-      parser.RightBracket = this.arrayLoader.RightBracket;
+      parser.LeftBracket = arrayLoader.LeftBracket;
+      parser.RightBracket = arrayLoader.RightBracket;
       parsers.Add(parser);
     }
 
@@ -33,7 +31,7 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public IEnumerator<ITypeParser> GetEnumerator()
     {
-      return this.parsers.GetEnumerator();
+      return parsers.GetEnumerator();
     }
 
     #endregion

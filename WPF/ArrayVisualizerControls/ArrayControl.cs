@@ -19,7 +19,7 @@ namespace ArrayVisualizerControls
 
     public const double MAX_ELEMENTS = 10000;
 
-    public const double SIZE_FACTOR_3D = .75;
+    public const double SIZE_FACTOR_3_D = .75;
 
     #endregion
 
@@ -28,7 +28,6 @@ namespace ArrayVisualizerControls
     private readonly Grid arrayGrid;
     private ScrollViewer arrayContainer;
     private Size cellSize;
-    private Array controlData;
     private string formatter;
     private Func<object, string, string> captionBuilder;
     private Popup popup;
@@ -42,14 +41,19 @@ namespace ArrayVisualizerControls
 
     protected ArrayControl()
     {
-      this.arrayGrid = new Grid();
-      this.AddChild(this.arrayGrid);
-      this.cellSize = new Size(80, 55);
-      this.formatter = string.Empty;
-      this.captionBuilder = this.DefaultCaptionBuilder;
-      this.tooltipPrefix = string.Empty;
-      this.LeftBracket = '[';
-      this.RightBracket = ']';
+      arrayGrid = new Grid();
+      Init();
+    }
+
+    private void Init()
+    {
+      AddChild(arrayGrid);
+      cellSize = new Size(80, 55);
+      formatter = string.Empty;
+      captionBuilder = DefaultCaptionBuilder;
+      tooltipPrefix = string.Empty;
+      LeftBracket = '[';
+      RightBracket = ']';
     }
 
     #endregion
@@ -58,58 +62,52 @@ namespace ArrayVisualizerControls
 
     public double CellHeight
     {
-      get { return this.cellSize.Height; }
-      set { this.cellSize.Height = value; }
+      get { return cellSize.Height; }
+      set { cellSize.Height = value; }
     }
 
     public Size CellSize
     {
-      get { return this.cellSize; }
-      set { this.cellSize = value; }
+      get { return cellSize; }
+      set { cellSize = value; }
     }
 
     public double CellWidth
     {
-      get { return this.cellSize.Width; }
-      set { this.cellSize.Width = value; }
+      get { return cellSize.Width; }
+      set { cellSize.Width = value; }
     }
 
     public ArrayControl ChildArray
     {
       get
       {
-        if (this.arrayContainer != null)
-          return (ArrayControl)this.arrayContainer.Content;
-        else
-          return null;
+        if (arrayContainer != null)
+          return (ArrayControl)arrayContainer.Content;
+
+        return null;
       }
     }
 
-    public Array Data
-    {
-      get { return this.controlData; }
-    }
+    public Array Data { get; private set; }
 
     public int ElementsCount
     {
-      get { return this.DimX * this.DimY * this.DimZ * this.DimA; }
+      get { return DimX * DimY * DimZ * DimA; }
     }
 
     public string Formatter
     {
-      get { return this.formatter; }
-      set { this.formatter = value; }
+      get { return formatter; }
+      set { formatter = value; }
     }
 
     public Func<object, string, string> CaptionBuilder
     {
-      get { return this.captionBuilder; }
+      get { return captionBuilder; }
       set
       {
-        if (value == null)
-          this.captionBuilder = this.DefaultCaptionBuilder;
-        else
-          this.captionBuilder = value;
+        captionBuilder = value ?? DefaultCaptionBuilder;
       }
     }
 
@@ -119,10 +117,10 @@ namespace ArrayVisualizerControls
 
     #region Properties
 
-    protected int DimA { get; set; }
     protected int DimX { get; set; }
     protected int DimY { get; set; }
     protected int DimZ { get; set; }
+    protected int DimA { get; set; }
 
     public char LeftBracket { get; set; }
     public char RightBracket { get; set; }
@@ -136,16 +134,12 @@ namespace ArrayVisualizerControls
     {
       try
       {
-        if (this.controlData.Length > 500)
+        if (Data.Length > 500)
           Mouse.OverrideCursor = Cursors.Wait;
 
-        this.arrayGrid.Children.Clear();
-        this.RenderBlankGrid();
-        this.DrawContent();
-      }
-      catch (Exception ex)
-      {
-        throw;
+        arrayGrid.Children.Clear();
+        RenderBlankGrid();
+        DrawContent();
       }
       finally
       {
@@ -155,19 +149,19 @@ namespace ArrayVisualizerControls
 
     public void SetControlData(Array data)
     {
-      this.SetControlData(data, string.Empty);
+      SetControlData(data, string.Empty);
     }
 
-    public void SetControlData(Array data, string tooltipPrefix)
+    public void SetControlData(Array data, string popupTooltipPrefix)
     {
-      this.controlData = data;
-      this.tooltipPrefix = tooltipPrefix;
+      Data = data;
+      tooltipPrefix = popupTooltipPrefix;
       if (data == null)
-        this.arrayGrid.Children.Clear();
+        arrayGrid.Children.Clear();
       else
       {
-        this.SetAxisSize();
-        this.Render();
+        SetAxisSize();
+        Render();
       }
     }
 
@@ -177,8 +171,8 @@ namespace ArrayVisualizerControls
 
     internal void SetTransformers()
     {
-      this.topTransformer = this.GetTopTransformation();
-      this.sideTransformer = this.GetSideTransformation();
+      topTransformer = GetTopTransformation();
+      sideTransformer = GetSideTransformation();
     }
 
     protected Label AddLabel(ArrayRenderSection section, string toolTipCoords, double x, double y, object data)
@@ -192,18 +186,16 @@ namespace ArrayVisualizerControls
           break;
         case ArrayRenderSection.Top:
           label.Margin = new Thickness(x + 1, y - 1, 0, 0);
-          label.RenderTransform = this.topTransformer;
+          label.RenderTransform = topTransformer;
           break;
         case ArrayRenderSection.Side:
           label.Margin = new Thickness(x, y, 0, 0);
-          label.RenderTransform = this.sideTransformer;
-          break;
-        default:
+          label.RenderTransform = sideTransformer;
           break;
       }
 
-      label.Width = this.cellSize.Width;
-      label.Height = this.cellSize.Height;
+      label.Width = cellSize.Width;
+      label.Height = cellSize.Height;
 
       label.HorizontalAlignment = HorizontalAlignment.Left;
       label.VerticalAlignment = VerticalAlignment.Top;
@@ -211,43 +203,45 @@ namespace ArrayVisualizerControls
       label.VerticalContentAlignment = VerticalAlignment.Center;
 
       if (dataType.IsArray)
-        label.Content = this.ArrayCaptionBuilder((Array)data);
+        label.Content = ArrayCaptionBuilder((Array)data);
       else
-        label.Content = this.captionBuilder(data, this.formatter);
+        label.Content = captionBuilder(data, formatter);
 
-      label.ToolTip = string.Format("{0}{1} : {2}", this.tooltipPrefix, toolTipCoords, label.Content);
+      label.ToolTip = string.Format("{0}{1} : {2}", tooltipPrefix, toolTipCoords, label.Content);
 
       if (!dataType.IsPrimitive && dataType != typeof(string))
       {
         label.Tag = data;
         label.Cursor = Cursors.Hand;
-        label.MouseUp += new MouseButtonEventHandler(label_MouseUp);
+        label.MouseUp += label_MouseUp;
       }
 
-      this.arrayGrid.Children.Add(label);
+      arrayGrid.Children.Add(label);
 
       return label;
     }
 
     protected void AddLine(double x1, double y1, double x2, double y2)
     {
-      var line = new Line();
-      line.Stroke = Brushes.Black;
-      line.StrokeThickness = 1;
-      line.X1 = x1;
-      line.X2 = x2;
-      line.Y1 = y1;
-      line.Y2 = y2;
-      this.arrayGrid.Children.Add(line);
+      var line = new Line
+      {
+        Stroke = Brushes.Black,
+        StrokeThickness = 1,
+        X1 = x1,
+        X2 = x2,
+        Y1 = y1,
+        Y2 = y2
+      };
+      arrayGrid.Children.Add(line);
     }
 
     protected abstract void DrawContent();
 
     protected Transform GetSideTransformation()
     {
-      double angle = Math.Atan((this.CellHeight / this.CellWidth) * SIZE_FACTOR_3D) * 180 / Math.PI;
+      double angle = Math.Atan((CellHeight / CellWidth) * SIZE_FACTOR_3_D) * 180 / Math.PI;
       var skt = new SkewTransform(0, -angle);
-      var sct = new ScaleTransform(SIZE_FACTOR_3D, 1, 0, 0);
+      var sct = new ScaleTransform(SIZE_FACTOR_3_D, 1, 0, 0);
       var tg = new TransformGroup();
       tg.Children.Add(skt);
       tg.Children.Add(sct);
@@ -256,9 +250,9 @@ namespace ArrayVisualizerControls
 
     protected Transform GetTopTransformation()
     {
-      double angle = Math.Atan((this.CellWidth / this.CellHeight) * SIZE_FACTOR_3D) * 180 / Math.PI;
+      double angle = Math.Atan((CellWidth / CellHeight) * SIZE_FACTOR_3_D) * 180 / Math.PI;
       var skt = new SkewTransform(-angle, 0);
-      var sct = new ScaleTransform(1, SIZE_FACTOR_3D, 0, 0);
+      var sct = new ScaleTransform(1, SIZE_FACTOR_3_D, 0, 0);
       var tg = new TransformGroup();
       tg.Children.Add(skt);
       tg.Children.Add(sct);
@@ -275,10 +269,10 @@ namespace ArrayVisualizerControls
 
     private void HideSelfAndChildren()
     {
-      if (this.popup != null)
+      if (popup != null)
       {
-        this.popup.IsOpen = false;
-        ArrayControl child = this.ChildArray;
+        popup.IsOpen = false;
+        ArrayControl child = ChildArray;
         if (child != null)
           child.HideSelfAndChildren();
       }
@@ -286,62 +280,66 @@ namespace ArrayVisualizerControls
 
     private void InitPopup(Color backgroundColor)
     {
-      this.popup = new Popup();
-      this.popup.Placement = PlacementMode.MousePoint;
-      this.popup.StaysOpen = false;
-      Grid popupGrid = new Grid();
+      popup = new Popup
+      {
+        Placement = PlacementMode.MousePoint,
+        StaysOpen = false
+      };
+      Grid popupGrid = new Grid
+      {
+        Background = new SolidColorBrush(backgroundColor)
+      };
 
-      popupGrid.Background = new SolidColorBrush(backgroundColor);
-      this.popup.Child = popupGrid;
+      popup.Child = popupGrid;
       popupGrid.Children.Add(new Border { BorderBrush = new SolidColorBrush(Colors.Black), BorderThickness = new Thickness(.25) });
 
-      this.arrayContainer = new ScrollViewer
+      arrayContainer = new ScrollViewer
                               {
                                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto
                               };
-      popupGrid.Children.Add(this.arrayContainer);
+      popupGrid.Children.Add(arrayContainer);
 
-      this.popup.MaxWidth = SystemParameters.PrimaryScreenWidth * .85;
-      this.popup.MaxHeight = SystemParameters.PrimaryScreenHeight * .85;
+      popup.MaxWidth = SystemParameters.PrimaryScreenWidth * .85;
+      popup.MaxHeight = SystemParameters.PrimaryScreenHeight * .85;
     }
 
-    private void SetAxisSize()
+    private void SetAxisSize() //!!!!!
     {
-      int ranks = this.controlData.Rank;
+      int ranks = Data.Rank;
 
-      this.DimX = this.DimY = this.DimZ = this.DimA = 1;
+      DimX = DimY = DimZ = DimA = 1;
 
-      this.DimX = this.controlData.GetLength(ranks - 1);
+      DimX = Data.GetLength(ranks - 1);
       if (ranks > 1)
       {
-        this.DimY = this.controlData.GetLength(ranks - 2);
+        DimY = Data.GetLength(ranks - 2);
         if (ranks > 2)
         {
-          this.DimZ = this.controlData.GetLength(ranks - 3);
+          DimZ = Data.GetLength(ranks - 3);
           if (ranks > 3)
-            this.DimA = this.controlData.GetLength(ranks - 4);
+            DimA = Data.GetLength(ranks - 4);
         }
       }
 
-      this.Truncated = this.controlData.Length > MAX_ELEMENTS;
+      Truncated = Data.Length > MAX_ELEMENTS;
 
-      if (this.Truncated)
+      if (Truncated)
       {
-        double r = Math.Pow(this.controlData.Length / MAX_ELEMENTS, 1.0 / ranks);
-        this.DimA = AdjustDimensionSize(this.DimA, r);
-        this.DimZ = AdjustDimensionSize(this.DimZ, r);
-        this.DimY = AdjustDimensionSize(this.DimY, r);
-        this.DimX = AdjustDimensionSize(this.DimX, r);
+        double r = Math.Pow(Data.Length / MAX_ELEMENTS, 1.0 / ranks);
+        DimA = AdjustDimensionSize(DimA, r);
+        DimZ = AdjustDimensionSize(DimZ, r);
+        DimY = AdjustDimensionSize(DimY, r);
+        DimX = AdjustDimensionSize(DimX, r);
       }
     }
 
-    public void ShowArrayPopup(UIElement target, Array data, string tooltipPrefix, Color backgroundColor)
+    public void ShowArrayPopup(UIElement target, Array data, string popupTooltipPrefix, Color backgroundColor)
     {
-      if (this.popup == null)
-        this.InitPopup(backgroundColor);
+      if (popup == null)
+        InitPopup(backgroundColor);
 
-      this.HideSelfAndChildren();
+      HideSelfAndChildren();
 
       ArrayControl arrCtl;
       switch (data.Rank)
@@ -362,24 +360,26 @@ namespace ArrayVisualizerControls
           return;
       }
 
-      arrCtl.LeftBracket = this.LeftBracket;
-      arrCtl.RightBracket = this.RightBracket;
+      arrCtl.LeftBracket = LeftBracket;
+      arrCtl.RightBracket = RightBracket;
 
-      arrCtl.CaptionBuilder = this.captionBuilder;
-      arrCtl.CellClick = this.CellClick;
-      arrCtl.Formatter = this.formatter;
-      arrCtl.CellHeight = this.CellHeight;
-      arrCtl.CellWidth = this.CellWidth;
-      arrCtl.SetControlData(data, tooltipPrefix);
+      arrCtl.CaptionBuilder = captionBuilder;
+      arrCtl.CellClick = CellClick;
+      arrCtl.Formatter = formatter;
+      arrCtl.CellHeight = CellHeight;
+      arrCtl.CellWidth = CellWidth;
+      arrCtl.SetControlData(data, popupTooltipPrefix);
 
       arrCtl.Padding = new Thickness(8);
       arrCtl.Width += 16;
       arrCtl.Height += 16;
 
-      this.arrayContainer.Content = arrCtl;
-      this.popup.PlacementTarget = target;
-      this.popup.IsOpen = true;
-
+      arrayContainer.Content = arrCtl;
+      if (popup != null)
+      {
+        popup.PlacementTarget = target;
+        popup.IsOpen = true;
+      }
     }
 
     private void label_MouseUp(object sender, MouseButtonEventArgs e)
@@ -395,7 +395,7 @@ namespace ArrayVisualizerControls
       if (fe.ToolTip != null)
       {
         toolTip = (string)fe.ToolTip;
-        int pos = toolTip.IndexOf(":");
+        int pos = toolTip.IndexOf(":", StringComparison.Ordinal);
         if (pos > 0)
           toolTip = toolTip.Substring(0, pos - 1);
       }
@@ -410,7 +410,7 @@ namespace ArrayVisualizerControls
           while (depObj == null)
           {
             element = (FrameworkElement)element.Parent;
-            depObj = element.GetValue(Control.BackgroundProperty);
+            depObj = element.GetValue(BackgroundProperty);
           }
           Color color = ((SolidColorBrush)depObj).Color;
           ShowArrayPopup((UIElement)sender, data, toolTip, color);
@@ -422,12 +422,12 @@ namespace ArrayVisualizerControls
 
     #endregion
 
-    private string DefaultCaptionBuilder(object data, string formatter)
-    {      
+    private string DefaultCaptionBuilder(object data, string numberFormatter)
+    {
       double number;
       string text = (data ?? "").ToString();
       if (double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
-        text = number.ToString(formatter, CultureInfo.InvariantCulture);
+        text = number.ToString(numberFormatter, CultureInfo.InvariantCulture);
       return text;
     }
 
@@ -436,9 +436,9 @@ namespace ArrayVisualizerControls
       int[] dims = data.GetDimensions();
       string dimsText = string.Join(", ", dims);
       string text = string.Format("{{{0}}}", data.GetType().Name);
-      int pos1 = text.IndexOf(this.RightBracket);
-      int pos2 = text.IndexOf(this.LeftBracket);
-      text = text.Substring(0, pos1) + this.LeftBracket + dimsText + this.RightBracket + text.Substring(pos2 + 1);
+      int pos1 = text.IndexOf(RightBracket);
+      int pos2 = text.IndexOf(LeftBracket);
+      text = text.Substring(0, pos1) + LeftBracket + dimsText + RightBracket + text.Substring(pos2 + 1);
       return text;
     }
   }

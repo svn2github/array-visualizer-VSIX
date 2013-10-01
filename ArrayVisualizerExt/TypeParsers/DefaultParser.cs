@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ArrayVisualizerExt.ArrayLoaders;
+﻿using ArrayVisualizerExt.ArrayLoaders;
 
 namespace ArrayVisualizerExt.TypeParsers
 {
   public class DefaultParser : ITypeParser
   {
-    private IArrayLoader arrayLoader;
+    private readonly IArrayLoader arrayLoader;
 
     public DefaultParser(IArrayLoader arrayLoader)
     {
@@ -22,27 +18,27 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public bool IsExpressionTypeSupported(EnvDTE.Expression expression)
     {
-      return this.arrayLoader.IsExpressionArrayType(expression);
+      return arrayLoader.IsExpressionArrayType(expression);
     }
 
     public string GetDisplayName(EnvDTE.Expression expression)
     {
-      return this.arrayLoader.GetDisplayName(expression);
+      return arrayLoader.GetDisplayName(expression);
     }
 
     public int[] GetDimensions(EnvDTE.Expression expression)
     {
-      return this.arrayLoader.GetDimensions(expression);
+      return arrayLoader.GetDimensions(expression);
     }
 
     public int GetMembersCount(EnvDTE.Expression expression)
     {
-      return this.arrayLoader.GetMembersCount(expression);
+      return arrayLoader.GetMembersCount(expression);
     }
 
     public object[] GetValues(EnvDTE.Expression expression)
     {
-      return this.arrayLoader.GetValues(expression);
+      return arrayLoader.GetValues(expression);
     }
 
     #endregion

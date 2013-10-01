@@ -20,6 +20,6 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     int GetMembersCount(Expression expression);
 
-    object[] GetValues(EnvDTE.Expression expression);
+    object[] GetValues(Expression expression);
   }
 }

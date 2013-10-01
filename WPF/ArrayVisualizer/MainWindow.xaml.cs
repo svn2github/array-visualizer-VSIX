@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,7 +13,7 @@ using AvProp = ArrayVisualizer.Properties;
 
 namespace ArrayVisualizer
 {
-  public partial class MainWindow : Window
+  public partial class MainWindow
   {
     #region Fields
 
@@ -399,7 +399,7 @@ namespace ArrayVisualizer
 
       this.arrayCtl = arrayControl;
       this.arrayCtl.CellHeight = GetCellSize(this.cellHeightTextBox.Text, 40);
-      this.arrayCtl.CellWidth = GetCellSize(this.cellWidthTextBox.Text, 60); 
+      this.arrayCtl.CellWidth = GetCellSize(this.cellWidthTextBox.Text, 60);
       this.arrayCtl.Formatter = this.formatterTextBox.Text;
       this.arrayCtl.CaptionBuilder = this.CaptionBuilder;
       this.arrayCtl.Margin = new Thickness(12, 12, 0, 0);
