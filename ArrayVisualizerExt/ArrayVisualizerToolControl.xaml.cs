@@ -39,7 +39,8 @@ namespace ArrayVisualizerExt
 
     private bool arraysPending;
     private bool toolActive;
-    private int lastTabIndex;
+    private DisplayMode displayMode;
+
 
     #endregion
 
@@ -420,7 +421,7 @@ namespace ArrayVisualizerExt
       return defaultValue;
     }
 
-    private void SetupChartControl(ExpressionInfo expressionInfo) 
+    private void SetupChartControl(ExpressionInfo expressionInfo)
     {
       IEnumerable<double> chartData = null;
 
@@ -440,13 +441,11 @@ namespace ArrayVisualizerExt
       {
         if (!chartTab.IsEnabled)
         {
-          if (VisualizerTab.SelectedIndex != 2)
+          if (VisualizerTab.SelectedIndex == 1)
             dataTab.IsSelected = true;
         }
         else
         {
-          chartTab.IsEnabled = true;
-
           if (chartCtl == null || chartCtl.Tag != expressionInfo)
           {
             chartCtl = new Chart();
@@ -454,7 +453,7 @@ namespace ArrayVisualizerExt
 
             if (dimenstionsCount == 1)
               area.Series.Add(GetSeries(GetSelectedChartType(), chartData));
-            else   //2
+            else   //2 dims
             {
               double[] chartDataFlat = chartData.ToArray();
               for (int i = 0; i < dimensions[0]; i++)
@@ -671,24 +670,29 @@ namespace ArrayVisualizerExt
       if (data == null || arraysListBox.SelectedIndex == -1)
         return;
 
-      int tabIndex = VisualizerTab.SelectedIndex;
-      if (tabIndex == 2)
-        tabIndex = lastTabIndex;
+      if (VisualizerTab.SelectedIndex == 0)
+        displayMode = DisplayMode.Array;
+      else if (VisualizerTab.SelectedIndex == 1)
+        displayMode = DisplayMode.Chart;
 
-      switch (tabIndex)
+      switch (displayMode)
       {
-        case 0: //defaultData
+        case DisplayMode.Array:
           SetupArrayControl(expressionInfo);
           SetupChartControl(expressionInfo);
           ShowElement(arrCtl);
           break;
-        case 1: //chart
+        case DisplayMode.Chart:
           SetupChartControl(expressionInfo);
-          if (VisualizerTab.SelectedIndex == 1)
+          if (chartTab.IsEnabled)
             ShowElement(chartCtl);
+          else
+          {
+            displayMode = DisplayMode.Array;
+            SetupControls(expressionInfo);
+          }
           break;
       }
-      lastTabIndex = tabIndex;
     }
 
     private void ShowElement(Control control)
@@ -815,6 +819,12 @@ namespace ArrayVisualizerExt
     }
 
     #endregion
+
+    private enum DisplayMode
+    {
+      Array,
+      Chart
+    }
 
     private enum LoadResults
     {
