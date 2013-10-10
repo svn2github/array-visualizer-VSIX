@@ -61,9 +61,17 @@ namespace ArrayVisualizerExt.ArrayLoaders
       dims = dims.Substring(dims.IndexOf(LeftBracket) + 1);
       dims = dims.Substring(0, dims.IndexOf(RightBracket));
 
-      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
+      int[] dimenstions = dims.Split(',').Select(X => ParseDimension(X.Trim())).ToArray();
 
       return dimenstions;
+    }
+
+   public int ParseDimension(string dimensionString)
+    {
+      if (dimensionString.StartsWith("0x"))
+        return int.Parse(dimensionString.Substring(2), System.Globalization.NumberStyles.HexNumber);
+      else
+        return int.Parse(dimensionString);
     }
 
     public object[] GetValues(Expression expression)

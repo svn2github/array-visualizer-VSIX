@@ -26,17 +26,17 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public IEnumerable<ExpressionInfo> GetArrays(string section, Expression expression, Parsers parsers, int sectionCode)
     {
-        if (expression.DataMembers.Count == 0)
+      if (expression.DataMembers.Count == 0)
         yield break;
 
-        foreach (ITypeParser parser in parsers.Where(P => P.IsExpressionTypeSupported(expression)))
-        {
-            yield return new ExpressionInfo(expression.Name, section, parser.GetDisplayName(expression), expression, sectionCode);
-            break;
-        }
+      foreach (ITypeParser parser in parsers.Where(P => P.IsExpressionTypeSupported(expression)))
+      {
+        yield return new ExpressionInfo(expression.Name, section, parser.GetDisplayName(expression), expression, sectionCode);
+        break;
+      }
     }
 
-      public int GetMembersCount(Expression expression)
+    public int GetMembersCount(Expression expression)
     {
       return expression.DataMembers.Count;
     }
@@ -47,9 +47,17 @@ namespace ArrayVisualizerExt.ArrayLoaders
       dims = dims.Substring(dims.IndexOf(LeftBracket) + 1);
       dims = dims.Substring(0, dims.IndexOf(RightBracket));
 
-      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X)).ToArray();
+      int[] dimenstions = dims.Split(',').Select(X => ParseDimension(X.Trim())).ToArray();
 
       return dimenstions;
+    }
+
+    public int ParseDimension(string value)
+    {
+      if (value.StartsWith("0x"))
+        return int.Parse(value.Substring(2), System.Globalization.NumberStyles.HexNumber);
+      else
+        return int.Parse(value);
     }
 
     public object[] GetValues(Expression expression)

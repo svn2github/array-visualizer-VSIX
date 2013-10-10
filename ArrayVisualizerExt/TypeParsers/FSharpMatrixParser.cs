@@ -30,6 +30,7 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public char LeftBracket { get; set; }
     public char RightBracket { get; set; }
+    public Func<string, int> ParseDimension { get; set; }
 
     public bool IsExpressionTypeSupported(EnvDTE.Expression expression)
     {
@@ -61,8 +62,8 @@ namespace ArrayVisualizerExt.TypeParsers
         case ExpressionType.Matrix:
           dims = new int[2];
           EnvDTE.Expressions members = expression.DataMembers.Item("Item").DataMembers;
-          dims[0] = int.Parse(members.Item("NumRows").Value);
-          dims[1] = int.Parse(members.Item("NumCols").Value);
+          dims[0] = ParseDimension(members.Item("NumRows").Value);
+          dims[1] = ParseDimension(members.Item("NumCols").Value);
           break;
         case ExpressionType.Vector:
           dims = new int[1];

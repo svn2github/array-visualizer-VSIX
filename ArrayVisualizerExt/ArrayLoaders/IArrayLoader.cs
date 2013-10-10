@@ -10,6 +10,8 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     char RightBracket { get; }
 
+    int ParseDimension(string dimensionString);
+
     bool IsExpressionArrayType(Expression expression);
 
     string GetDisplayName(Expression expression);

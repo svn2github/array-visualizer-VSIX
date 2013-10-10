@@ -24,6 +24,7 @@ namespace ArrayVisualizerExt.TypeParsers
     {
       parser.LeftBracket = arrayLoader.LeftBracket;
       parser.RightBracket = arrayLoader.RightBracket;
+      parser.ParseDimension = arrayLoader.ParseDimension;
       parsers.Add(parser);
     }
 

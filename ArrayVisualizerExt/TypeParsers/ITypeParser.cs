@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using System;
+using EnvDTE;
 
 namespace ArrayVisualizerExt.TypeParsers
 {
@@ -10,6 +11,8 @@ namespace ArrayVisualizerExt.TypeParsers
     int[] GetDimensions(Expression expression);
     int GetMembersCount(Expression expression);
     object[] GetValues(Expression expression);
+
+    Func<string, int> ParseDimension { get; set; }
 
     char LeftBracket { get; set; }
     char RightBracket { get; set; }

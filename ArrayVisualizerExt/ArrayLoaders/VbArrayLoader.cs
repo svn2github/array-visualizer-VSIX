@@ -43,8 +43,8 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
       foreach (ITypeParser parser in parsers.Where(P => P.IsExpressionTypeSupported(expression)))
       {
-          yield return new ExpressionInfo(expression.Name, section, parser.GetDisplayName(expression), expression, sectionCode);
-          break;
+        yield return new ExpressionInfo(expression.Name, section, parser.GetDisplayName(expression), expression, sectionCode);
+        break;
       }
 
       if (expression.Name == "Me")
@@ -71,8 +71,16 @@ namespace ArrayVisualizerExt.ArrayLoaders
       dims = dims.Substring(dims.IndexOf(LeftBracket) + 1);
       dims = dims.Substring(0, dims.IndexOf(RightBracket));
 
-      int[] dimenstions = dims.Split(',').Select(X => int.Parse(X) + 1).ToArray();
+      int[] dimenstions = dims.Split(',').Select(X => ParseDimension(X.Trim()) + 1).ToArray();
       return dimenstions;
+    }
+
+    public int ParseDimension(string dimensionString)
+    {
+      if (dimensionString.StartsWith("&H"))
+        return int.Parse(dimensionString.Substring(2), System.Globalization.NumberStyles.HexNumber);
+      else
+        return int.Parse(dimensionString);
     }
 
     public object[] GetValues(Expression expression)

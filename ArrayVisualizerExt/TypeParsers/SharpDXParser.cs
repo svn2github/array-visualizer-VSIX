@@ -12,6 +12,7 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public char LeftBracket { get; set; }
     public char RightBracket { get; set; }
+    public Func<string, int> ParseDimension { get; set; }
 
     public bool IsExpressionTypeSupported(Expression expression)
     {
