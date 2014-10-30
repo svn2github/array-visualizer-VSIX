@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ArrayVisualizerExt.TypeParsers;
 using EnvDTE;
@@ -15,6 +16,9 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public bool IsExpressionArrayType(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       string expressionType;
       if (expression.Type == "System.Array")
         expressionType = expression.Value;
@@ -27,6 +31,9 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public string GetDisplayName(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       if (expression.Type == "System.Array")
         return GetDisplayName(expression.DataMembers.Item(1));
 
@@ -36,7 +43,7 @@ namespace ArrayVisualizerExt.ArrayLoaders
       return expType;
     }
 
-    public IEnumerable<ExpressionInfo> GetArrays(string section, Expression expression, Parsers parsers, int sectionCode)
+    public IEnumerable<ExpressionInfo> GetArrays(string section, Expression expression, ParsersCollection parsers, int sectionCode)
     {
       if (expression.Value == "Nothing" || expression.DataMembers.Count == 0)
         yield break;
@@ -55,6 +62,9 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public int GetMembersCount(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       if (expression.Type == "System.Array")
         return GetMembersCount(expression.DataMembers.Item(1));
 
@@ -63,6 +73,9 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public int[] GetDimensions(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       if (expression.Type == "System.Array")
         return GetDimensions(expression.DataMembers.Item(1));
 
@@ -77,6 +90,9 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public int ParseDimension(string dimensionString)
     {
+      if (string.IsNullOrEmpty(dimensionString))
+        throw new ArgumentNullException("dimensionString");
+
       if (dimensionString.StartsWith("&H"))
         return int.Parse(dimensionString.Substring(2), System.Globalization.NumberStyles.HexNumber);
       else
@@ -85,6 +101,9 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     public object[] GetValues(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       if (expression.Type == "System.Array")
         return GetValues(expression.DataMembers.Item(1));
 

@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WinForms", "WinForms", "{A61C476F-0130-40D7-9D34-BD914E2865E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{DD3750D9-66ED-4C2F-BA66-696910B12268}"
@@ -67,9 +69,6 @@ Global
 		SccProjectTopLevelParentUniqueName8 = ArrayVisualizer.sln
 		SccProjectName8 = VisualizerTesters/FsTester
 		SccLocalPath8 = VisualizerTesters\\FsTester
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = LinqLib.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -172,5 +171,8 @@ Global
 		{D23115C0-DA59-45B7-9826-D03A7764F3AF} = {F9C1251A-5C6A-4A3B-ACD1-9DBC1A03FDD9}
 		{BCD64B50-6DF1-4084-9590-92D1DF7596D5} = {F9C1251A-5C6A-4A3B-ACD1-9DBC1A03FDD9}
 		{95907A9E-FA6F-45DE-BCB1-D54F96AD083A} = {F9C1251A-5C6A-4A3B-ACD1-9DBC1A03FDD9}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = LinqLib.vsmdi
 	EndGlobalSection
 EndGlobal

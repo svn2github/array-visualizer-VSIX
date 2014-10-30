@@ -18,12 +18,12 @@ namespace ArrayVisualizerControls
       for (int y = 0; y < DimY; y++)
         for (int x = 0; x < DimX; x++)
         {
-          string toolTipCoords = string.Format(toolTipFmt, y, x);
+          string toolTipCoordinates = string.Format(toolTipFmt, y, x);
           object data = Data.GetValue(y, x);
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height;
 
-          AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, data);
+          AddLabel(ArrayRenderSection.Front, toolTipCoordinates, labelX, labelY, data);
         }
     }
 

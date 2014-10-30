@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Amir Liberman")]
 [assembly: AssemblyProduct("ArrayVisualizer")]
-[assembly: AssemblyCopyright("Copyright ©  Amir Liberman 2012-2013")]
+[assembly: AssemblyCopyright("Copyright ©  Amir Liberman 2012-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -44,6 +44,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.0.2")]
-[assembly: AssemblyFileVersion("1.2.0.2")]
+[assembly: AssemblyVersion("1.3.0.1")]
+[assembly: AssemblyFileVersion("1.3.0.1")]
 [assembly: NeutralResourcesLanguage("en")]

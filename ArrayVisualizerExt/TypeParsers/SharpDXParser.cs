@@ -16,12 +16,18 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public bool IsExpressionTypeSupported(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       string expressionType = expression.Type;
       return expressionType.StartsWith("SharpDX.Matrix") || expressionType.StartsWith("SharpDX.Vector");
     }
 
     public string GetDisplayName(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       int elements = expression.Value.Count(C => C == ':');
       string formatter;
       switch (elements)
@@ -45,7 +51,8 @@ namespace ArrayVisualizerExt.TypeParsers
           formatter = "Matrix{0}5,4{1}";
           break;
         default:
-          throw new Exception();
+
+          throw new ArgumentOutOfRangeException("expression", "The number of ':' separators found in expression.Value.Count is invalid.");
       }
 
       return string.Format(formatter, LeftBracket, RightBracket);
@@ -53,6 +60,9 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public int[] GetDimensions(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       switch (expression.Type)
       {
         case "SharpDX.Matrix":
@@ -83,6 +93,9 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public object[] GetValues(Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression");
+
       Predicate<Expression> predicate;
       bool rotate = false;
       switch (expression.Type)

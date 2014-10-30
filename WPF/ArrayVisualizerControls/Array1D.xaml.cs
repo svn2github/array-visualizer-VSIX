@@ -18,9 +18,9 @@ namespace ArrayVisualizerControls
         object data = Data.GetValue(x);
         double labelX = x * CellSize.Width;
 
-        string toolTipCoords = string.Format(toolTipFmt, x);
+        string toolTipCoordinates = string.Format(toolTipFmt, x);
 
-        AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, 1, data);
+        AddLabel(ArrayRenderSection.Front, toolTipCoordinates, labelX, 1, data);
       }
     }
 

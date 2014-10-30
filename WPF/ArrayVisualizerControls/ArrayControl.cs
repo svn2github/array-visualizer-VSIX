@@ -25,15 +25,15 @@ namespace ArrayVisualizerControls
 
     #region Fields
 
-    private readonly Grid arrayGrid;
-    private ScrollViewer arrayContainer;
-    private Size cellSize;
-    private string formatter;
-    private Func<object, string, string> captionBuilder;
-    private Popup popup;
-    private Transform sideTransformer;
-    private string tooltipPrefix;
-    private Transform topTransformer;
+    private readonly Grid _arrayGrid;
+    private ScrollViewer _arrayContainer;
+    private Size _cellSize;
+    private string _formatter;
+    private Func<object, string, string> _captionBuilder;
+    private Popup _popup;
+    private Transform _sideTransformer;
+    private string _tooltipPrefix;
+    private Transform _topTransformer;
 
     #endregion
 
@@ -41,17 +41,17 @@ namespace ArrayVisualizerControls
 
     protected ArrayControl()
     {
-      arrayGrid = new Grid();
+      _arrayGrid = new Grid();
       Init();
     }
 
     private void Init()
     {
-      AddChild(arrayGrid);
-      cellSize = new Size(80, 55);
-      formatter = string.Empty;
-      captionBuilder = DefaultCaptionBuilder;
-      tooltipPrefix = string.Empty;
+      AddChild(_arrayGrid);
+      _cellSize = new Size(80, 55);
+      _formatter = string.Empty;
+      _captionBuilder = DefaultCaptionBuilder;
+      _tooltipPrefix = string.Empty;
       LeftBracket = '[';
       RightBracket = ']';
     }
@@ -62,28 +62,28 @@ namespace ArrayVisualizerControls
 
     public double CellHeight
     {
-      get { return cellSize.Height; }
-      set { cellSize.Height = value; }
+      get { return _cellSize.Height; }
+      set { _cellSize.Height = value; }
     }
 
     public Size CellSize
     {
-      get { return cellSize; }
-      set { cellSize = value; }
+      get { return _cellSize; }
+      set { _cellSize = value; }
     }
 
     public double CellWidth
     {
-      get { return cellSize.Width; }
-      set { cellSize.Width = value; }
+      get { return _cellSize.Width; }
+      set { _cellSize.Width = value; }
     }
 
     public ArrayControl ChildArray
     {
       get
       {
-        if (arrayContainer != null)
-          return (ArrayControl)arrayContainer.Content;
+        if (_arrayContainer != null)
+          return (ArrayControl)_arrayContainer.Content;
 
         return null;
       }
@@ -98,16 +98,16 @@ namespace ArrayVisualizerControls
 
     public string Formatter
     {
-      get { return formatter; }
-      set { formatter = value; }
+      get { return _formatter; }
+      set { _formatter = value; }
     }
 
     public Func<object, string, string> CaptionBuilder
     {
-      get { return captionBuilder; }
+      get { return _captionBuilder; }
       set
       {
-        captionBuilder = value ?? DefaultCaptionBuilder;
+        _captionBuilder = value ?? DefaultCaptionBuilder;
       }
     }
 
@@ -137,7 +137,7 @@ namespace ArrayVisualizerControls
         if (Data.Length > 500)
           Mouse.OverrideCursor = Cursors.Wait;
 
-        arrayGrid.Children.Clear();
+        _arrayGrid.Children.Clear();
         RenderBlankGrid();
         DrawContent();
       }
@@ -155,9 +155,9 @@ namespace ArrayVisualizerControls
     public void SetControlData(Array data, string popupTooltipPrefix)
     {
       Data = data;
-      tooltipPrefix = popupTooltipPrefix;
+      _tooltipPrefix = popupTooltipPrefix;
       if (data == null)
-        arrayGrid.Children.Clear();
+        _arrayGrid.Children.Clear();
       else
       {
         SetAxisSize();
@@ -171,12 +171,15 @@ namespace ArrayVisualizerControls
 
     internal void SetTransformers()
     {
-      topTransformer = GetTopTransformation();
-      sideTransformer = GetSideTransformation();
+      _topTransformer = GetTopTransformation();
+      _sideTransformer = GetSideTransformation();
     }
 
-    protected Label AddLabel(ArrayRenderSection section, string toolTipCoords, double x, double y, object data)
+    protected Label AddLabel(ArrayRenderSection section, string toolTipCoordinates, double x, double y, object data)
     {
+      if (data == null)
+        throw new ArgumentNullException("data");
+      
       Type dataType = data.GetType();
       Label label = new Label();
       switch (section)
@@ -186,16 +189,16 @@ namespace ArrayVisualizerControls
           break;
         case ArrayRenderSection.Top:
           label.Margin = new Thickness(x + 1, y - 1, 0, 0);
-          label.RenderTransform = topTransformer;
+          label.RenderTransform = _topTransformer;
           break;
         case ArrayRenderSection.Side:
           label.Margin = new Thickness(x, y, 0, 0);
-          label.RenderTransform = sideTransformer;
+          label.RenderTransform = _sideTransformer;
           break;
       }
 
-      label.Width = cellSize.Width;
-      label.Height = cellSize.Height;
+      label.Width = _cellSize.Width;
+      label.Height = _cellSize.Height;
 
       label.HorizontalAlignment = HorizontalAlignment.Left;
       label.VerticalAlignment = VerticalAlignment.Top;
@@ -205,9 +208,9 @@ namespace ArrayVisualizerControls
       if (dataType.IsArray)
         label.Content = ArrayCaptionBuilder((Array)data);
       else
-        label.Content = captionBuilder(data, formatter);
+        label.Content = _captionBuilder(data, _formatter);
 
-      label.ToolTip = string.Format("{0}{1} : {2}", tooltipPrefix, toolTipCoords, label.Content);
+      label.ToolTip = string.Format("{0}{1} : {2}", _tooltipPrefix, toolTipCoordinates, label.Content);
 
       if (!dataType.IsPrimitive && dataType != typeof(string))
       {
@@ -216,7 +219,7 @@ namespace ArrayVisualizerControls
         label.MouseUp += label_MouseUp;
       }
 
-      arrayGrid.Children.Add(label);
+      _arrayGrid.Children.Add(label);
 
       return label;
     }
@@ -232,7 +235,7 @@ namespace ArrayVisualizerControls
         Y1 = y1,
         Y2 = y2
       };
-      arrayGrid.Children.Add(line);
+      _arrayGrid.Children.Add(line);
     }
 
     protected abstract void DrawContent();
@@ -269,9 +272,9 @@ namespace ArrayVisualizerControls
 
     private void HideSelfAndChildren()
     {
-      if (popup != null)
+      if (_popup != null)
       {
-        popup.IsOpen = false;
+        _popup.IsOpen = false;
         ArrayControl child = ChildArray;
         if (child != null)
           child.HideSelfAndChildren();
@@ -280,7 +283,7 @@ namespace ArrayVisualizerControls
 
     private void InitPopup(Color backgroundColor)
     {
-      popup = new Popup
+      _popup = new Popup
       {
         Placement = PlacementMode.MousePoint,
         StaysOpen = false
@@ -290,18 +293,18 @@ namespace ArrayVisualizerControls
         Background = new SolidColorBrush(backgroundColor)
       };
 
-      popup.Child = popupGrid;
+      _popup.Child = popupGrid;
       popupGrid.Children.Add(new Border { BorderBrush = new SolidColorBrush(Colors.Black), BorderThickness = new Thickness(.25) });
 
-      arrayContainer = new ScrollViewer
+      _arrayContainer = new ScrollViewer
                               {
                                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto
                               };
-      popupGrid.Children.Add(arrayContainer);
+      popupGrid.Children.Add(_arrayContainer);
 
-      popup.MaxWidth = SystemParameters.PrimaryScreenWidth * .85;
-      popup.MaxHeight = SystemParameters.PrimaryScreenHeight * .85;
+      _popup.MaxWidth = SystemParameters.PrimaryScreenWidth * .85;
+      _popup.MaxHeight = SystemParameters.PrimaryScreenHeight * .85;
     }
 
     private void SetAxisSize() //!!!!!
@@ -336,49 +339,55 @@ namespace ArrayVisualizerControls
 
     public void ShowArrayPopup(UIElement target, Array data, string popupTooltipPrefix, Color backgroundColor)
     {
-      if (popup == null)
+      if (data == null)
+        throw new ArgumentNullException("data"); 
+      
+      if (_popup == null)
         InitPopup(backgroundColor);
 
       HideSelfAndChildren();
 
-      ArrayControl arrCtl;
-      switch (data.Rank)
+      ArrayControl arrCtl = GetArrayControl(data.Rank);
+
+      if (arrCtl != null)
+      {
+        arrCtl.LeftBracket = LeftBracket;
+        arrCtl.RightBracket = RightBracket;
+
+        arrCtl.CaptionBuilder = _captionBuilder;
+        arrCtl.CellClick = CellClick;
+        arrCtl.Formatter = _formatter;
+        arrCtl.CellHeight = CellHeight;
+        arrCtl.CellWidth = CellWidth;
+        arrCtl.SetControlData(data, popupTooltipPrefix);
+
+        arrCtl.Padding = new Thickness(8);
+        arrCtl.Width += 16;
+        arrCtl.Height += 16;
+
+        _arrayContainer.Content = arrCtl;
+        if (_popup != null)
+        {
+          _popup.PlacementTarget = target;
+          _popup.IsOpen = true;
+        }
+      }
+    }
+
+    public static ArrayControl GetArrayControl(int rank)
+    {
+      switch (rank)
       {
         case 1:
-          arrCtl = new Array1D();
-          break;
+          return new Array1D();          
         case 2:
-          arrCtl = new Array2D();
-          break;
+          return new Array2D();        
         case 3:
-          arrCtl = new Array3D();
-          break;
+          return new Array3D();          
         case 4:
-          arrCtl = new Array4D();
-          break;
+          return new Array4D();       
         default:
-          return;
-      }
-
-      arrCtl.LeftBracket = LeftBracket;
-      arrCtl.RightBracket = RightBracket;
-
-      arrCtl.CaptionBuilder = captionBuilder;
-      arrCtl.CellClick = CellClick;
-      arrCtl.Formatter = formatter;
-      arrCtl.CellHeight = CellHeight;
-      arrCtl.CellWidth = CellWidth;
-      arrCtl.SetControlData(data, popupTooltipPrefix);
-
-      arrCtl.Padding = new Thickness(8);
-      arrCtl.Width += 16;
-      arrCtl.Height += 16;
-
-      arrayContainer.Content = arrCtl;
-      if (popup != null)
-      {
-        popup.PlacementTarget = target;
-        popup.IsOpen = true;
+          return null;
       }
     }
 
@@ -426,8 +435,8 @@ namespace ArrayVisualizerControls
     {
       double number;
       string text = (data ?? "").ToString();
-      if (double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
-        text = number.ToString(numberFormatter, CultureInfo.InvariantCulture);
+      if (double.TryParse(text, NumberStyles.Any, CultureInfo.CurrentCulture, out number))
+        text = number.ToString(numberFormatter, CultureInfo.CurrentCulture);
       return text;
     }
 

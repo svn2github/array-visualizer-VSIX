@@ -10,13 +10,13 @@ namespace ArrayVisualizerExt.ArrayLoaders
 
     char RightBracket { get; }
 
-    int ParseDimension(string dimensionString);
+    int ParseDimension(string dimension);
 
     bool IsExpressionArrayType(Expression expression);
 
     string GetDisplayName(Expression expression);
 
-    IEnumerable<ExpressionInfo> GetArrays(string section, Expression expression, Parsers parsers, int sectionCode);
+    IEnumerable<ExpressionInfo> GetArrays(string section, Expression expression, ParsersCollection parsers, int sectionCode);
 
     int[] GetDimensions(Expression expression);
 

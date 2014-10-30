@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,10 +17,10 @@ namespace ArrayVisualizer
   {
     #region Fields
 
-    private ArrayControl arrayCtl;
-    private int dims;
-    private double fillOptionsTabControlWidth;
-    private bool jagged;
+    private ArrayControl _arrayCtl;
+    private int _dims;
+    private double _fillOptionsTabControlWidth;
+    private bool _jagged;
 
     #endregion
 
@@ -53,7 +53,7 @@ namespace ArrayVisualizer
       this.zResizeComboBox.SelectedItem = 5;
       this.aResizeComboBox.SelectedItem = 5;
 
-      this.fillOptionsTabControlWidth = this.fillOptionsTabControl.Width;
+      this._fillOptionsTabControlWidth = this.fillOptionsTabControl.Width;
 
       this.dimenstionsTab.SelectedIndex = 3;
     }
@@ -79,8 +79,8 @@ namespace ArrayVisualizer
     private void ArrangeFrames()
     {
       int temp = int.Parse((string)((TabItem)this.dimenstionsTab.SelectedItem).Tag);
-      this.jagged = temp < 0;
-      if (this.jagged)
+      this._jagged = temp < 0;
+      if (this._jagged)
       {
         this.fillOptionsTabControl.Visibility = Visibility.Hidden;
         this.resizeGrid.Visibility = Visibility.Hidden;
@@ -97,9 +97,9 @@ namespace ArrayVisualizer
         this.x1Label.Visibility = Visibility.Visible;
       }
 
-      if (temp != this.dims)
+      if (temp != this._dims)
       {
-        this.dims = temp;
+        this._dims = temp;
 
         this.angelComboBox.Items.Clear();
         this.axisComboBox.Items.Clear();
@@ -112,7 +112,7 @@ namespace ArrayVisualizer
         this.axisComboBox.Items.Add("Y");
         this.axisComboBox.Items.Add("Z");
 
-        if (this.dims >= 2)
+        if (this._dims >= 2)
         {
           this.yDimComboBox.Visibility = Visibility.Visible;
           this.y1Label.Visibility = Visibility.Visible;
@@ -130,7 +130,7 @@ namespace ArrayVisualizer
           this.y2Label.Visibility = Visibility.Hidden;
         }
 
-        if (this.dims >= 3)
+        if (this._dims >= 3)
         {
           this.zDimComboBox.Visibility = Visibility.Visible;
           this.z1Label.Visibility = Visibility.Visible;
@@ -154,7 +154,7 @@ namespace ArrayVisualizer
           this.z2Label.Visibility = Visibility.Hidden;
         }
 
-        if (this.dims >= 4)
+        if (this._dims >= 4)
         {
           this.angelComboBox.Items.Add(360);
           this.angelComboBox.Items.Add(450);
@@ -188,12 +188,12 @@ namespace ArrayVisualizer
     private Array Get1DArray(int x)
     {
       if (this.autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), x).Select(V => V).ToArray();
+        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.CurrentCulture), double.Parse(this.stepTextBox.Text, CultureInfo.CurrentCulture), x).Select(V => V).ToArray();
       else if (this.manualTab.IsSelected)
         try
         {
           string[] items = this.GetManualItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray();
+          return items.Select(X => double.Parse(X, CultureInfo.CurrentCulture)).ToArray();
         }
         catch (Exception ex)
         {
@@ -204,7 +204,7 @@ namespace ArrayVisualizer
         try
         {
           string[] items = this.GetFileItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray();
+          return items.Select(X => double.Parse(X, CultureInfo.CurrentCulture)).ToArray();
         }
         catch (FormatException ex)
         {
@@ -219,12 +219,12 @@ namespace ArrayVisualizer
     private Array Get2DArray(int x, int y)
     {
       if (this.autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture), double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), x * y).Select(V => V).ToArray(y, x);
+        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.CurrentCulture), double.Parse(this.stepTextBox.Text, CultureInfo.CurrentCulture), x * y).Select(V => V).ToArray(y, x);
       else if (this.manualTab.IsSelected)
         try
         {
           string[] items = this.GetManualItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.CurrentCulture)).ToArray(y, x);
         }
         catch (Exception ex)
         {
@@ -235,7 +235,7 @@ namespace ArrayVisualizer
         try
         {
           string[] items = this.GetFileItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.CurrentCulture)).ToArray(y, x);
         }
         catch (FormatException ex)
         {
@@ -250,13 +250,13 @@ namespace ArrayVisualizer
     private Array Get3DArray(int x, int y, int z)
     {
       if (this.autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture),
-                                   double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), x * y * z).Select(V => V).ToArray(z, y, x);
+        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.CurrentCulture),
+                                   double.Parse(this.stepTextBox.Text, CultureInfo.CurrentCulture), x * y * z).Select(V => V).ToArray(z, y, x);
       else if (this.manualTab.IsSelected)
         try
         {
           string[] items = this.GetManualItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(z, y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.CurrentCulture)).ToArray(z, y, x);
         }
         catch (Exception ex)
         {
@@ -267,7 +267,7 @@ namespace ArrayVisualizer
         try
         {
           string[] items = this.GetFileItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(z, y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.CurrentCulture)).ToArray(z, y, x);
         }
         catch (FormatException ex)
         {
@@ -282,13 +282,13 @@ namespace ArrayVisualizer
     private Array Get4DArray(int x, int y, int z, int a)
     {
       if (this.autoFillTab.IsSelected)
-        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.InvariantCulture),
-                                   double.Parse(this.stepTextBox.Text, CultureInfo.InvariantCulture), x * y * z * a).Select(V => V).ToArray(a, z, y, x);
+        return Enumerator.Generate(double.Parse(this.startValueTextBox.Text, CultureInfo.CurrentCulture),
+                                   double.Parse(this.stepTextBox.Text, CultureInfo.CurrentCulture), x * y * z * a).Select(V => V).ToArray(a, z, y, x);
       else if (this.manualTab.IsSelected)
         try
         {
           string[] items = this.GetManualItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(a, z, y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.CurrentCulture)).ToArray(a, z, y, x);
         }
         catch
         {
@@ -299,7 +299,7 @@ namespace ArrayVisualizer
         try
         {
           string[] items = this.GetFileItems();
-          return items.Select(X => double.Parse(X, CultureInfo.InvariantCulture)).ToArray(a, z, y, x);
+          return items.Select(X => double.Parse(X, CultureInfo.CurrentCulture)).ToArray(a, z, y, x);
         }
         catch (FormatException)
         {
@@ -318,16 +318,16 @@ namespace ArrayVisualizer
       return GetItems(list);
     }
 
-    private Array GetJaggedArray1D()
+    private static Array GetJaggedArray1D()
     {
       var arr = new int[5][][][];
       for (int i = 0; i < 5; i++)
-        arr[i] = this.GetJaggedArray2();
+        arr[i] = GetJaggedArray2();
 
       return arr;
     }
 
-    private int[][][] GetJaggedArray2()
+    private static int[][][] GetJaggedArray2()
     {
       var arr = new[]
                   {
@@ -348,20 +348,20 @@ namespace ArrayVisualizer
       return arr;
     }
 
-    private Array GetJaggedArray2D()
+    private static Array GetJaggedArray2D()
     {
       var arr = new int[5, 3][][][];
       for (int i = 0; i < 5; i++)
       {
-        arr[i, 0] = this.GetJaggedArray2();
-        arr[i, 1] = this.GetJaggedArray3();
-        arr[i, 2] = this.GetJaggedArray2();
+        arr[i, 0] = GetJaggedArray2();
+        arr[i, 1] = GetJaggedArray3();
+        arr[i, 2] = GetJaggedArray2();
       }
 
       return arr;
     }
 
-    private int[][][] GetJaggedArray3()
+    private static int[][][] GetJaggedArray3()
     {
       var arr = new[]
                   {
@@ -394,29 +394,29 @@ namespace ArrayVisualizer
 
     private void PrepairGrid(ArrayControl arrayControl)
     {
-      if (this.arrayCtl != null)
-        this.mainPanel.Children.Remove(this.arrayCtl);
+      if (this._arrayCtl != null)
+        this.mainPanel.Children.Remove(this._arrayCtl);
 
-      this.arrayCtl = arrayControl;
-      this.arrayCtl.CellHeight = GetCellSize(this.cellHeightTextBox.Text, 40);
-      this.arrayCtl.CellWidth = GetCellSize(this.cellWidthTextBox.Text, 60);
-      this.arrayCtl.Formatter = this.formatterTextBox.Text;
-      this.arrayCtl.CaptionBuilder = this.CaptionBuilder;
-      this.arrayCtl.Margin = new Thickness(12, 12, 0, 0);
-      this.arrayCtl.HorizontalAlignment = HorizontalAlignment.Left;
-      this.arrayCtl.Width = 285;
-      this.arrayCtl.Height = 251;
-      this.arrayCtl.VerticalAlignment = VerticalAlignment.Top;
+      this._arrayCtl = arrayControl;
+      this._arrayCtl.CellHeight = GetCellSize(this.cellHeightTextBox.Text, 40);
+      this._arrayCtl.CellWidth = GetCellSize(this.cellWidthTextBox.Text, 60);
+      this._arrayCtl.Formatter = this.formatterTextBox.Text;
+      this._arrayCtl.CaptionBuilder = this.CaptionBuilder;
+      this._arrayCtl.Margin = new Thickness(12, 12, 0, 0);
+      this._arrayCtl.HorizontalAlignment = HorizontalAlignment.Left;
+      this._arrayCtl.Width = 285;
+      this._arrayCtl.Height = 251;
+      this._arrayCtl.VerticalAlignment = VerticalAlignment.Top;
 
-      this.arrayCtl.LeftBracket = '[';
-      this.arrayCtl.RightBracket = ']';
+      this._arrayCtl.LeftBracket = '[';
+      this._arrayCtl.RightBracket = ']';
 
-      this.mainPanel.Children.Add(this.arrayCtl);
+      this.mainPanel.Children.Add(this._arrayCtl);
     }
 
     private void SaveToFile(string fileName)
     {
-      double[] values = this.arrayCtl.Data.AsEnumerable<double>().ToArray();
+      double[] values = this._arrayCtl.Data.AsEnumerable<double>().ToArray();
       string list = string.Join(",", values);
 
       File.WriteAllText(fileName, list);
@@ -447,13 +447,13 @@ namespace ArrayVisualizer
 
     private void manualItemsTextBox_GotFocus(object sender, RoutedEventArgs e)
     {
-      this.fillOptionsTabControlWidth = this.fillOptionsTabControl.Width;
+      this._fillOptionsTabControlWidth = this.fillOptionsTabControl.Width;
       this.fillOptionsTabControl.Width = this.Width - 53;
     }
 
     private void manualItemsTextBox_LostFocus(object sender, RoutedEventArgs e)
     {
-      this.fillOptionsTabControl.Width = this.fillOptionsTabControlWidth;
+      this.fillOptionsTabControl.Width = this._fillOptionsTabControlWidth;
     }
 
     private void openFileButton_Click(object sender, RoutedEventArgs e)
@@ -481,37 +481,37 @@ namespace ArrayVisualizer
         var z = (int)this.zDimComboBox.SelectedItem;
         var a = (int)this.aDimComboBox.SelectedItem;
 
-        switch (this.dims)
+        switch (this._dims)
         {
           case -1: // Jagged 
             this.PrepairGrid(new Array1D());
-            this.arrayCtl.SetControlData(this.GetJaggedArray1D());
+            this._arrayCtl.SetControlData(GetJaggedArray1D());
             break;
           case 1:
             this.PrepairGrid(new Array1D());
-            this.arrayCtl.SetControlData(this.Get1DArray(x));
+            this._arrayCtl.SetControlData(this.Get1DArray(x));
             break;
           case -2: // Jagged 
             this.PrepairGrid(new Array2D());
-            this.arrayCtl.SetControlData(this.GetJaggedArray2D());
+            this._arrayCtl.SetControlData(GetJaggedArray2D());
             break;
           case 2:
             this.PrepairGrid(new Array2D());
-            this.arrayCtl.SetControlData(this.Get2DArray(x, y));
+            this._arrayCtl.SetControlData(this.Get2DArray(x, y));
             break;
           case 3:
             this.PrepairGrid(new Array3D());
-            this.arrayCtl.SetControlData(this.Get3DArray(x, y, z));
+            this._arrayCtl.SetControlData(this.Get3DArray(x, y, z));
             break;
           case 4:
             this.PrepairGrid(new Array4D());
-            this.arrayCtl.SetControlData(this.Get4DArray(x, y, z, a));
+            this._arrayCtl.SetControlData(this.Get4DArray(x, y, z, a));
             break;
         }
 
 
-        this.rotateGrid.IsEnabled = Math.Abs(this.dims) > 1;
-        this.resizeGrid.IsEnabled = this.dims > 0;
+        this.rotateGrid.IsEnabled = Math.Abs(this._dims) > 1;
+        this.resizeGrid.IsEnabled = this._dims > 0;
         this.saveButton.IsEnabled = true;
       }
       catch (Exception ex)
@@ -529,19 +529,19 @@ namespace ArrayVisualizer
         var z = (int)this.zResizeComboBox.SelectedItem;
         var a = (int)this.aResizeComboBox.SelectedItem;
 
-        switch (this.dims)
+        switch (this._dims)
         {
           case 1:
-            this.arrayCtl.SetControlData(((double[])this.arrayCtl.Data).Resize(x));
+            this._arrayCtl.SetControlData(((double[])this._arrayCtl.Data).Resize(x));
             break;
           case 2:
-            this.arrayCtl.SetControlData(((double[,])this.arrayCtl.Data).Resize(y, x));
+            this._arrayCtl.SetControlData(((double[,])this._arrayCtl.Data).Resize(y, x));
             break;
           case 3:
-            this.arrayCtl.SetControlData(((double[, ,])this.arrayCtl.Data).Resize(z, y, x));
+            this._arrayCtl.SetControlData(((double[, ,])this._arrayCtl.Data).Resize(z, y, x));
             break;
           case 4:
-            this.arrayCtl.SetControlData(((double[, , ,])this.arrayCtl.Data).Resize(a, z, y, x));
+            this._arrayCtl.SetControlData(((double[, , ,])this._arrayCtl.Data).Resize(a, z, y, x));
             break;
           default:
             throw new ArrayTypeMismatchException();
@@ -549,8 +549,7 @@ namespace ArrayVisualizer
       }
       catch
       {
-        MessageBox.Show(
-          this, "Unable to resize this array.", "ResizeE Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        MessageBox.Show(this, "Unable to resize this array.", "Resize Error", MessageBoxButton.OK, MessageBoxImage.Error);
       }
     }
 
@@ -575,17 +574,17 @@ namespace ArrayVisualizer
           break;
       }
 
-      int[] dims = this.arrayCtl.Data.GetDimensions();
-      switch (Math.Abs(this.dims))
+      int[] dims = this._arrayCtl.Data.GetDimensions();
+      switch (Math.Abs(this._dims))
       {
         case 2:
-          this.arrayCtl.SetControlData((this.arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1])).Rotate(angle));
+          this._arrayCtl.SetControlData((this._arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1])).Rotate(angle));
           break;
         case 3:
-          this.arrayCtl.SetControlData((this.arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2])).Rotate(r, angle));
+          this._arrayCtl.SetControlData((this._arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2])).Rotate(r, angle));
           break;
         case 4:
-          this.arrayCtl.SetControlData((this.arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2], dims[3])).Rotate(r, angle));
+          this._arrayCtl.SetControlData((this._arrayCtl.Data.AsEnumerable<object>().ToArray(dims[0], dims[1], dims[2], dims[3])).Rotate(r, angle));
           break;
       }
     }
@@ -610,7 +609,7 @@ namespace ArrayVisualizer
       return text;
     }
 
-    private int GetCellSize(string text, int defaultValue)
+    private static int GetCellSize(string text, int defaultValue)
     {
       double value;
       if (double.TryParse(text, out value))

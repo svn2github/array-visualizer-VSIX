@@ -39,6 +39,9 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public string GetDisplayName(EnvDTE.Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression"); 
+      
       string formatter;
       int[] dimensions = GetDimensions(expression);
       switch (dimensions.Length)
@@ -56,6 +59,9 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public int[] GetDimensions(EnvDTE.Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression"); 
+      
       int[] dims;
       switch (GetExpressionType(expression))
       {
@@ -86,6 +92,9 @@ namespace ArrayVisualizerExt.TypeParsers
 
     public object[] GetValues(EnvDTE.Expression expression)
     {
+      if (expression == null)
+        throw new ArgumentNullException("expression"); 
+      
       switch (GetExpressionType(expression))
       {
         case ExpressionType.Matrix:

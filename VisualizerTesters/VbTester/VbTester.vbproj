@@ -66,7 +66,7 @@
       <HintPath>..\..\packages\LinqExtLibrary.1.0.4.0\lib\LinqLib.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\CsTester\bin\Debug\SharpDX.dll</HintPath>
+      <HintPath>..\..\packages\SharpDX.2.4.2\lib\net40\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

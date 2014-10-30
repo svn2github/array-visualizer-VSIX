@@ -1,25 +1,26 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Syncfusion.Windows.Chart;
 
 namespace ArrayVisualizerExt
 {
-  internal class ChartSeriesData : IChartData
+  public class ChartSeriesData : IChartData
   {
-    readonly double[] arr;
+    private readonly double[] _arr;
+
     #region IChartData Members
 
     public ChartSeriesData(IEnumerable<double> data)
     {
-      arr = data.ToArray();
+      _arr = data.ToArray();
     }
 
     public ChartValueType ChartXValueType { get { return ChartValueType.Double; } set { } }
 
     public int Count
     {
-      get { return arr.Length; }
+      get { return _arr.Length; }
     }
 
     public ChartValueType XValueType
@@ -29,7 +30,7 @@ namespace ArrayVisualizerExt
 
     public IChartDataPoint this[int index]
     {
-      get { return new ChartDataPoint { X = index, Y = arr[index] }; }
+      get { return new ChartDataPoint { X = index, Y = _arr[index] }; }
     }
 
     #endregion
@@ -49,6 +50,7 @@ namespace ArrayVisualizerExt
 
     #endregion
   }
+
   internal class ChartDataPoint : IChartDataPoint
   {
     #region IChartDataPoint Members

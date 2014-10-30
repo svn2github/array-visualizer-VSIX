@@ -29,9 +29,9 @@ namespace ArrayVisualizerControls
           double labelX = x * CellSize.Width;
           double labelY = y * CellSize.Height + zSectionHeight;
 
-          string toolTipCoords = string.Format(toolTipFmt, 0, y, x);
+          string toolTipCoordinates = string.Format(toolTipFmt, 0, y, x);
 
-          AddLabel(ArrayRenderSection.Front, toolTipCoords, labelX, labelY, data);
+          AddLabel(ArrayRenderSection.Front, toolTipCoordinates, labelX, labelY, data);
         }
 
       // Top section
@@ -42,9 +42,9 @@ namespace ArrayVisualizerControls
           double labelX = (z + 1) * zCellWidth + x * CellSize.Width;
           double labelY = zSectionHeight - (z + 1) * zCellHeight;
 
-          string toolTipCoords = string.Format(toolTipFmt, z, 0, x);
+          string toolTipCoordinates = string.Format(toolTipFmt, z, 0, x);
 
-          AddLabel(ArrayRenderSection.Top, toolTipCoords, labelX, labelY, data);
+          AddLabel(ArrayRenderSection.Top, toolTipCoordinates, labelX, labelY, data);
         }
 
       // Right section
@@ -56,9 +56,9 @@ namespace ArrayVisualizerControls
           double labelX = xySectionWidth + z * zCellWidth;
           double labelY = zSectionHeight + y * CellSize.Height - zCellHeight * z;
 
-          string toolTipCoords = string.Format(toolTipFmt, z, y, x);
+          string toolTipCoordinates = string.Format(toolTipFmt, z, y, x);
 
-          AddLabel(ArrayRenderSection.Side, toolTipCoords, labelX, labelY, data);
+          AddLabel(ArrayRenderSection.Side, toolTipCoordinates, labelX, labelY, data);
         }
     }
 
